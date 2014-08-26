@@ -1,0 +1,24 @@
+<!doctype html>
+<html ng-app="todoApp">
+<head>
+<script src="../WEB-INF/lib/angular.min.js"></script>
+<script src="todo2.js"></script>
+<script src="../WEB-INF/lib/angular-route.js"></script>
+<link rel="stylesheet" href="todo.css">
+</head>
+<body>
+	<h2>Todo</h2>
+	<div>
+		<label>Nammmme:</label> <input type="text" ng-model="yourName"
+			placeholder="Enter a name here">
+		<hr>
+		<h1>Hello {{yourName}}!</h1>
+	</div>
+	<div ng-view></div>
+	<pre>$location.path() = {{$location.path()}}</pre>
+	<pre>$route.current.templateUrl = {{$route.current.templateUrl}}</pre>
+	<pre>$route.current.params = {{$route.current.params}}</pre>
+	<pre>$route.current.scope.name = {{$route.current.scope.name}}</pre>
+	<pre>$routeParams = {{$routeParams}}</pre>
+</body>
+</html>
