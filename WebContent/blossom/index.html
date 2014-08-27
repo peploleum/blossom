@@ -6,7 +6,7 @@
 <link rel="icon" href="../resources/favicon.ico">
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 <link href="starter-template.css" rel="stylesheet">
-<title>Bootstrap test</title>
+<title>Blossom : a Peploleum adventure</title>
 </head>
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -18,11 +18,12 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Project name</a>
+				<a class="navbar-brand" href="#">Blossom</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#search">Search</a></li>
 					<li><a href="#about">About</a></li>
 					<li><a href="#contact">Contact</a></li>
 				</ul>
@@ -32,14 +33,8 @@
 	</div>
 
 	<div class="container">
-		<h1>{{message}}</h1>
-		<!-- 		<div> -->
-		<!-- 			<label>Nammmme:</label> <input type="text" ng-model="yourName" -->
-		<!-- 				placeholder="Enter a name here"> -->
-		<!-- 			<hr> -->
-		<h1>Hello {{yourName}}!</h1>
-		<!-- 		</div> -->
 		<div ng-view></div>
+
 
 	</div>
 	<!-- /.container -->
@@ -47,6 +42,7 @@
 	<script src="../vendor/bootstrap.min.js"></script>
 	<script src="../vendor/angular.js"></script>
 	<script src="../vendor/angular-route.js"></script>
+	<script src="../vendor/jquery.min.js"></script>
 	<script src="blossom.js"></script>
 </body>
 </html>
