@@ -31,13 +31,26 @@ angular
 				controller : 'SearchCtrl',
 				templateUrl : 'search.html'
 			}).otherwise({
-				redirectTo : '/'
+				redirectTo : '/home'
 			});
 		})
 
-		.controller('MainCtrl', function($scope) {
-			$scope.message = 'toubidou';
-		})
+		.controller(
+				'MainCtrl',
+				function($scope) {
+					//a d3js bit here
+					var data = [ 4, 8, 15, 16, 23, 42, 51 ];
+
+					var x = d3.scale.linear().domain([ 0, d3.max(data) ])
+							.range([ 0, 420 ]);
+
+					d3.select(".chart").selectAll("div").data(data).enter()
+							.append("div").style("width", function(d) {
+								return x(d) + "px";
+							}).text(function(d) {
+								return d;
+							});
+				})
 
 		.controller('AboutCtrl', function($scope) {
 			$scope.message = 'toubidou';
