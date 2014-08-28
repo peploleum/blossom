@@ -3,16 +3,12 @@
 <!-- <input type="text" id="query" class="search-query" placeholder="Search"> -->
 
 <form ng-submit="submit()">
-	Enter text and hit enter: <input type="text" ng-model="text"
+	Enter text and hit submit: <input type="text" ng-model="text"
 		name="text" placeholder="Search here" /> <input type="submit"
 		id="submit" value="Submit" />
-	<pre>list={{message}}</pre>
-	<pre>num={{numfound}}</pre>
 </form>
-<!-- <button ng-click="on_search" id="search">Query</button> -->
-<h1>message : {{message}}</h1>
 <div class="page-header">
-	<h1>Results</h1>
+	<h1>{{numfound}} Results</h1>
 </div>
 <div class="row">
 	<div class="col-md-6">
@@ -20,17 +16,19 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Username</th>
+					<th>Name</th>
+					<th>Manufacturer</th>
+					<th>Manufacturer id</th>
+					<th>Price</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="result in results | filter:search | orderBy:'name'">
-					<td><a ng-href="{{result.name}}" target="_blank">{{result.name}}</a></td>
-					<td>{{result.description}}</td>
-					<td><a ng-href="#/edit/{{result.site}}">{{result.site}}</a></td>
+					<td><a ng-href="{{result.id}}" target="_blank">{{result.id}}</a></td>
 					<td>{{result.name}}</td>
+					<td>{{result.manu}}</td>
+					<td>{{result.manu_id}}</td>
+					<td>{{result.price}}</td>
 				</tr>
 			</tbody>
 		</table>

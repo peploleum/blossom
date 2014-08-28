@@ -49,28 +49,40 @@ angular
 
 		.controller(
 				'SearchCtrl',
-				function($scope, $http, $templateCache, Projects) {
-					// $scope.message = Projects[1];
-					$scope.results = Projects;
-
-					$scope.message = $scope.text;
+				function($scope, $http, $templateCache) {
+					$scope.results = [];
 					$scope.submit = function() {
 						$http(
 								{
-									method : 'GET',
-									url : 'http://localhost:8081/solr/collection1/select?wt=json&q=a',
+									url : 'http://localhost:8081/solr/collection1/select?wt=json&indent=true&q='
+											+ $scope.text,
 									cache : $templateCache,
-								}).success(function(data, status) {
-							// $scope.numfound = data.response.numFound;
-							$scope.message = "youpi"
-						}).error(function(data, status) {
-							$scope.numfound = 0;
-							$scope.message = "kop"
-						});
-
+								})
+								.success(function(data, status) {
+									$scope.numfound = data.response.numFound;
+									$scope.solrresults = data;
+								})
+								.error(function(data, status) {
+									$scope.numfound = 0;
+									$scope.message = "fail"
+								})
+								.then(
+										function() {
+											$scope.results = [];
+											var localResults = $scope.solrresults.response.docs;
+											$scope.message = localResults[0].id;
+											localResults
+													.forEach(function(element) {
+														$scope.results
+																.push({
+																	id : element.id,
+																	name : element.name,
+																	manu : element.manu,
+																	manu_id : element.manu_id_s,
+																	price : element.price_c,
+																	saved : true
+																})
+													})
+										});
 					}
-					function on_data(data) {
-						$scope.message = data.response.numFound;
-					}
-
 				})
