@@ -1,0 +1,33 @@
+{
+  "nodes": [
+    {
+      "name": "node 1",
+      "descritpion": "desc_node_1",
+      "id": "unique_id_1",
+    },
+    {
+     "name": "node 2",
+      "descritpion": "desc_node_2",
+      "id": "unique_id_2",
+    },
+    {
+     "name": "node 3",
+      "descritpion": "desc_node_3",
+      "id": "unique_id_3",
+    }
+  ],
+  "links": [
+    {
+      "source": "unique_id_1",
+      "target": "unique_id_2"
+    },
+    {
+     "source": "unique_id_2",
+      "target": "unique_id_3"
+    },
+    {
+     "source": "unique_id_3",
+      "target": "unique_id_1"
+    }
+  ]
+}
