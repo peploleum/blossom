@@ -1,33 +1,19 @@
 {
   "nodes": [
-    {
-      "name": "node 1",
-      "descritpion": "desc_node_1",
-      "id": "unique_id_1",
-    },
-    {
-     "name": "node 2",
-      "descritpion": "desc_node_2",
-      "id": "unique_id_2",
-    },
-    {
-     "name": "node 3",
-      "descritpion": "desc_node_3",
-      "id": "unique_id_3",
-    }
+    {"name":"zoidberg", "size":70, "catchphrase":"WooWoooWoowWooWoooWoo!"},
+    {"name":"fry", "size":40, "catchphrase":"I'm walking on sunshine!"},
+    {"name":"amy", "size":50, "catchphrase":"I'm wearing a bellyparka!"},
+    {"name":"farnsworth", "size":40, "catchphrase":"Good news everyone!"},
+    {"name":"hermes", "size":30, "catchphrase":"Like a green snake on a sugarcane!"},
+    {"name":"scruffy", "size":50, "catchphrase":"I'm Scruffy, the janitor!"}
   ],
-  "links": [
-    {
-      "source": "unique_id_1",
-      "target": "unique_id_2"
-    },
-    {
-     "source": "unique_id_2",
-      "target": "unique_id_3"
-    },
-    {
-     "source": "unique_id_3",
-      "target": "unique_id_1"
-    }
-  ]
+ "links":[
+  	{"source":1,"target":0},
+  	{"source":1,"target":3},
+  	{"source":3,"target":4},
+  	{"source":2,"target":5},
+  	{"source":5,"target":2},
+  	{"source":2,"target":0},
+  	{"source":1,"target":5}
+  	]
 }
