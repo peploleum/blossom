@@ -5,7 +5,8 @@
     {"name":"amy", "size":50, "catchphrase":"I'm wearing a bellyparka!"},
     {"name":"farnsworth", "size":40, "catchphrase":"Good news everyone!"},
     {"name":"hermes", "size":30, "catchphrase":"Like a green snake on a sugarcane!"},
-    {"name":"scruffy", "size":50, "catchphrase":"I'm Scruffy, the janitor!"}
+    {"name":"scruffy", "size":50, "catchphrase":"I'm Scruffy, the janitor!"},
+    {"name":"bender", "size":90, "catchphrase":"Bite my shiny metal ass!"}
   ],
  "links":[
   	{"source":1,"target":0},
@@ -14,6 +15,7 @@
   	{"source":2,"target":5},
   	{"source":5,"target":2},
   	{"source":2,"target":0},
-  	{"source":1,"target":5}
+  	{"source":1,"target":5},
+  	{"source":0,"target":6}
   	]
 }

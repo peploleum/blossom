@@ -1,40 +1,6 @@
-angular.module('blossom', [ 'ngRoute' ])
+var module = angular.module('blossom.network', [ 'ngRoute' ]);
 
-.factory('Projects', function() {
-	return [ {
-		id : 0,
-		name : "a",
-		description : "adesc",
-		site : "http://A",
-		saved : true
-	}, {
-		id : 1,
-		name : "b",
-		description : "bdesc",
-		site : "http://b",
-		saved : true
-	} ];
-})
-
-.config(function($routeProvider) {
-	$routeProvider.when('/about', {
-		controller : 'AboutCtrl',
-		templateUrl : 'about.html'
-	}).when('/home', {
-		controller : 'MainCtrl',
-		templateUrl : 'home.html'
-	}).when('/contact', {
-		controller : 'ContactCtrl',
-		templateUrl : 'contact.html'
-	}).when('/search', {
-		controller : 'SearchCtrl',
-		templateUrl : 'search.html'
-	}).otherwise({
-		redirectTo : '/home'
-	});
-})
-
-.controller('MainCtrl', function($scope) {
+module.controller('NetworkCtrl', function($scope) {
 	// a d3js bit here
 	var data = [ 4, 8, 15, 16, 23, 42 ];
 
@@ -163,47 +129,5 @@ angular.module('blossom', [ 'ngRoute' ])
 	$scope.submitNode = function(){
 		console.log("submitnode");
 		$scope.submitmessage = "haha";
-	}
-})
-
-.controller('AboutCtrl', function($scope) {
-	$scope.message = 'toubidou';
-})
-
-.controller('ContactCtrl', function($scope) {
-	$scope.message = 'toubidou';
-})
-
-.controller('SearchCtrl', function($scope, $http, $templateCache) {
-	$scope.results = [];
-	$scope.solrerror = false;
-	$scope.solrsuccess = true;
-	$scope.submit = function() {
-		$http({
-			url : 'http://localhost:8081/solr/collection1/select?wt=json&indent=true&q=' + $scope.text,
-			cache : $templateCache,
-		}).success(function(data, status) {
-			$scope.numfound = data.response.numFound;
-			$scope.solrresults = data;
-			$scope.solrerror = false;
-			$scope.solrsuccess = true;
-		}).error(function(data, status) {
-			$scope.numfound = 0;
-			$scope.solrerror = true;
-			$scope.solrsuccess = false;
-		}).then(function() {
-			$scope.results = [];
-			var localResults = $scope.solrresults.response.docs;
-			localResults.forEach(function(element) {
-				$scope.results.push({
-					id : element.id,
-					name : element.name,
-					manu : element.manu,
-					manu_id : element.manu_id_s,
-					price : element.price_c,
-					saved : true
-				})
-			})
-		});
 	}
 })

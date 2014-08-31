@@ -1,69 +1,11 @@
-
-<style>
-.chart div {
-	font: 10px sans-serif;
-	background-color: steelblue;
-	text-align: right;
-	padding: 3px;
-	margin: 1px;
-	color: white;
-}
-
-.chartsvg rect {
-	fill: steelblue;
-}
-
-.chartsvg text {
-	fill: white;
-	font: 10px sans-serif;
-	text-anchor: end;
-}
-
-.nodetest {
-	/* 	fill: #000; */
-	fill: #FF0000;
-}
-
-.cursor {
-	fill: none;
-	stroke: brown;
-	pointer-events: none;
-}
-
-.link {
-	stroke: #999;
-}
-
-.tooltipcustom {
-	visibility: hidden;
-	background: lightblue;
-	border: solid gray;
-	stroke: #999;
-	position: absolute;
-}
-</style>
-<div class="row">
-	<div class="col-md-8">
-		<svg class="graphsvgplus"></svg>
-	</div>
-	<div class="col-md-4">
-		<form ng-submit="submitNode()">
-			<input type="submit" id="submit" value="Submit" /></form>
-			<h1>"sub " : {{submitmessage}}</h1>
-	</div>
-</div>
-<div class="tooltipcustom">{{tooltipmessage}}</div>
-
-<h1>Bite my shiny metal ass !! {{message}}</h1>
 <div class="starter-template">
-	<h1>Sandbox</h1>
+	<h1>Sandbox {{message}}</h1>
 	<p class="lead">
 		A bit of bootstrap, angularjs, d3js.<br> Wired to a solr backend.
 	</p>
 
 </div>
 <!-- <div class="chart"></div> -->
-<svg class="chartsvg"></svg>
 
 <!-- <svg class="graphsvg"></svg> -->
 
