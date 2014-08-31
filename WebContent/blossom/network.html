@@ -41,14 +41,47 @@
 	position: absolute;
 }
 </style>
+
+<div>nodehelper : {{nodehelper.name}}</div>
 <div class="row">
-	<div class="col-md-8">
+	<div class="col-md-12">
+		<form ng-submit="submitNode()">
+			<input type="submit" id="submit" value="Submit" />
+		</form>
+		<h1>"sub " : {{submitmessage}}</h1>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-6">
 		<svg class="graphsvgplus"></svg>
 	</div>
-	<div class="col-md-4">
-		<form ng-submit="submitNode()">
-			<input type="submit" id="submit" value="Submit" /></form>
-			<h1>"sub " : {{submitmessage}}</h1>
+	<div class="col-md-6">
+	<form class="form-horizontal" role="form" ng-submit="submitFormNode()">
+		<div class="form-group">
+			<label for="inputText" class="col-sm-2 control-label">Name</label>
+			<div class="col-sm-10">
+				<input ng-model="nodehelper.name" type="text" class="form-control"
+					id="inputText" placeholder="Text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputPassword3" class="col-sm-2 control-label">Neighbor</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="inputText"
+					placeholder="name of the neighbor">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button type="submit" class="btn btn-default">Add to graph</button>
+			</div>
+		</div>
+	</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-6">
+		<svg class="graphsvg"></svg>
 	</div>
 </div>
 <div class="tooltipcustom">{{tooltipmessage}}</div>

@@ -1,8 +1,8 @@
 {
  "nodes":[
-   {"name":"Myriel"},
-   {"name":"Napoleon"},
-   {"name":"Uh"}
+   {"x":90,"y":90,"radius":70,"color":"purple"},
+   {"x":180,"y":90,"radius":70,"color":"red"},
+   {"x":90,"y":180,"radius":70,"color":"yellow"}
    ],
   "links":[
   	{"source":1,"target":0},

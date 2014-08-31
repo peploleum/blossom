@@ -24,7 +24,7 @@ module.controller('NetworkCtrl', function($scope) {
 
 	var graph = d3.select(".graphsvg").attr("width", width).attr("height", width);
 
-	d3.json("data/data.json", function(json) {
+	d3.json("data/data2.json", function(json) {
 		var circles = graph.selectAll("cirle").data(json.nodes).enter().append("circle");
 		var circleAttributes = circles.attr("cx", function(d) {
 			return d.x;
@@ -50,12 +50,30 @@ module.controller('NetworkCtrl', function($scope) {
 	var graphplus = d3.select(".graphsvgplus").attr("width", width).attr("height", width);
 	graphplus.append("rect").attr("width", width).attr("height", width).style("fill", "white").style("stroke", "gray").style("stroke-width", 5);
 	var force = d3.layout.force().gravity(.05).distance(100).charge(-100).size([ width, width ]);
+
 	d3.json("data/data.json", function(json) {
-		force.nodes(json.nodes).links(json.links).start();
+		// force.nodes(json.nodes).links(json.links).start();
 
-		var link = graphplus.selectAll(".link").data(json.links).enter().append("line").attr("class", "link");
+		json.nodes.forEach(function(n) {
+			console.log("name : " + n.name);
+			force.nodes().push(n)
+		});
+		force.links(json.links);
+		force.start();
 
-		var node = graphplus.selectAll(".node").data(json.nodes).enter().append("g").attr("class", "nodetest").call(force.drag);
+		updateGraph();
+
+	});
+
+	updateGraph = function() {
+		// this is an update: removing existing links & nodes before adding them
+		graphplus.selectAll(".link").remove();
+		var linkData = graphplus.selectAll(".link").data(force.links());
+		var link = linkData.enter().append("line").attr("class", "link");
+
+		graphplus.selectAll(".nodetest").remove();
+		var nodeData = graphplus.selectAll(".node").data(force.nodes());
+		var node = nodeData.enter().append("g").attr("class", "nodetest").call(force.drag);
 
 		var images = node.append("image").attr("xlink:href", function(d) {
 			return "resources/" + d.name + ".png"
@@ -70,12 +88,16 @@ module.controller('NetworkCtrl', function($scope) {
 		}).attr("custom", function(d) {
 			return d.catchphrase
 		});
+		// no need for a title we aim to provide our own tooltip
 		// .append("title") // Adding the title
 		// // element to the
 		// // rectangles.
 		// .text(function(d) {
 		// return d.catchphrase;
 		// });
+
+		// this is hidden in the html, we use it to pop it on the grid of the
+		// svg when needed
 		var tooltip = d3.select(".tooltipcustom");
 
 		console.log("testingngg: ");
@@ -106,7 +128,7 @@ module.controller('NetworkCtrl', function($scope) {
 		}).attr("custom", function(d) {
 			return d.catchphrase;
 		});
-
+		
 		force.on("tick", function() {
 			link.attr("x1", function(d) {
 				return d.source.x;
@@ -123,11 +145,36 @@ module.controller('NetworkCtrl', function($scope) {
 			});
 
 		})
-		
-
-	});
-	$scope.submitNode = function(){
+	}
+	$scope.submitNode = function() {
 		console.log("submitnode");
+		force.nodes().push({
+			"name" : "leela",
+			"size" : 70,
+			"catchphrase" : "Monday monkey lives for the weekend!"
+		});
+		force.links().push({
+			"source" : 7,
+			"target" : 0
+		})
+		updateGraph();
+		force.start();
+		$scope.submitmessage = "haha";
+	}
+	
+	$scope.submitFormNode = function() {
+		console.log("submitnode from form " + $scope.nodehelper.name);
+		force.nodes().push({
+			"name" : $scope.nodehelper.name,
+			"size" : 70,
+			"catchphrase" : "Monday monkey lives for the weekend!"
+		});
+		force.links().push({
+			"source" : 7,
+			"target" : 0
+		})
+		updateGraph();
+		force.start();
 		$scope.submitmessage = "haha";
 	}
 })
