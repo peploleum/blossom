@@ -1,10 +1,20 @@
 var module = angular.module('blossom.network', [ 'ngRoute' ]);
 
 module.controller('NetworkCtrl', function($scope) {
+	
+	//init some control scope vars used to pop error display
+	$scope.addNodeError = false;
+	$scope.addNodeSuccess = true;
+	
 	// a d3js bit here
+	
 	var data = [ 4, 8, 15, 16, 23, 42 ];
 
-	var width = 420, barHeight = 20;
+	// var width = 420, barHeight = 20;
+	var barHeight = 20;
+
+	var width = $("svg").parent().width();
+	var height = $("svg").height();
 
 	var xsvg = d3.scale.linear().domain([ 0, d3.max(data) ]).range([ 0, width ]);
 
@@ -47,15 +57,17 @@ module.controller('NetworkCtrl', function($scope) {
 		}).attr("font-family", "sans-serif").attr("font-size", "10px").attr("fill", "black").attr("text-anchor", "middle");
 	})
 	$scope.tooltipmessage = "tooltiptext";
-	var graphplus = d3.select(".graphsvgplus").attr("width", width).attr("height", width);
-	graphplus.append("rect").attr("width", width).attr("height", width).style("fill", "white").style("stroke", "gray").style("stroke-width", 5);
-	var force = d3.layout.force().gravity(.05).distance(100).charge(-100).size([ width, width ]);
+	console.log("width : " + width + " height " + height);
+	var graphplus = d3.select(".graphsvgplus").attr("width", "100%").attr("height", 600);
+	graphplus.append("rect").attr("width", "100%").attr("height", 600).style("fill", "white");// .style("stroke",
+	// "gray").style("stroke-width",
+	// 0);
+	var force = d3.layout.force().gravity(.05).distance(100).charge(-100).size([ width, 600 ]);
 
 	d3.json("data/data.json", function(json) {
-		// force.nodes(json.nodes).links(json.links).start();
 
+		// just another way of pushing nodes
 		json.nodes.forEach(function(n) {
-			console.log("name : " + n.name);
 			force.nodes().push(n)
 		});
 		force.links(json.links);
@@ -100,11 +112,9 @@ module.controller('NetworkCtrl', function($scope) {
 		// svg when needed
 		var tooltip = d3.select(".tooltipcustom");
 
-		console.log("testingngg: ");
 		d3.selectAll("image").each(function(d, i) {
 			if (d.catchphrase != null) {
 				var catchphrase = d3.select(this).attr("custom");
-				console.log("testing3: " + catchphrase + " i  " + i + " e " + d3.select(this));
 				d3.select(this).on("mouseover", function(d) {
 					tooltip.text(function(d) {
 						return catchphrase;
@@ -128,7 +138,7 @@ module.controller('NetworkCtrl', function($scope) {
 		}).attr("custom", function(d) {
 			return d.catchphrase;
 		});
-		
+
 		force.on("tick", function() {
 			link.attr("x1", function(d) {
 				return d.source.x;
@@ -161,20 +171,54 @@ module.controller('NetworkCtrl', function($scope) {
 		force.start();
 		$scope.submitmessage = "haha";
 	}
-	
-	$scope.submitFormNode = function() {
-		console.log("submitnode from form " + $scope.nodehelper.name);
-		force.nodes().push({
-			"name" : $scope.nodehelper.name,
-			"size" : 70,
-			"catchphrase" : "Monday monkey lives for the weekend!"
+
+	findNodeByName = function(name) {
+		console.log("searching for node by name:" + name);
+		var matchingNode;
+		force.nodes().forEach(function(n) {
+			if (n.name == name) {
+				matchingNode = n
+			}
 		});
-		force.links().push({
-			"source" : 7,
-			"target" : 0
-		})
-		updateGraph();
-		force.start();
-		$scope.submitmessage = "haha";
+		console.log("matchingNode:" + matchingNode);
+	}
+
+	findNodeIndexByNodeName = function(name) {
+		console.log("searching for node index by name:" + name);
+		var matchingNodeIndex = -1;
+		for (var i = 0; i < force.nodes().length; i++) {
+			if (force.nodes()[i].name == name) {
+				matchingNodeIndex = i;
+				console.log("matchingNodeIndex:" + matchingNodeIndex);
+				return matchingNodeIndex;
+			}
+		}
+		console.log("matchingNodeIndex:" + matchingNodeIndex);
+		return matchingNodeIndex;
+	}
+
+	$scope.submitFormNode = function() {
+		console.log("submitnode from form name " + $scope.nodehelper.name + " neighbors: " + $scope.nodehelper.neighbors);
+		var neighborIndex = findNodeIndexByNodeName($scope.nodehelper.neighbors);
+		console.log("found neighbor at index " + neighborIndex);
+		if (neighborIndex == -1) {
+			$scope.addNodeError = true;
+			$scope.addNodeSuccess = false;
+		} else {
+			console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
+			force.nodes().push({
+				"name" : $scope.nodehelper.name,
+				"size" : 70,
+				"catchphrase" : $scope.nodehelper.catchphrase
+			});
+			console.log("pushing link " + (force.nodes().length - 1) + " " + neighborIndex);
+			force.links().push({
+				"source" : force.nodes().length - 1,
+				"target" : neighborIndex
+			})
+			updateGraph();
+			force.start();
+			$scope.addNodeSuccess = true;
+		}
 	}
 })
