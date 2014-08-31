@@ -1,13 +1,15 @@
 var module = angular.module('blossom.network', [ 'ngRoute' ]);
 
 module.controller('NetworkCtrl', function($scope) {
-	
-	//init some control scope vars used to pop error display
+
+	// init some control scope vars used to pop error display
 	$scope.addNodeError = false;
 	$scope.addNodeSuccess = true;
-	
+
+	Object
+	selection = null;
 	// a d3js bit here
-	
+
 	var data = [ 4, 8, 15, 16, 23, 42 ];
 
 	// var width = 420, barHeight = 20;
@@ -83,9 +85,9 @@ module.controller('NetworkCtrl', function($scope) {
 		var linkData = graphplus.selectAll(".link").data(force.links());
 		var link = linkData.enter().append("line").attr("class", "link");
 
-		graphplus.selectAll(".nodetest").remove();
+		graphplus.selectAll(".graphnode").remove();
 		var nodeData = graphplus.selectAll(".node").data(force.nodes());
-		var node = nodeData.enter().append("g").attr("class", "nodetest").call(force.drag);
+		var node = nodeData.enter().append("g").attr("class", "graphnode").call(force.drag);
 
 		var images = node.append("image").attr("xlink:href", function(d) {
 			return "resources/" + d.name + ".png"
@@ -124,12 +126,29 @@ module.controller('NetworkCtrl', function($scope) {
 					return tooltip.style("top", (d3.event.pageY + 16) + "px").style("left", (d3.event.pageX + 16) + "px");
 				}).on("mouseout", function() {
 					return tooltip.style("visibility", "hidden")
-				}).on("click", function() {
-					console.log("click")
 				});
-				;
 			}
 		});
+
+		d3.selectAll("image").on("click", function(d) {
+			console.log("node clicked");
+			console.log(this.parentNode);
+			var createElement = document.createElement("rect");
+			d3.select(createElement).attr("class", "graphnodeselect").attr("width", "100%").attr("height", "100%").style("stroke", "gray");
+			// createElement.select("#width").append(70);
+			// createElement.attr("class", "graphnodeselect").attr("width",
+			// 70).attr("height", 70);
+			console.log(createElement);
+			this.parentNode.appendChild(createElement);
+		});
+		// append("rect").attr("width", "100%").attr("height",
+		// 600).style("fill", "white");// .style("stroke",
+		// "gray").style("stroke-width",
+		// node.append("rect").attr("width", function(d) {
+		// return d.width
+		// }).attr("height", function(d) {
+		// return d.height
+		// }).style("stroke", "gray").style("stroke-width", 3);
 
 		node.append("text").attr("dx", function(d) {
 			return 2 + d.size / 2
@@ -154,8 +173,9 @@ module.controller('NetworkCtrl', function($scope) {
 				return "translate(" + d.x + "," + d.y + ")";
 			});
 
-		})
+		});
 	}
+
 	$scope.submitNode = function() {
 		console.log("submitnode");
 		force.nodes().push({
