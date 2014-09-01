@@ -22,12 +22,14 @@
 	/* 	fill: #000; */
 	fill: #FF0000;
 }
+
 .graphnodeselect {
 	/* 	fill: #000; */
 	fill: green;
-	fill-opacity : 0.1;
+	fill-opacity: 0.1;
 	stroke: green;
 }
+
 .cursor {
 	fill: none;
 	stroke: brown;
@@ -98,9 +100,14 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-10">
+							<div class="col-sm-offset-0 col-sm-5">
 								<button type="submit" class="btn btn-default">Add to
 									graph</button>
+							</div>
+							<div class="col-sm-offset-0 col-sm-5">
+								<button type="submit" class="btn btn-default" ng-click="setSelectionClicked(true)">Add link
+									from selection</button>
+<!-- 								 <input type="submit"  value="Edit" /> -->
 							</div>
 						</div>
 					</form>

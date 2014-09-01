@@ -5,9 +5,8 @@ module.controller('NetworkCtrl', function($scope) {
 	// init some control scope vars used to pop error display
 	$scope.addNodeError = false;
 	$scope.addNodeSuccess = true;
-
-	Object
-	selection = null;
+	var selectionClicked = false;
+	selection = [];
 	// a d3js bit here
 
 	var data = [ 4, 8, 15, 16, 23, 42 ];
@@ -87,7 +86,10 @@ module.controller('NetworkCtrl', function($scope) {
 
 		graphplus.selectAll(".graphnode").remove();
 		var nodeData = graphplus.selectAll(".node").data(force.nodes());
-		var node = nodeData.enter().append("g").attr("class", "graphnode").call(force.drag);
+		// we add a custom attr to reuse it without entering data
+		var node = nodeData.enter().append("g").attr("class", "graphnode").attr("custom", function(d) {
+			return d.name
+		}).call(force.drag);
 
 		var images = node.append("image").attr("xlink:href", function(d) {
 			return "resources/" + d.name + ".png"
@@ -102,6 +104,7 @@ module.controller('NetworkCtrl', function($scope) {
 		}).attr("custom", function(d) {
 			return d.catchphrase
 		});
+
 		// no need for a title we aim to provide our own tooltip
 		// .append("title") // Adding the title
 		// // element to the
@@ -130,25 +133,43 @@ module.controller('NetworkCtrl', function($scope) {
 			}
 		});
 
+		d3.selectAll("image").each(function(d, i) {
+			// console.log(this);
+			paintSelection(this);
+		});
+
+		function paintSelection(imageItem) {
+			var retrievedCustomFieldAsId = d3.select(imageItem.parentNode).attr("custom");
+			if (selection.indexOf(retrievedCustomFieldAsId) != -1) {
+				console.log("adding " + retrievedCustomFieldAsId);
+				console.log(selection);
+				var selectedImageItem = d3.select(imageItem);
+				var selectionWidth = selectedImageItem.attr("width");
+				var selectionHeight = selectedImageItem.attr("height");
+				var selectionX = selectedImageItem.attr("x");
+				var selectionY = selectedImageItem.attr("y");
+				d3.select(imageItem.parentNode).append("rect").attr("class", "graphnodeselect").attr("width", selectionWidth).attr("height", selectionHeight).attr("x", selectionX).attr("y", selectionY).attr("custom", retrievedCustomFieldAsId).on("click", function(d) {
+					console.log("rect clicked");
+					if (d3.event.ctrlKey) {
+						var selectedRect = d3.select(this);
+						selectedRect.remove();
+						console.log("index to remove: " + selectedRect.attr("custom"))
+						selection.splice(selection.indexOf(selectedRect.attr("custom")), 1);
+
+						console.log(selection);
+					}
+				});
+
+			}
+		}
 		d3.selectAll("image").on("click", function(d) {
 			console.log("node clicked");
-			console.log(this.parentNode);
-			var createElement = document.createElement("rect");
-			d3.select(createElement).attr("class", "graphnodeselect").attr("width", "100%").attr("height", "100%").style("stroke", "gray");
-			// createElement.select("#width").append(70);
-			// createElement.attr("class", "graphnodeselect").attr("width",
-			// 70).attr("height", 70);
-			console.log(createElement);
-			this.parentNode.appendChild(createElement);
+			var retrievedCustomFieldAsId = d3.select(this.parentNode).attr("custom");
+			if (selection.indexOf(retrievedCustomFieldAsId) == -1) {
+				selection.push(retrievedCustomFieldAsId);
+			}
+			paintSelection(this);
 		});
-		// append("rect").attr("width", "100%").attr("height",
-		// 600).style("fill", "white");// .style("stroke",
-		// "gray").style("stroke-width",
-		// node.append("rect").attr("width", function(d) {
-		// return d.width
-		// }).attr("height", function(d) {
-		// return d.height
-		// }).style("stroke", "gray").style("stroke-width", 3);
 
 		node.append("text").attr("dx", function(d) {
 			return 2 + d.size / 2
@@ -218,27 +239,57 @@ module.controller('NetworkCtrl', function($scope) {
 	}
 
 	$scope.submitFormNode = function() {
-		console.log("submitnode from form name " + $scope.nodehelper.name + " neighbors: " + $scope.nodehelper.neighbors);
-		var neighborIndex = findNodeIndexByNodeName($scope.nodehelper.neighbors);
-		console.log("found neighbor at index " + neighborIndex);
-		if (neighborIndex == -1) {
-			$scope.addNodeError = true;
-			$scope.addNodeSuccess = false;
+
+		if (selectionClicked) {
+			console.log("selection clicked");
+			for (var i = 0; i < selection.length; i++) {
+				var sourceIndex = findNodeIndexByNodeName(selection[i]);
+				console.log("source index " + sourceIndex);
+				if (sourceIndex != -1) {
+					for (var j = 0; j < selection.length; j++) {
+						if (j != i) {
+							var destinationIndex = findNodeIndexByNodeName(selection[j]);
+							console.log("destination index " + destinationIndex);
+							if (destinationIndex != -1) {
+								console.log("drawing link from " + sourceIndex + " to " + destinationIndex);
+								force.links().push({
+									"source" : sourceIndex,
+									"target" : destinationIndex
+								})
+							}
+						}
+					}
+
+				}
+			}
+			selectionClicked = false;
 		} else {
-			console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
-			force.nodes().push({
-				"name" : $scope.nodehelper.name,
-				"size" : 70,
-				"catchphrase" : $scope.nodehelper.catchphrase
-			});
-			console.log("pushing link " + (force.nodes().length - 1) + " " + neighborIndex);
-			force.links().push({
-				"source" : force.nodes().length - 1,
-				"target" : neighborIndex
-			})
-			updateGraph();
-			force.start();
-			$scope.addNodeSuccess = true;
+			console.log("submitnode from form name " + $scope.nodehelper.name + " neighbors: " + $scope.nodehelper.neighbors);
+			var neighborIndex = findNodeIndexByNodeName($scope.nodehelper.neighbors);
+			console.log("found neighbor at index " + neighborIndex);
+			if (neighborIndex == -1) {
+				$scope.addNodeError = true;
+				$scope.addNodeSuccess = false;
+			} else {
+				console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
+				force.nodes().push({
+					"name" : $scope.nodehelper.name,
+					"size" : 70,
+					"catchphrase" : $scope.nodehelper.catchphrase
+				});
+				console.log("pushing link " + (force.nodes().length - 1) + " " + neighborIndex);
+				force.links().push({
+					"source" : force.nodes().length - 1,
+					"target" : neighborIndex
+				})
+			}
 		}
+		updateGraph();
+		force.start();
+		$scope.addNodeSuccess = true;
+	}
+
+	$scope.setSelectionClicked = function(b) {
+		selectionClicked = b;
 	}
 })
