@@ -92,21 +92,28 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="inputPassword3" class="col-sm-4 control-label">Neighbor</label>
+							<label for="inputPassword3" class="col-sm-4 control-label">Size</label>
 							<div class="col-sm-8">
-								<input ng-model="nodehelper.neighbors" type="text"
+								<input ng-model="nodehelper.size" type="text"
 									class="form-control" id="inputText"
-									placeholder="name of the neighbor">
+									placeholder="70">
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-0 col-sm-5">
-								<button type="submit" class="btn btn-default">Add to
+								<button type="submit" class="btn btn-default" ng-click="setClick('AddNode')">Add to
 									graph</button>
 							</div>
 							<div class="col-sm-offset-0 col-sm-5">
-								<button type="submit" class="btn btn-default" ng-click="setSelectionClicked(true)">Add link
-									from selection</button>
+								<button type="submit" class="btn btn-default" ng-click="setClick('AddLink')">Add link</button>
+<!-- 								 <input type="submit"  value="Edit" /> -->
+							</div>
+							<div class="col-sm-offset-0 col-sm-5">
+								<button type="submit" class="btn btn-default" ng-click="setClick('Start')">start</button>
+<!-- 								 <input type="submit"  value="Edit" /> -->
+							</div>
+							<div class="col-sm-offset-0 col-sm-5">
+								<button type="submit" class="btn btn-default" ng-click="setClick('Stop')">stop</button>
 <!-- 								 <input type="submit"  value="Edit" /> -->
 							</div>
 						</div>

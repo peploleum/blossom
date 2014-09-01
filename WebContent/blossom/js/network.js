@@ -5,7 +5,7 @@ module.controller('NetworkCtrl', function($scope) {
 	// init some control scope vars used to pop error display
 	$scope.addNodeError = false;
 	$scope.addNodeSuccess = true;
-	var selectionClicked = false;
+	var selectionClicked = null;
 	selection = [];
 	// a d3js bit here
 
@@ -63,7 +63,7 @@ module.controller('NetworkCtrl', function($scope) {
 	graphplus.append("rect").attr("width", "100%").attr("height", 600).style("fill", "white");// .style("stroke",
 	// "gray").style("stroke-width",
 	// 0);
-	var force = d3.layout.force().gravity(.05).distance(100).charge(-100).size([ width, 600 ]);
+	var force = d3.layout.force().gravity(.05).distance(150).charge(-200).size([ width, 600 ]);
 
 	d3.json("data/data.json", function(json) {
 
@@ -88,7 +88,7 @@ module.controller('NetworkCtrl', function($scope) {
 		var nodeData = graphplus.selectAll(".node").data(force.nodes());
 		// we add a custom attr to reuse it without entering data
 		var node = nodeData.enter().append("g").attr("class", "graphnode").attr("custom", function(d) {
-			return d.name
+			return d.id
 		}).call(force.drag);
 
 		var images = node.append("image").attr("xlink:href", function(d) {
@@ -197,38 +197,22 @@ module.controller('NetworkCtrl', function($scope) {
 		});
 	}
 
-	$scope.submitNode = function() {
-		console.log("submitnode");
-		force.nodes().push({
-			"name" : "leela",
-			"size" : 70,
-			"catchphrase" : "Monday monkey lives for the weekend!"
-		});
-		force.links().push({
-			"source" : 7,
-			"target" : 0
-		})
-		updateGraph();
-		force.start();
-		$scope.submitmessage = "haha";
-	}
-
-	findNodeByName = function(name) {
-		console.log("searching for node by name:" + name);
+	findNodeById = function(id) {
+		console.log("searching for node by id:" + id);
 		var matchingNode;
 		force.nodes().forEach(function(n) {
-			if (n.name == name) {
+			if (n.id == id) {
 				matchingNode = n
 			}
 		});
 		console.log("matchingNode:" + matchingNode);
 	}
 
-	findNodeIndexByNodeName = function(name) {
-		console.log("searching for node index by name:" + name);
+	findNodeIndexByNodeId = function(id) {
+		console.log("searching for node index by name:" + id);
 		var matchingNodeIndex = -1;
 		for (var i = 0; i < force.nodes().length; i++) {
-			if (force.nodes()[i].name == name) {
+			if (force.nodes()[i].id == id) {
 				matchingNodeIndex = i;
 				console.log("matchingNodeIndex:" + matchingNodeIndex);
 				return matchingNodeIndex;
@@ -240,15 +224,15 @@ module.controller('NetworkCtrl', function($scope) {
 
 	$scope.submitFormNode = function() {
 
-		if (selectionClicked) {
+		if (selectionClicked == 'AddLink') {
 			console.log("selection clicked");
 			for (var i = 0; i < selection.length; i++) {
-				var sourceIndex = findNodeIndexByNodeName(selection[i]);
+				var sourceIndex = findNodeIndexByNodeId(selection[i]);
 				console.log("source index " + sourceIndex);
 				if (sourceIndex != -1) {
 					for (var j = 0; j < selection.length; j++) {
 						if (j != i) {
-							var destinationIndex = findNodeIndexByNodeName(selection[j]);
+							var destinationIndex = findNodeIndexByNodeId(selection[j]);
 							console.log("destination index " + destinationIndex);
 							if (destinationIndex != -1) {
 								console.log("drawing link from " + sourceIndex + " to " + destinationIndex);
@@ -262,34 +246,49 @@ module.controller('NetworkCtrl', function($scope) {
 
 				}
 			}
-			selectionClicked = false;
-		} else {
-			console.log("submitnode from form name " + $scope.nodehelper.name + " neighbors: " + $scope.nodehelper.neighbors);
-			var neighborIndex = findNodeIndexByNodeName($scope.nodehelper.neighbors);
-			console.log("found neighbor at index " + neighborIndex);
-			if (neighborIndex == -1) {
-				$scope.addNodeError = true;
-				$scope.addNodeSuccess = false;
-			} else {
-				console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
-				force.nodes().push({
-					"name" : $scope.nodehelper.name,
-					"size" : 70,
-					"catchphrase" : $scope.nodehelper.catchphrase
-				});
-				console.log("pushing link " + (force.nodes().length - 1) + " " + neighborIndex);
-				force.links().push({
-					"source" : force.nodes().length - 1,
-					"target" : neighborIndex
-				})
-			}
+			force.start();
+		} else if (selectionClicked == 'AddNode') {
+			console.log("submitnode from form name " + $scope.nodehelper.name);
+			console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
+			var size = 70;
+			if ($scope.nodehelper.size != null)
+				size = $scope.nodehelper.size;
+			console.log("size from scope:" + $scope.nodehelper.size + " var: " + size);
+			force.nodes().push({
+				"id" : generateUUID(),
+				"name" : $scope.nodehelper.name,
+				"size" : size,
+				"catchphrase" : $scope.nodehelper.catchphrase
+			});
+			force.start();
+		} else if (selectionClicked == 'Start') {
+			force.nodes().forEach(function(n) {
+				console.log(n);
+				n.fixed = false;
+			});
+			force.start();
+		} else if (selectionClicked = 'Stop') {
+			// force.stop();
+			// force.tick();
+			force.nodes().forEach(function(n) {
+				console.log(n);
+				n.fixed = true;
+			});
+			force.start();
 		}
 		updateGraph();
-		force.start();
 		$scope.addNodeSuccess = true;
+		selectionClicked = null;
 	}
 
-	$scope.setSelectionClicked = function(b) {
+	$scope.setClick = function(b) {
 		selectionClicked = b;
+	}
+
+	generateUUID = function() {
+		return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		}));
 	}
 })
