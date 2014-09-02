@@ -29,6 +29,12 @@
 	fill-opacity: 0.1;
 	stroke: green;
 }
+.pinnode {
+	/* 	fill: #000; */
+	fill: red;
+	fill-opacity: 0.5;
+	stroke: red;
+}
 
 .cursor {
 	fill: none;
@@ -49,21 +55,33 @@
 }
 </style>
 
-<!--<div>nodehelper : {{nodehelper.name}}</div> -->
-<!-- <div class="row"> -->
-<!-- 	<div class="col-md-12"> -->
-<!-- 		<form ng-submit="submitNode()"> -->
-<!-- 			<input type="submit" id="submit" value="Submit" /> -->
-<!-- 		</form> -->
-<!-- 	</div> -->
-<!-- </div> -->
 <div class="row">
-	<div class="col-md-8">
+	<div class="col-md-12">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h3 class="panel-title">Graph</h3>
 			</div>
 			<div class="panel-body">
+				<div class="container">
+					<form class="form-inline" role="form" ng-submit="submitFormNode()">
+						<div class="form-group">
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('Stop')">stop</button>
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('Start')">start</button>
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('AddLink')">Add link</button>
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('ClearSel')">Clear selection</button>
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('AddNode')">Add node</button>
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('PinSelection')">Pin selection</button>
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('UnPinSelection')">Unpin selection</button>
+						</div>
+					</form>
+				</div>
 				<svg class="graphsvgplus"></svg>
 			</div>
 		</div>
@@ -95,26 +113,13 @@
 							<label for="inputPassword3" class="col-sm-4 control-label">Size</label>
 							<div class="col-sm-8">
 								<input ng-model="nodehelper.size" type="text"
-									class="form-control" id="inputText"
-									placeholder="70">
+									class="form-control" id="inputText" placeholder="70">
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-0 col-sm-5">
-								<button type="submit" class="btn btn-default" ng-click="setClick('AddNode')">Add to
-									graph</button>
-							</div>
-							<div class="col-sm-offset-0 col-sm-5">
-								<button type="submit" class="btn btn-default" ng-click="setClick('AddLink')">Add link</button>
-<!-- 								 <input type="submit"  value="Edit" /> -->
-							</div>
-							<div class="col-sm-offset-0 col-sm-5">
-								<button type="submit" class="btn btn-default" ng-click="setClick('Start')">start</button>
-<!-- 								 <input type="submit"  value="Edit" /> -->
-							</div>
-							<div class="col-sm-offset-0 col-sm-5">
-								<button type="submit" class="btn btn-default" ng-click="setClick('Stop')">stop</button>
-<!-- 								 <input type="submit"  value="Edit" /> -->
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('AddNode')">Add to graph</button>
 							</div>
 						</div>
 					</form>

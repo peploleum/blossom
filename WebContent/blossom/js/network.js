@@ -7,6 +7,7 @@ module.controller('NetworkCtrl', function($scope) {
 	$scope.addNodeSuccess = true;
 	var selectionClicked = null;
 	selection = [];
+	pinnedNodes = [];
 	// a d3js bit here
 
 	var data = [ 4, 8, 15, 16, 23, 42 ];
@@ -59,11 +60,27 @@ module.controller('NetworkCtrl', function($scope) {
 	})
 	$scope.tooltipmessage = "tooltiptext";
 	console.log("width : " + width + " height " + height);
-	var graphplus = d3.select(".graphsvgplus").attr("width", "100%").attr("height", 600);
+	var graphplus = d3.select(".graphsvgplus").attr("width", "100%").attr("height", 500);
 	graphplus.append("rect").attr("width", "100%").attr("height", 600).style("fill", "white");// .style("stroke",
 	// "gray").style("stroke-width",
 	// 0);
-	var force = d3.layout.force().gravity(.05).distance(150).charge(-200).size([ width, 600 ]);
+	var force = d3.layout.force().gravity(.05).distance(150).charge(-200).size([ width, 500 ]);
+
+	// manage key events for the whole body
+
+	d3.select("body").on("keydown", function(d) {
+		console.log("key stroke detected : " + d3.event.keyCode);
+		if (d3.event.keyCode == 27) // the famous ESC key ...
+		{
+			console.log("ESC pressed, purge selection");
+			clearSelection();
+		}
+	});
+
+	clearSelection = function() {
+		d3.selectAll(".graphnodeselect").remove();
+		selection = [];
+	}
 
 	d3.json("data/data.json", function(json) {
 
@@ -106,12 +123,6 @@ module.controller('NetworkCtrl', function($scope) {
 		});
 
 		// no need for a title we aim to provide our own tooltip
-		// .append("title") // Adding the title
-		// // element to the
-		// // rectangles.
-		// .text(function(d) {
-		// return d.catchphrase;
-		// });
 
 		// this is hidden in the html, we use it to pop it on the grid of the
 		// svg when needed
@@ -134,12 +145,13 @@ module.controller('NetworkCtrl', function($scope) {
 		});
 
 		d3.selectAll("image").each(function(d, i) {
-			// console.log(this);
-			paintSelection(this);
+			paintItem(this);
 		});
 
-		function paintSelection(imageItem) {
+		function paintItem(imageItem) {
 			var retrievedCustomFieldAsId = d3.select(imageItem.parentNode).attr("custom");
+
+			// manage selection
 			if (selection.indexOf(retrievedCustomFieldAsId) != -1) {
 				console.log("adding " + retrievedCustomFieldAsId);
 				console.log(selection);
@@ -161,6 +173,24 @@ module.controller('NetworkCtrl', function($scope) {
 				});
 
 			}
+
+			// manage pins
+			if (pinnedNodes.indexOf(retrievedCustomFieldAsId) != -1) {
+				console.log("pinning " + retrievedCustomFieldAsId);
+				console.log(selection);
+				var PIN_SIZE = 10;
+				var selectedImageItem = d3.select(imageItem);
+				var imageWidth = selectedImageItem.attr("width");
+				var imageHeight = selectedImageItem.attr("height");
+				// var pinX = selectedImageItem.attr("x") + (imageWidth / 2) -
+				// (PIN_SIZE / 2);
+				// var pinY = selectedImageItem.attr("y") + (imageHeight / 2) -
+				// (PIN_SIZE / 2);
+				var pinX = selectedImageItem.attr("x");
+				var pinY = selectedImageItem.attr("y");
+				d3.select(imageItem.parentNode).append("rect").attr("class", "pinnode").attr("width", PIN_SIZE).attr("height", PIN_SIZE).attr("x", pinX).attr("y", pinY).attr("custom", retrievedCustomFieldAsId);
+
+			}
 		}
 		d3.selectAll("image").on("click", function(d) {
 			console.log("node clicked");
@@ -168,7 +198,7 @@ module.controller('NetworkCtrl', function($scope) {
 			if (selection.indexOf(retrievedCustomFieldAsId) == -1) {
 				selection.push(retrievedCustomFieldAsId);
 			}
-			paintSelection(this);
+			paintItem(this);
 		});
 
 		node.append("text").attr("dx", function(d) {
@@ -246,7 +276,6 @@ module.controller('NetworkCtrl', function($scope) {
 
 				}
 			}
-			force.start();
 		} else if (selectionClicked == 'AddNode') {
 			console.log("submitnode from form name " + $scope.nodehelper.name);
 			console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
@@ -260,22 +289,37 @@ module.controller('NetworkCtrl', function($scope) {
 				"size" : size,
 				"catchphrase" : $scope.nodehelper.catchphrase
 			});
-			force.start();
 		} else if (selectionClicked == 'Start') {
 			force.nodes().forEach(function(n) {
 				console.log(n);
 				n.fixed = false;
 			});
-			force.start();
-		} else if (selectionClicked = 'Stop') {
-			// force.stop();
-			// force.tick();
+		} else if (selectionClicked == 'Stop') {
 			force.nodes().forEach(function(n) {
 				console.log(n);
 				n.fixed = true;
 			});
-			force.start();
+		} else if (selectionClicked == 'ClearSel') {
+			console.log("clearsel");
+			clearSelection();
+		} else if (selectionClicked == 'PinSelection') {
+			console.log("Pin selection");
+			for (var i = 0; i < selection.length; i++) {
+				var sourceIndex = findNodeIndexByNodeId(selection[i]);
+				console.log("pin " + force.nodes()[sourceIndex]);
+				force.nodes()[sourceIndex].fixed = true;
+				pinnedNodes.push(force.nodes()[sourceIndex].id);
+			}
+		} else if (selectionClicked == 'UnPinSelection') {
+			console.log("UnPin selection");
+			for (var i = 0; i < selection.length; i++) {
+				var sourceIndex = findNodeIndexByNodeId(selection[i]);
+				console.log("pin " + force.nodes()[sourceIndex]);
+				force.nodes()[sourceIndex].fixed = false;
+				pinnedNodes.splice(force.nodes()[sourceIndex].id);
+			}
 		}
+		force.start();
 		updateGraph();
 		$scope.addNodeSuccess = true;
 		selectionClicked = null;
