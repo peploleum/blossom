@@ -5,9 +5,21 @@ module.controller('NetworkCtrl', function($scope) {
 	// init some control scope vars used to pop error display
 	$scope.addNodeError = false;
 	$scope.addNodeSuccess = true;
-	var selectionClicked = null;
-	selection = [];
-	pinnedNodes = [];
+
+	var selectionClicked = null; // id the clicked button in a group
+	selection = []; // selection model : stores ids of selected nodes
+	pinnedNodes = []; // pin model : stores ids of pinned nodes
+
+	// manage key events for the whole body
+	d3.select("body").on("keydown", function(d) {
+		console.log("key stroke detected : " + d3.event.keyCode);
+		if (d3.event.keyCode == 27) // the famous ESC key ...
+		{
+			console.log("ESC pressed, purge selection");
+			clearSelection();
+		}
+	});
+
 	// a d3js bit here
 
 	var data = [ 4, 8, 15, 16, 23, 42 ];
@@ -65,17 +77,6 @@ module.controller('NetworkCtrl', function($scope) {
 	// "gray").style("stroke-width",
 	// 0);
 	var force = d3.layout.force().gravity(.05).distance(150).charge(-200).size([ width, 500 ]);
-
-	// manage key events for the whole body
-
-	d3.select("body").on("keydown", function(d) {
-		console.log("key stroke detected : " + d3.event.keyCode);
-		if (d3.event.keyCode == 27) // the famous ESC key ...
-		{
-			console.log("ESC pressed, purge selection");
-			clearSelection();
-		}
-	});
 
 	clearSelection = function() {
 		d3.selectAll(".graphnodeselect").remove();
@@ -292,7 +293,8 @@ module.controller('NetworkCtrl', function($scope) {
 		} else if (selectionClicked == 'Start') {
 			force.nodes().forEach(function(n) {
 				console.log(n);
-				n.fixed = false;
+				if (pinnedNodes.indexOf(n.id) == -1)
+					n.fixed = false;
 			});
 		} else if (selectionClicked == 'Stop') {
 			force.nodes().forEach(function(n) {
@@ -318,6 +320,9 @@ module.controller('NetworkCtrl', function($scope) {
 				force.nodes()[sourceIndex].fixed = false;
 				pinnedNodes.splice(force.nodes()[sourceIndex].id);
 			}
+		} else if (selectionClicked == 'ComputeStats') {
+			console.log("Compute stats");
+			computeStats();
 		}
 		force.start();
 		updateGraph();
@@ -327,6 +332,70 @@ module.controller('NetworkCtrl', function($scope) {
 
 	$scope.setClick = function(b) {
 		selectionClicked = b;
+	}
+
+	computeStats = function() {
+		// we shall then try to place this logic
+		// server-side
+		// first wo do an ultra slow stat computing : how much of each node name
+		console.log("computing stats");
+		var max = 0;
+		var checkedNames = {};
+		for (var i = 0; i < force.nodes().length; i++) {
+			var name = force.nodes()[i].name;
+			if (name in checkedNames)
+				checkedNames[name] = checkedNames[name] + 1;
+			else
+				checkedNames[name] = 1;
+		}
+		for ( var key in checkedNames) {
+			console.log("pushing " + key + " " + checkedNames[key]);
+			if (max < checkedNames[key]) {
+				max = checkedNames[key];
+			}
+		}
+		var maxAndMap = {};
+		maxAndMap.max = max;
+		maxAndMap.map = checkedNames;
+		console.log("result: " + maxAndMap);
+		buildStatGraph(maxAndMap);
+		return maxAndMap;
+	}
+
+	buildStatGraph = function(map) {
+
+		// var width = 420, barHeight = 20;
+		var barHeight = 20;
+
+		var statwidth = $("svg").parent().width();
+		var statheight = $("svg").height();
+		var a, count = 0;
+		var stats = [];
+		for (a in map.map) {
+			count++;
+			stats.push(map[a]);
+		}
+		console.log("map.max: " + map.max + " statwidth " + statwidth);
+		var test = d3.scale.linear().domain([ 0, 40 ]).range([ 0, statwidth ]);
+
+		// this is OK for new browsers
+		console.log("heightt: " + count + " widthFunction " + test);
+		var statchart = d3.select(".statgraph").attr("width", statwidth).attr("height", barHeight * count);
+
+		var singlebar = statchart.selectAll("g").data(stats).enter().append("g").attr("transform", function(d, i) {
+			console.log("trans " + " " + i);
+			return "translate(0," + i * barHeight + ")";
+		});
+		//
+		singlebar.append("rect").attr("width", function(d) {
+			return Math.floor();
+		}).attr("height", barHeight - 1);
+		//
+		// bar.append("text").attr("x", function(d) {
+		// return widthFunction(d) - 3;
+		// }).attr("y", barHeight / 2).attr("dy", ".35em").text(function(d) {
+		// return d;
+		// });
 	}
 
 	generateUUID = function() {

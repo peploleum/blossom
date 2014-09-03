@@ -12,6 +12,10 @@
 	fill: steelblue;
 }
 
+.statgraph rect {
+	fill: steelblue;
+}
+
 .chartsvg text {
 	fill: white;
 	font: 10px sans-serif;
@@ -19,16 +23,15 @@
 }
 
 .graphnode {
-	/* 	fill: #000; */
 	fill: #FF0000;
 }
 
 .graphnodeselect {
-	/* 	fill: #000; */
 	fill: green;
 	fill-opacity: 0.1;
 	stroke: green;
 }
+
 .pinnode {
 	/* 	fill: #000; */
 	fill: red;
@@ -56,7 +59,7 @@
 </style>
 
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-8">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h3 class="panel-title">Graph</h3>
@@ -65,20 +68,32 @@
 				<div class="container">
 					<form class="form-inline" role="form" ng-submit="submitFormNode()">
 						<div class="form-group">
-							<button type="submit" class="btn btn-default"
-								ng-click="setClick('Stop')">stop</button>
-							<button type="submit" class="btn btn-default"
-								ng-click="setClick('Start')">start</button>
-							<button type="submit" class="btn btn-default"
-								ng-click="setClick('AddLink')">Add link</button>
-							<button type="submit" class="btn btn-default"
-								ng-click="setClick('ClearSel')">Clear selection</button>
-							<button type="submit" class="btn btn-default"
-								ng-click="setClick('AddNode')">Add node</button>
-							<button type="submit" class="btn btn-default"
-								ng-click="setClick('PinSelection')">Pin selection</button>
-							<button type="submit" class="btn btn-default"
-								ng-click="setClick('UnPinSelection')">Unpin selection</button>
+							<div class="btn-group">
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('Stop')">stop</button>
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('Start')">start</button>
+							</div>
+							<div class="btn-group">
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('ClearSel')">Clear selection</button>
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('PinSelection')">Pin selection</button>
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('UnPinSelection')">Unpin selection</button>
+							</div>
+							<div class="btn-group">
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('AddNode')">Add node</button>
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('AddLink')">Add link</button>
+								<div class="btn-group"></div>
+							</div>
+							<div class="btn-group">
+								<button type="submit" class="btn btn-default"
+									ng-click="setClick('ComputeStats')">Stats</button>
+								<div class="btn-group"></div>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -123,6 +138,18 @@
 							</div>
 						</div>
 					</form>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">Stats</h3>
+				</div>
+				<div class="panel-body">
+					<div class="col-md-6">
+						<svg class="statgraph"></svg>
+					</div>
 				</div>
 			</div>
 		</div>
