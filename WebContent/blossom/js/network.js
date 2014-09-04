@@ -1,6 +1,6 @@
 var module = angular.module('blossom.network', [ 'ngRoute' ]);
 
-module.controller('NetworkCtrl', function($scope) {
+module.controller('NetworkCtrl', function($scope, $http) {
 
 	// init some control scope vars used to pop error display
 	$scope.addNodeError = false;
@@ -291,6 +291,7 @@ module.controller('NetworkCtrl', function($scope) {
 				"catchphrase" : $scope.nodehelper.catchphrase
 			});
 			computeStats();
+
 		} else if (selectionClicked == 'Start') {
 			force.nodes().forEach(function(n) {
 				console.log(n);
@@ -323,7 +324,8 @@ module.controller('NetworkCtrl', function($scope) {
 			}
 		} else if (selectionClicked == 'ComputeStats') {
 			console.log("Compute stats");
-			computeStats();
+			// computeStats();
+			computeStatsOnServer();
 		}
 		force.start();
 		updateGraph();
@@ -361,6 +363,28 @@ module.controller('NetworkCtrl', function($scope) {
 		console.log("result: " + maxAndMap);
 		buildStatGraph(maxAndMap);
 		return maxAndMap;
+	}
+	computeStatsOnServer = function() {
+		// we shall then try to place this logic
+		// server-side
+		// first wo do an ultra slow stat computing : how much of each node name
+		console.log("computing stats on server");
+		$http({
+			method : 'POST',
+			url : './../BlossomStatComputing',
+			data : force.nodes()
+		}).success(function(data, status, header, config) {
+			console.log('Success');
+			console.log("data - " + data);
+			console.log("status - " + status);
+			console.log("header - " + header);
+			console.log("config - " + config);
+		}).error(function(data, status, header, config) {
+			console.log('Error');
+		});
+		// console.log("result: " + maxAndMap);
+		// buildStatGraph(maxAndMap);
+		// return maxAndMap;
 	}
 
 	buildStatGraph = function(map) {
