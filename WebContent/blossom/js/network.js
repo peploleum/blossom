@@ -382,6 +382,8 @@ module.controller('NetworkCtrl', function($scope, $http) {
 		}).error(function(data, status, header, config) {
 			console.log('Error');
 		});
+		
+		
 		// console.log("result: " + maxAndMap);
 		// buildStatGraph(maxAndMap);
 		// return maxAndMap;

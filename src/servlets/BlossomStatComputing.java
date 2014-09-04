@@ -3,6 +3,9 @@ package servlets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,11 +20,17 @@ import javax.servlet.http.HttpServletResponse;
 public class BlossomStatComputing extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private static final Logger logger = Logger
+			.getLogger("blossom.server.servlet");
+	private static String dataSet = "";
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public BlossomStatComputing() {
 		super();
+		logger.setLevel(Level.FINEST);
+		logger.addHandler(new ConsoleHandler());
 		System.out.println("creating StatComputingServlet");
 	}
 
@@ -34,21 +43,7 @@ public class BlossomStatComputing extends HttpServlet {
 			final HttpServletResponse response) throws ServletException,
 			IOException {
 		System.out.println("DOGET");
-		BufferedReader inputStream = request.getReader();
-		StringBuilder sb = new StringBuilder();
-		char[] buffer = new char[128];
-		int bytesRead = -1;
-		while ((bytesRead = inputStream.read(buffer)) > 0) {
-			sb.append(buffer, 0, bytesRead);
-		}
-		System.out.println(sb.toString());
 
-		final String jsonObject = "{\"requestlrequesteela\":1,\"nibbler\":2}";
-		// we flush a simple example down the drain, like a turd
-		response.setContentType("application/json");
-		final PrintWriter out = response.getWriter();
-		out.print(jsonObject);
-		out.flush();
 	}
 
 	/**
@@ -60,14 +55,26 @@ public class BlossomStatComputing extends HttpServlet {
 			final HttpServletResponse response) throws ServletException,
 			IOException {
 		System.out.println("DOPOST");
-		BufferedReader inputStream = request.getReader();
-		StringBuilder sb = new StringBuilder();
-		char[] buffer = new char[128];
+		final BufferedReader inputStream = request.getReader();
+		final StringBuilder sb = new StringBuilder();
+		final char[] buffer = new char[128];
 		int bytesRead = -1;
 		while ((bytesRead = inputStream.read(buffer)) > 0) {
 			sb.append(buffer, 0, bytesRead);
 		}
-		System.out.println(sb.toString());
+		final String string = sb.toString();
+		final String msg = "received " + string;
+		logger.fine(msg);
+		System.out.println(msg);
+
+		dataSet = string;
+		final String jsonObject = (dataSet == null || dataSet.isEmpty()) ? "{}"
+				: dataSet;
+		// we flush a simple example down the drain, like a turd
+		response.setContentType("application/json");
+		final PrintWriter out = response.getWriter();
+		out.print(jsonObject);
+		out.flush();
 	}
 
 }
