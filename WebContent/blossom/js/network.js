@@ -22,7 +22,7 @@ module.controller('NetworkCtrl', function($scope) {
 
 	// a d3js bit here
 
-	var data = [ 4, 8, 15, 16, 23, 42 ];
+	// var data = [ 4, 8, 15, 16, 23, 42 ];
 
 	// var width = 420, barHeight = 20;
 	var barHeight = 20;
@@ -30,21 +30,25 @@ module.controller('NetworkCtrl', function($scope) {
 	var width = $("svg").parent().width();
 	var height = $("svg").height();
 
-	var xsvg = d3.scale.linear().domain([ 0, d3.max(data) ]).range([ 0, width ]);
-
-	var chart = d3.select(".chartsvg").attr("width", width).attr("height", barHeight * data.length);
-
-	var bar = chart.selectAll("g").data(data).enter().append("g").attr("transform", function(d, i) {
-		return "translate(0," + i * barHeight + ")";
-	});
-
-	bar.append("rect").attr("width", xsvg).attr("height", barHeight - 1);
-
-	bar.append("text").attr("x", function(d) {
-		return xsvg(d) - 3;
-	}).attr("y", barHeight / 2).attr("dy", ".35em").text(function(d) {
-		return d;
-	});
+	// var xsvg = d3.scale.linear().domain([ 0, d3.max(data) ]).range([ 0, width
+	// ]);
+	//
+	// var chart = d3.select(".chartsvg").attr("width", width).attr("height",
+	// barHeight * data.length);
+	//
+	// var bar =
+	// chart.selectAll("g").data(data).enter().append("g").attr("transform",
+	// function(d, i) {
+	// return "translate(0," + i * barHeight + ")";
+	// });
+	//
+	// bar.append("rect").attr("width", xsvg).attr("height", barHeight - 1);
+	//
+	// bar.append("text").attr("x", function(d) {
+	// return xsvg(d) - 3;
+	// }).attr("y", barHeight / 2).attr("dy", ".35em").text(function(d) {
+	// return d;
+	// });
 
 	var graph = d3.select(".graphsvg").attr("width", width).attr("height", width);
 
@@ -183,10 +187,6 @@ module.controller('NetworkCtrl', function($scope) {
 				var selectedImageItem = d3.select(imageItem);
 				var imageWidth = selectedImageItem.attr("width");
 				var imageHeight = selectedImageItem.attr("height");
-				// var pinX = selectedImageItem.attr("x") + (imageWidth / 2) -
-				// (PIN_SIZE / 2);
-				// var pinY = selectedImageItem.attr("y") + (imageHeight / 2) -
-				// (PIN_SIZE / 2);
 				var pinX = selectedImageItem.attr("x");
 				var pinY = selectedImageItem.attr("y");
 				d3.select(imageItem.parentNode).append("rect").attr("class", "pinnode").attr("width", PIN_SIZE).attr("height", PIN_SIZE).attr("x", pinX).attr("y", pinY).attr("custom", retrievedCustomFieldAsId);
@@ -290,6 +290,7 @@ module.controller('NetworkCtrl', function($scope) {
 				"size" : size,
 				"catchphrase" : $scope.nodehelper.catchphrase
 			});
+			computeStats();
 		} else if (selectionClicked == 'Start') {
 			force.nodes().forEach(function(n) {
 				console.log(n);
@@ -367,35 +368,33 @@ module.controller('NetworkCtrl', function($scope) {
 		// var width = 420, barHeight = 20;
 		var barHeight = 20;
 
-		var statwidth = $("svg").parent().width();
-		var statheight = $("svg").height();
-		var a, count = 0;
+		var count = 0;
 		var stats = [];
 		for (a in map.map) {
 			count++;
-			stats.push(map[a]);
+			stats.push(map.map[a]);
 		}
-		console.log("map.max: " + map.max + " statwidth " + statwidth);
-		var test = d3.scale.linear().domain([ 0, 40 ]).range([ 0, statwidth ]);
+		console.log("heightt: " + count + " widthFunction " + linearScale);
+		d3.selectAll("#chartbar").remove();
+		var statchart = d3.select(".statgraph");
 
-		// this is OK for new browsers
-		console.log("heightt: " + count + " widthFunction " + test);
-		var statchart = d3.select(".statgraph").attr("width", statwidth).attr("height", barHeight * count);
+		console.log("map.max: " + map.max + " statwidth " + statchart[0][0].clientWidth);
+		statchart.attr("width", statchart[0][0].clientWidth).attr("height", barHeight * count);
+		var linearScale = d3.scale.linear().domain([ 0, d3.max(stats) ]).range([ 0, statchart[0][0].clientWidth ]);
 
 		var singlebar = statchart.selectAll("g").data(stats).enter().append("g").attr("transform", function(d, i) {
 			console.log("trans " + " " + i);
 			return "translate(0," + i * barHeight + ")";
-		});
-		//
-		singlebar.append("rect").attr("width", function(d) {
-			return Math.floor();
-		}).attr("height", barHeight - 1);
-		//
-		// bar.append("text").attr("x", function(d) {
-		// return widthFunction(d) - 3;
-		// }).attr("y", barHeight / 2).attr("dy", ".35em").text(function(d) {
-		// return d;
-		// });
+		}).attr("id", "chartbar");
+
+		var rectangles = singlebar.append("rect").attr("width", 0).attr("height", barHeight - 1).attr("id", "chartbar");
+		rectangles.transition().attr("width", linearScale).attr("height", barHeight - 1).attr("id", "chartbar");
+
+		singlebar.append("text").attr("x", function(d) {
+			return linearScale(d) - 20;
+		}).attr("y", barHeight / 2).attr("dy", ".35em").text(function(d) {
+			return d;
+		}).attr("id", "chartbar");
 	}
 
 	generateUUID = function() {
