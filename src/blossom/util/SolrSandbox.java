@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.DatatypeConverter;
 
-import blossm.exception.TopLevelBlossomException;
+import blossom.exception.TopLevelBlossomException;
 
 /**
  * 
