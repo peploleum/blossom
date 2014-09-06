@@ -364,11 +364,13 @@ module.controller('NetworkCtrl', function($scope, $http) {
 		buildStatGraph(maxAndMap);
 		return maxAndMap;
 	}
+
 	computeStatsOnServer = function() {
 		// we shall then try to place this logic
 		// server-side
 		// first wo do an ultra slow stat computing : how much of each node name
 		console.log("computing stats on server");
+		var maxAndMap = {};
 		$http({
 			method : 'POST',
 			url : './../BlossomStatComputing',
@@ -376,16 +378,16 @@ module.controller('NetworkCtrl', function($scope, $http) {
 		}).success(function(data, status, header, config) {
 			console.log('Success');
 			console.log("data - " + data);
+			maxAndMap = data;
 			console.log("status - " + status);
 			console.log("header - " + header);
 			console.log("config - " + config);
+			buildStatGraph(maxAndMap);
 		}).error(function(data, status, header, config) {
 			console.log('Error');
 		});
-		
-		
+
 		// console.log("result: " + maxAndMap);
-		// buildStatGraph(maxAndMap);
 		// return maxAndMap;
 	}
 
