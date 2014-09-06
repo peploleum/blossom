@@ -25,6 +25,18 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<path>/${project.build.finalName}</path>
+					<update>true</update>
+					<url>http://localhost:8081/manager/text</url>
+					<username>tomcat</username>
+					<password>m@ven</password>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -32,12 +44,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-  	</dependency>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
-  	</dependency>
+		</dependency>
 		<dependency>
 			<groupId>javax.json</groupId>
 			<artifactId>javax.json-api</artifactId>
@@ -47,6 +59,21 @@
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.json</artifactId>
 			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.18.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-servlet</artifactId>
+			<version>1.18.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>1.18.1</version>
 		</dependency>
 	</dependencies>
 </project>

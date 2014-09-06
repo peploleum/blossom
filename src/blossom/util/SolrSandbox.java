@@ -1,4 +1,4 @@
-package util;
+package blossom.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.DatatypeConverter;
 
-import exception.TopLevelBlossomException;
+import blossm.exception.TopLevelBlossomException;
 
 /**
  * 

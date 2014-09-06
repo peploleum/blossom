@@ -1,6 +1,15 @@
-var module = angular.module('blossom.network', [ 'ngRoute' ]);
+var module = angular.module('blossom.network', [ 'ngRoute', 'ngResource' ]);
 
-module.controller('NetworkCtrl', function($scope, $http) {
+module.factory('StatFactory', function($resource) {
+	return $resource('./rest/graphstat', {}, {
+		query : {
+			method : 'GET',
+			params : {},
+			isArray : false
+		}
+	})
+});
+module.controller('NetworkCtrl', function($scope, $http, StatFactory) {
 
 	// init some control scope vars used to pop error display
 	$scope.addNodeError = false;
@@ -253,6 +262,8 @@ module.controller('NetworkCtrl', function($scope, $http) {
 		return matchingNodeIndex;
 	}
 
+	// sureley there is a pro way of doing this, we use a var to store the
+	// button we click on
 	$scope.submitFormNode = function() {
 
 		if (selectionClicked == 'AddLink') {
@@ -290,7 +301,7 @@ module.controller('NetworkCtrl', function($scope, $http) {
 				"size" : size,
 				"catchphrase" : $scope.nodehelper.catchphrase
 			});
-			computeStats();
+			computeStatsOnServer();
 
 		} else if (selectionClicked == 'Start') {
 			force.nodes().forEach(function(n) {
@@ -325,7 +336,9 @@ module.controller('NetworkCtrl', function($scope, $http) {
 		} else if (selectionClicked == 'ComputeStats') {
 			console.log("Compute stats");
 			// computeStats();
-			computeStatsOnServer();
+			// computeStatsOnServer();
+			computeStatsRest();
+
 		}
 		force.start();
 		updateGraph();
@@ -337,10 +350,17 @@ module.controller('NetworkCtrl', function($scope, $http) {
 		selectionClicked = b;
 	}
 
+	computeStatsRest = function() {
+		StatFactory.get({}, function(statFactory) {
+			console.log(statFactory.max);
+			buildStatGraph(statFactory);
+		})
+	}
+
 	computeStats = function() {
-		// we shall then try to place this logic
+		// we since placed this logic
 		// server-side
-		// first wo do an ultra slow stat computing : how much of each node name
+		// this is the full client version
 		console.log("computing stats");
 		var max = 0;
 		var checkedNames = {};
@@ -386,21 +406,20 @@ module.controller('NetworkCtrl', function($scope, $http) {
 		}).error(function(data, status, header, config) {
 			console.log('Error');
 		});
-
-		// console.log("result: " + maxAndMap);
-		// return maxAndMap;
 	}
 
 	buildStatGraph = function(map) {
 
-		// var width = 420, barHeight = 20;
 		var barHeight = 20;
 
 		var count = 0;
 		var stats = [];
 		for (a in map.map) {
 			count++;
-			stats.push(map.map[a]);
+			// console.log("a " + a + " " + map.map[a]);
+			// stats.push(map.map[a]);
+			console.log("a " + a + " " + map.map[a].stat);
+			stats.push(map.map[a].stat);
 		}
 		console.log("heightt: " + count + " widthFunction " + linearScale);
 		d3.selectAll("#chartbar").remove();
@@ -415,6 +434,7 @@ module.controller('NetworkCtrl', function($scope, $http) {
 			return "translate(0," + i * barHeight + ")";
 		}).attr("id", "chartbar");
 
+		// animating the rectangles
 		var rectangles = singlebar.append("rect").attr("width", 0).attr("height", barHeight - 1).attr("id", "chartbar");
 		rectangles.transition().attr("width", linearScale).attr("height", barHeight - 1).attr("id", "chartbar");
 

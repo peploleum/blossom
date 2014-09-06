@@ -1,4 +1,4 @@
-package servlets;
+package blossom.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
@@ -38,7 +39,6 @@ public class BlossomStatComputing extends HttpServlet {
 		super();
 		logger.setLevel(Level.FINEST);
 		logger.addHandler(new ConsoleHandler());
-		System.out.println("creating StatComputingServlet");
 	}
 
 	/**
@@ -57,18 +57,15 @@ public class BlossomStatComputing extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("DOPOST");
 		final JsonReader jsonReader = Json.createReader(request.getReader());
 		int max = 0;
 		try {
 			final JsonArray jsonArray = jsonReader.readArray();
 			final Map<String, Integer> statMap = new HashMap<String, Integer>();
 			for (final JsonValue jsonValue : jsonArray) {
-				System.out.println(jsonValue.toString());
 				if (jsonValue.getValueType().equals(ValueType.OBJECT)) {
 					final JsonObject object = (JsonObject) jsonValue;
 					final JsonValue nameValue = object.get("name");
-					System.out.println(nameValue);
 					if (nameValue == null)
 						continue;
 					final Integer computedSum = statMap.get(nameValue.toString());
@@ -79,13 +76,15 @@ public class BlossomStatComputing extends HttpServlet {
 			}
 
 			final JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
-			final JsonObjectBuilder responseMapBuilder = Json.createObjectBuilder();
-
+			final JsonObjectBuilder responseArrayItem = Json.createObjectBuilder();
+			final JsonArrayBuilder responseArray = Json.createArrayBuilder();
 			for (final String name : statMap.keySet()) {
-				responseMapBuilder.add(name, statMap.get(name));
+				responseArrayItem.add("name", name);
+				responseArrayItem.add("stat", statMap.get(name));
+				responseArray.add(responseArrayItem);
 			}
 			responseBuilder.add("max", max);
-			responseBuilder.add("map", responseMapBuilder);
+			responseBuilder.add("map", responseArray);
 			final JsonObject responseJsonObject = responseBuilder.build();
 
 			final PrintWriter out = response.getWriter();

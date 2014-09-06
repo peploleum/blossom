@@ -1,4 +1,4 @@
-package exception;
+package blossm.exception;
 
 public class TopLevelBlossomException extends Exception {
 
