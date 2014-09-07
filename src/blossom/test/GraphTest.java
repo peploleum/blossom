@@ -6,6 +6,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+
 import blossom.restful.graph.Graph;
 import blossom.restful.graph.GraphItem;
 import blossom.restful.graph.LinkItem;
@@ -49,11 +51,9 @@ public class GraphTest {
 		try {
 			jc = JAXBContext.newInstance(Graph.class);
 			Marshaller marshaller = jc.createMarshaller();
-			// marshaller.setProperty(MarshallerProperties.MEDIA_TYPE,
-			// "application/json");
-			// marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			// marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT,
-			// false);
+			marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
 			marshaller.marshal(g, System.out);
 		} catch (JAXBException e) {
 			e.printStackTrace();

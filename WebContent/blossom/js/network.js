@@ -335,9 +335,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory) {
 			}
 		} else if (selectionClicked == 'ComputeStats') {
 			console.log("Compute stats");
-			// computeStats();
-			// computeStatsOnServer();
-			computeStatsRest();
+			computeStatsOnServer();
 
 		}
 		force.start();
@@ -351,6 +349,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory) {
 	}
 
 	computeStatsRest = function() {
+		//this is the RESTful version of the server-side stat computing 
 		StatFactory.get({}, function(statFactory) {
 			console.log(statFactory.max);
 			buildStatGraph(statFactory);
@@ -386,9 +385,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory) {
 	}
 
 	computeStatsOnServer = function() {
-		// we shall then try to place this logic
-		// server-side
-		// first wo do an ultra slow stat computing : how much of each node name
+		// this is now server-side logic with a Servlet
 		console.log("computing stats on server");
 		var maxAndMap = {};
 		$http({
