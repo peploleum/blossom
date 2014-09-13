@@ -9,7 +9,18 @@ module.factory('StatFactory', function($resource) {
 		}
 	})
 });
-module.controller('NetworkCtrl', function($scope, $http, StatFactory) {
+
+module.factory('GraphFactory', function($resource) {
+	return $resource('./rest/graph', {}, {
+		query : {
+			method : 'GET',
+			params : {},
+			isArray : false
+		}
+	})
+});
+
+module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory) {
 
 	// init some control scope vars used to pop error display
 	$scope.addNodeError = false;
@@ -30,34 +41,10 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory) {
 	});
 
 	// a d3js bit here
-
-	// var data = [ 4, 8, 15, 16, 23, 42 ];
-
-	// var width = 420, barHeight = 20;
 	var barHeight = 20;
 
 	var width = $("svg").parent().width();
 	var height = $("svg").height();
-
-	// var xsvg = d3.scale.linear().domain([ 0, d3.max(data) ]).range([ 0, width
-	// ]);
-	//
-	// var chart = d3.select(".chartsvg").attr("width", width).attr("height",
-	// barHeight * data.length);
-	//
-	// var bar =
-	// chart.selectAll("g").data(data).enter().append("g").attr("transform",
-	// function(d, i) {
-	// return "translate(0," + i * barHeight + ")";
-	// });
-	//
-	// bar.append("rect").attr("width", xsvg).attr("height", barHeight - 1);
-	//
-	// bar.append("text").attr("x", function(d) {
-	// return xsvg(d) - 3;
-	// }).attr("y", barHeight / 2).attr("dy", ".35em").text(function(d) {
-	// return d;
-	// });
 
 	var graph = d3.select(".graphsvg").attr("width", width).attr("height", width);
 
@@ -96,18 +83,34 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory) {
 		selection = [];
 	}
 
-	d3.json("data/data.json", function(json) {
+	computeGraphRest = function() {
+		// this is the RESTful version of the graph initialization, we aim to
+		// have a server-side model
+		GraphFactory.get({}, function(graphFactory) {
+			console.log(graphFactory);
+			// just another way of pushing nodes
+			graphFactory.nodes.forEach(function(n) {
+				force.nodes().push(n)
+			});
+			force.links(graphFactory.links);
+			force.start();
 
-		// just another way of pushing nodes
-		json.nodes.forEach(function(n) {
-			force.nodes().push(n)
-		});
-		force.links(json.links);
-		force.start();
-
-		updateGraph();
-
-	});
+			updateGraph();
+		})
+	}
+	computeGraphRest();
+	// d3.json("data/data.json", function(json) {
+	//
+	// // just another way of pushing nodes
+	// json.nodes.forEach(function(n) {
+	// force.nodes().push(n)
+	// });
+	// force.links(json.links);
+	// force.start();
+	//
+	// updateGraph();
+	//
+	// });
 
 	updateGraph = function() {
 		// this is an update: removing existing links & nodes before adding them
@@ -349,7 +352,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory) {
 	}
 
 	computeStatsRest = function() {
-		//this is the RESTful version of the server-side stat computing 
+		// this is the RESTful version of the server-side stat computing
 		StatFactory.get({}, function(statFactory) {
 			console.log(statFactory.max);
 			buildStatGraph(statFactory);

@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    {"id":"15766ad3-db4a-469f-95ca-7f61b49c7443","name":"zoidberg", "size":70, "catchphrase":"WooWoooWoowWooWoooWoo!"},
+    {"id":"15766ad3-db4a-469f-95ca-7f61b49c7444","name":"fry", "size":40, "catchphrase":"I'm walking on sunshine!"},
+    {"id":"15766ad3-db4a-469f-95ca-7f61b49c7445","name":"amy", "size":50, "catchphrase":"I'm wearing a bellyparka!"},
+    {"id":"15766ad3-db4a-469f-95ca-7f61b49c7446","name":"farnsworth", "size":40, "catchphrase":"Good news everyone!"},
+    {"id":"15766ad3-db4a-469f-95ca-7f61b49c7447","name":"hermes", "size":30, "catchphrase":"Like a green snake on a sugarcane!"},
+    {"id":"15766ad3-db4a-469f-95ca-7f61b49c7448","name":"scruffy", "size":50, "catchphrase":"I'm Scruffy, the janitor!"},
+    {"id":"15766ad3-db4a-469f-95ca-7f61b49c7449","name":"bender", "size":90, "catchphrase":"Bite my shiny metal ass!"}
+  ],
+ "links":[
+  	{"source":1,"target":0},
+  	{"source":1,"target":3},
+  	{"source":3,"target":4},
+  	{"source":2,"target":5},
+  	{"source":5,"target":2},
+  	{"source":2,"target":0},
+  	{"source":1,"target":5},
+  	{"source":0,"target":6}
+  	]
+}

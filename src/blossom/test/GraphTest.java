@@ -5,28 +5,36 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import blossom.restful.graph.Graph;
-import blossom.restful.graph.GraphItem;
 import blossom.restful.graph.LinkItem;
+import blossom.restful.graph.NodeItem;
 
 public class GraphTest {
 	public static void main(final String[] args) {
-		final GraphItem gi1 = new GraphItem();
+		writeGraph();
+		readGraph();
+		// JSONConfiguration.mapped().
+	}
+
+	private static void writeGraph() {
+		final NodeItem gi1 = new NodeItem();
 		gi1.setId("15766ad3-db4a-469f-95ca-7f61b49c7443");
 		gi1.setName("zoidberg");
 		gi1.setSize(70);
 		gi1.setCatchphrase("Woowoowooowoo!");
 
-		final GraphItem gi2 = new GraphItem();
+		final NodeItem gi2 = new NodeItem();
 		gi2.setId("15766ad3-db4a-469f-95ca-7f61b49c7444");
 		gi2.setName("fry");
 		gi2.setSize(40);
 		gi2.setCatchphrase("I'm walking on sunshine!");
 
-		final GraphItem gi3 = new GraphItem();
+		final NodeItem gi3 = new NodeItem();
 		gi3.setId("15766ad3-db4a-469f-95ca-7f61b49c7445");
 		gi3.setName("amy");
 		gi3.setSize(50);
@@ -42,22 +50,38 @@ public class GraphTest {
 		li3.setSource(2);
 		li3.setTarget(0);
 
-		Graph g = new Graph();
+		final Graph g = new Graph();
 
-		g.setNodes(Arrays.asList(new GraphItem[] { gi1, gi2, gi3 }));
+		g.setNodes(Arrays.asList(new NodeItem[] { gi1, gi2, gi3 }));
 		g.setLinks(Arrays.asList(new LinkItem[] { li1, li2, li3 }));
 
 		JAXBContext jc;
 		try {
 			jc = JAXBContext.newInstance(Graph.class);
-			Marshaller marshaller = jc.createMarshaller();
+			final Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
 			marshaller.marshal(g, System.out);
-		} catch (JAXBException e) {
+		} catch (final JAXBException e) {
 			e.printStackTrace();
 		}
-		// JSONConfiguration.mapped().
+	}
+
+	private static void readGraph() {
+
+		JAXBContext jc;
+		try {
+			jc = JAXBContext.newInstance(Graph.class);
+			final Unmarshaller unmarshaller = jc.createUnmarshaller();
+			unmarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+			unmarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
+			// this is so intuitive ... or not
+			final Graph g = unmarshaller.unmarshal(new StreamSource(GraphTest.class.getResourceAsStream("data.json")), Graph.class).getValue();
+			// anyway it works...
+			g.getNodes();
+		} catch (final JAXBException e) {
+			e.printStackTrace();
+		}
 	}
 }

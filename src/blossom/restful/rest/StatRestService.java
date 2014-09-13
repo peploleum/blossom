@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.restful.graph.Graph;
-import blossom.restful.graph.GraphItem;
+import blossom.restful.graph.NodeItem;
 import blossom.restful.graph.LinkItem;
 
 @Path("/graphstat")
@@ -19,19 +19,19 @@ public class StatRestService {
 		// to be able to return a marshalled json object based on a Jaxb bean it
 		// seems we need to deploy jeavy artillery with glassfish servlet + moxy
 		// ...
-		final GraphItem gi1 = new GraphItem();
+		final NodeItem gi1 = new NodeItem();
 		gi1.setId("15766ad3-db4a-469f-95ca-7f61b49c7443");
 		gi1.setName("zoidberg");
 		gi1.setSize(70);
 		gi1.setCatchphrase("Woowoowooowoo!");
 
-		final GraphItem gi2 = new GraphItem();
+		final NodeItem gi2 = new NodeItem();
 		gi2.setId("15766ad3-db4a-469f-95ca-7f61b49c7444");
 		gi2.setName("fry");
 		gi2.setSize(40);
 		gi2.setCatchphrase("I'm walking on sunshine!");
 
-		final GraphItem gi3 = new GraphItem();
+		final NodeItem gi3 = new NodeItem();
 		gi3.setId("15766ad3-db4a-469f-95ca-7f61b49c7445");
 		gi3.setName("amy");
 		gi3.setSize(50);
@@ -48,7 +48,7 @@ public class StatRestService {
 		li3.setTarget(0);
 
 		final Graph g = new Graph();
-		g.setNodes(Arrays.asList(new GraphItem[] { gi1, gi2, gi3 }));
+		g.setNodes(Arrays.asList(new NodeItem[] { gi1, gi2, gi3 }));
 		g.setLinks(Arrays.asList(new LinkItem[] { li1, li2, li3 }));
 		return g;
 	}

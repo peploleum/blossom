@@ -3,7 +3,7 @@ package blossom.restful.graph;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class GraphItem {
+public class NodeItem {
 	private String id;
 	private String name;
 	private int size;
