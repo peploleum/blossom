@@ -10,7 +10,7 @@
 </head>
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container">
+		<div class="container-full">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse"
 					data-target=".navbar-collapse">
@@ -25,6 +25,7 @@
 					<li class="active"><a href="#">Home</a></li>
 					<li><a href="#search">Search</a></li>
 					<li><a href="#network">Network</a></li>
+					<li><a href="#map">Map</a></li>
 					<li><a href="#about">About</a></li>
 					<li><a href="#contact">Contact</a></li>
 				</ul>
@@ -33,7 +34,7 @@
 		</div>
 	</div>
 
-	<div class="container">
+	<div class="container-full">
 		<div ng-view class="view-animate"></div>
 
 
@@ -46,10 +47,12 @@
 	<script src="../vendor/angular-resource.js"></script>
 	<script src="../vendor/jquery.min.js"></script>
 	<script src="../vendor/d3.js"></script>
+	<script src="../vendor/ol.js"></script>
 	<script src="js/blossom.js"></script>
 	<script src="js/search.js"></script>
 	<script src="js/network.js"></script>
 	<script src="js/home.js"></script>
+	<script src="js/map.js"></script>
 	<script src="js/misc.js"></script>
 </body>
 </html>
