@@ -1,4 +1,4 @@
-var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.misc' ]);
+var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.map', 'blossom.misc' ]);
 
 blossomModule.config(function($routeProvider) {
 	$routeProvider.when('/about', {

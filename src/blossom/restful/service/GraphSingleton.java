@@ -21,10 +21,12 @@ public class GraphSingleton {
 
     private static final Logger LOGGER = Logger.getLogger(GraphSingleton.class.getName());
 
-    private final Graph graph;
+    private Graph graph;
 
     private GraphSingleton() {
         graph = initGraph();
+        if (graph == null)
+            graph = new Graph();
     }
 
     public static GraphSingleton getInstance() {

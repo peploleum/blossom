@@ -88,9 +88,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		GraphFactory.get({}, function(graphFactory) {
 			console.log(graphFactory);
 			// just another way of pushing nodes
-			graphFactory.nodes.forEach(function(n) {
-				force.nodes().push(n)
-			});
+			force.nodes(graphFactory.nodes)
 			links = force.links();
 			links = [];
 			force.links(graphFactory.links);
