@@ -4,41 +4,41 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class NodeItem {
-	private String id;
-	private String name;
-	private int size;
-	private String catchphrase;
+    private String id;
+    private String name;
+    private int size;
+    private String catchphrase;
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(final String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public int getSize() {
-		return size;
-	}
+    public int getSize() {
+        return size;
+    }
 
-	public void setSize(int size) {
-		this.size = size;
-	}
+    public void setSize(final int size) {
+        this.size = size;
+    }
 
-	public String getCatchphrase() {
-		return catchphrase;
-	}
+    public String getCatchphrase() {
+        return catchphrase;
+    }
 
-	public void setCatchphrase(String catchphrase) {
-		this.catchphrase = catchphrase;
-	}
+    public void setCatchphrase(final String catchphrase) {
+        this.catchphrase = catchphrase;
+    }
 
 }

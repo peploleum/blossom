@@ -1,5 +1,8 @@
 package blossom.restful.service;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -14,46 +17,49 @@ import blossom.test.GraphTest;
 
 public class GraphSingleton {
 
-	private static GraphSingleton INSTANCE = null;
+    private static GraphSingleton INSTANCE = null;
 
-	private final Graph graph;
+    private static final Logger LOGGER = Logger.getLogger(GraphSingleton.class.getName());
 
-	private GraphSingleton() {
-		graph = initGraph();
-	}
+    private final Graph graph;
 
-	public static GraphSingleton getInstance() {
-		if (INSTANCE == null)
-			INSTANCE = new GraphSingleton();
-		return INSTANCE;
-	}
+    private GraphSingleton() {
+        graph = initGraph();
+    }
 
-	public Graph getGraph() {
-		return graph;
-	}
+    public static GraphSingleton getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new GraphSingleton();
+        }
+        return INSTANCE;
+    }
 
-	public void addNode(final NodeItem node) {
-		getGraph().getNodes().add(node);
-	}
+    public Graph getGraph() {
+        return graph;
+    }
 
-	public void addLink(final LinkItem link) {
-		getGraph().getLinks().add(link);
-	}
+    public void addNode(final NodeItem node) {
+        getGraph().getNodes().add(node);
+    }
 
-	private Graph initGraph() {
-		JAXBContext jc;
-		Graph g = null;
-		try {
-			jc = JAXBContext.newInstance(Graph.class);
-			final Unmarshaller unmarshaller = jc.createUnmarshaller();
-			unmarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-			unmarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-			// this is so intuitive ... or not
-			g = unmarshaller.unmarshal(new StreamSource(GraphTest.class.getResourceAsStream("data.json")), Graph.class).getValue();
-			// anyway it works...
-		} catch (final JAXBException e) {
-			e.printStackTrace();
-		}
-		return g;
-	}
+    public void addLink(final LinkItem link) {
+        getGraph().getLinks().add(link);
+    }
+
+    private Graph initGraph() {
+        JAXBContext jc;
+        Graph g = null;
+        try {
+            jc = JAXBContext.newInstance(Graph.class);
+            final Unmarshaller unmarshaller = jc.createUnmarshaller();
+            unmarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+            unmarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
+            // this is so intuitive ... or not
+            g = unmarshaller.unmarshal(new StreamSource(GraphTest.class.getResourceAsStream("data.json")), Graph.class).getValue();
+            // anyway it works...
+        } catch (final JAXBException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return g;
+    }
 }

@@ -10,14 +10,14 @@ import blossom.restful.service.GraphSingleton;
 
 @Path("/graph")
 public class GraphRestService {
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Graph getGraph() {
-		// to be able to return a marshalled json object based on a Jaxb bean it
-		// seems we need to deploy jeavy artillery with glassfish servlet + moxy
-		// ...
-		final GraphSingleton gs = GraphSingleton.getInstance();
-		return gs.getGraph();
-	}
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Graph getGraph() {
+        // to be able to return a marshalled json object based on a Jaxb bean it
+        // seems we need to deploy jeavy artillery with glassfish servlet + moxy
+        // ...
+        final GraphSingleton gs = GraphSingleton.getInstance();
+        return gs.getGraph();
+    }
 
 }
