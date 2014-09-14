@@ -1,7 +1,7 @@
 var module = angular.module('blossom.network', [ 'ngRoute', 'ngResource' ]);
 
 module.factory('StatFactory', function($resource) {
-	return $resource('./rest/graphstat', {}, {
+	return $resource('./rest/graph/stat', {}, {
 		query : {
 			method : 'GET',
 			params : {},
@@ -32,7 +32,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 
 	// manage key events for the whole body
 	d3.select("body").on("keydown", function(d) {
-		console.log("key stroke detected : " + d3.event.keyCode);
 		if (d3.event.keyCode == 27) // the famous ESC key ...
 		{
 			console.log("ESC pressed, purge selection");
@@ -92,6 +91,8 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			graphFactory.nodes.forEach(function(n) {
 				force.nodes().push(n)
 			});
+			links = force.links();
+			links = [];
 			force.links(graphFactory.links);
 			force.start();
 
@@ -265,84 +266,196 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		return matchingNodeIndex;
 	}
 
+	// adding a link - client-side
+	addLink = function() {
+		console.log("selection clicked");
+		for (var i = 0; i < selection.length; i++) {
+			var sourceIndex = findNodeIndexByNodeId(selection[i]);
+			console.log("source index " + sourceIndex);
+			if (sourceIndex != -1) {
+				for (var j = 0; j < selection.length; j++) {
+					if (j != i) {
+						var destinationIndex = findNodeIndexByNodeId(selection[j]);
+						console.log("destination index " + destinationIndex);
+						if (destinationIndex != -1) {
+							console.log("drawing link from " + sourceIndex + " to " + destinationIndex);
+							force.links().push({
+								"source" : sourceIndex,
+								"target" : destinationIndex
+							})
+						}
+					}
+				}
+
+			}
+		}
+	}
+
+	// adding a link - server-side
+	addLinkPut = function() {
+		console.log("selection clicked");
+		newLinks = [];
+		for (var i = 0; i < selection.length; i++) {
+			var sourceIndex = findNodeIndexByNodeId(selection[i]);
+			console.log("source index " + sourceIndex);
+			if (sourceIndex != -1) {
+				for (var j = 0; j < selection.length; j++) {
+					if (j != i) {
+						var destinationIndex = findNodeIndexByNodeId(selection[j]);
+						console.log("destination index " + destinationIndex);
+						if (destinationIndex != -1) {
+							console.log("drawing link from " + sourceIndex + " to " + destinationIndex);
+							link = {
+								"source" : sourceIndex,
+								"target" : destinationIndex
+							};
+							newLinks.push(link);
+						}
+					}
+				}
+
+			}
+			$http.put('./rest/graph/addLink', newLinks).success(function() {
+				console.log("success");
+				console.log(newLinks);
+				for (link in newLinks) {
+					console.log(newLinks[link]);
+					force.links().push(newLinks[link]);
+				}
+				$scope.addNodeError = false;
+				$scope.addNodeSuccess = true;
+				force.start();
+				updateGraph();
+			}).error(function() {
+				console.log("error");
+				$scope.addNodeError = true;
+				$scope.addNodeSuccess = false;
+			});
+		}
+	}
+
+	// adding a node - server-side
+	addNodePut = function() {
+		console.log("submitnode from form name " + $scope.nodehelper.name);
+		console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
+		var size = 70;
+		if ($scope.nodehelper.size != null)
+			size = $scope.nodehelper.size;
+		console.log("size from scope:" + $scope.nodehelper.size + " var: " + size);
+		newNode = {
+			"id" : generateUUID(),
+			"name" : $scope.nodehelper.name,
+			"size" : size,
+			"catchphrase" : $scope.nodehelper.catchphrase
+		};
+		$http.put('./rest/graph/addNode', newNode).success(function() {
+			console.log("success");
+			force.nodes().push(newNode);
+			force.start();
+			updateGraph();
+			$scope.addNodeError = false;
+			$scope.addNodeSuccess = true;
+		}).error(function() {
+			console.log("error");
+			$scope.addNodeError = true;
+			$scope.addNodeSuccess = false;
+		});
+	}
+
+	// adding a node - client side
+	addNode = function() {
+		console.log("submitnode from form name " + $scope.nodehelper.name);
+		console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
+		var size = 70;
+		if ($scope.nodehelper.size != null)
+			size = $scope.nodehelper.size;
+		console.log("size from scope:" + $scope.nodehelper.size + " var: " + size);
+		force.nodes().push({
+			"id" : generateUUID(),
+			"name" : $scope.nodehelper.name,
+			"size" : size,
+			"catchphrase" : $scope.nodehelper.catchphrase
+		});
+	}
+
+	// unfixing nodes to animate
+	startGraph = function() {
+		force.nodes().forEach(function(n) {
+			console.log(n);
+			if (pinnedNodes.indexOf(n.id) == -1)
+				n.fixed = false;
+		});
+	}
+
+	// fixing nodes to stop animation
+	stopGraph = function() {
+		force.nodes().forEach(function(n) {
+			console.log(n);
+			n.fixed = true;
+		});
+	}
+
+	// fixes nodeset from Selection
+	pinSelection = function() {
+		console.log("Pin selection");
+		for (var i = 0; i < selection.length; i++) {
+			var sourceIndex = findNodeIndexByNodeId(selection[i]);
+			console.log("pin " + force.nodes()[sourceIndex]);
+			force.nodes()[sourceIndex].fixed = true;
+			pinnedNodes.push(force.nodes()[sourceIndex].id);
+		}
+	}
+
+	// unfixes nodeset from Selection
+	unPinSelection = function() {
+		console.log("UnPin selection");
+		for (var i = 0; i < selection.length; i++) {
+			var sourceIndex = findNodeIndexByNodeId(selection[i]);
+			console.log("pin " + force.nodes()[sourceIndex]);
+			force.nodes()[sourceIndex].fixed = false;
+			pinnedNodes.splice(force.nodes()[sourceIndex].id);
+		}
+	}
 	// sureley there is a pro way of doing this, we use a var to store the
 	// button we click on
 	$scope.submitFormNode = function() {
-
 		if (selectionClicked == 'AddLink') {
-			console.log("selection clicked");
-			for (var i = 0; i < selection.length; i++) {
-				var sourceIndex = findNodeIndexByNodeId(selection[i]);
-				console.log("source index " + sourceIndex);
-				if (sourceIndex != -1) {
-					for (var j = 0; j < selection.length; j++) {
-						if (j != i) {
-							var destinationIndex = findNodeIndexByNodeId(selection[j]);
-							console.log("destination index " + destinationIndex);
-							if (destinationIndex != -1) {
-								console.log("drawing link from " + sourceIndex + " to " + destinationIndex);
-								force.links().push({
-									"source" : sourceIndex,
-									"target" : destinationIndex
-								})
-							}
-						}
-					}
-
-				}
-			}
+			// addLink();
+			addLinkPut();
 		} else if (selectionClicked == 'AddNode') {
-			console.log("submitnode from form name " + $scope.nodehelper.name);
-			console.log("pushing node " + $scope.nodehelper.name + " " + $scope.nodehelper.catchphrase);
-			var size = 70;
-			if ($scope.nodehelper.size != null)
-				size = $scope.nodehelper.size;
-			console.log("size from scope:" + $scope.nodehelper.size + " var: " + size);
-			force.nodes().push({
-				"id" : generateUUID(),
-				"name" : $scope.nodehelper.name,
-				"size" : size,
-				"catchphrase" : $scope.nodehelper.catchphrase
-			});
-			computeStatsOnServer();
-
+			// addNode();
+			addNodePut();
+			computeStatsRest();
 		} else if (selectionClicked == 'Start') {
-			force.nodes().forEach(function(n) {
-				console.log(n);
-				if (pinnedNodes.indexOf(n.id) == -1)
-					n.fixed = false;
-			});
-		} else if (selectionClicked == 'Stop') {
-			force.nodes().forEach(function(n) {
-				console.log(n);
-				n.fixed = true;
-			});
-		} else if (selectionClicked == 'ClearSel') {
-			console.log("clearsel");
-			clearSelection();
-		} else if (selectionClicked == 'PinSelection') {
-			console.log("Pin selection");
-			for (var i = 0; i < selection.length; i++) {
-				var sourceIndex = findNodeIndexByNodeId(selection[i]);
-				console.log("pin " + force.nodes()[sourceIndex]);
-				force.nodes()[sourceIndex].fixed = true;
-				pinnedNodes.push(force.nodes()[sourceIndex].id);
-			}
-		} else if (selectionClicked == 'UnPinSelection') {
-			console.log("UnPin selection");
-			for (var i = 0; i < selection.length; i++) {
-				var sourceIndex = findNodeIndexByNodeId(selection[i]);
-				console.log("pin " + force.nodes()[sourceIndex]);
-				force.nodes()[sourceIndex].fixed = false;
-				pinnedNodes.splice(force.nodes()[sourceIndex].id);
-			}
-		} else if (selectionClicked == 'ComputeStats') {
-			console.log("Compute stats");
-			computeStatsOnServer();
+			startGraph();
+			force.start();
+			updateGraph();
 
+		} else if (selectionClicked == 'Stop') {
+			stopGraph();
+			force.start();
+			updateGraph();
+
+		} else if (selectionClicked == 'ClearSel') {
+			clearSelection();
+			force.start();
+			updateGraph();
+
+		} else if (selectionClicked == 'PinSelection') {
+			pinSelection();
+			force.start();
+			updateGraph();
+
+		} else if (selectionClicked == 'UnPinSelection') {
+			unPinSelection();
+			force.start();
+			updateGraph();
+
+		} else if (selectionClicked == 'ComputeStats') {
+			computeStatsRest();
+			force.start();
+			updateGraph();
 		}
-		force.start();
-		updateGraph();
 		$scope.addNodeSuccess = true;
 		selectionClicked = null;
 	}
@@ -387,27 +500,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		return maxAndMap;
 	}
 
-	computeStatsOnServer = function() {
-		// this is now server-side logic with a Servlet
-		console.log("computing stats on server");
-		var maxAndMap = {};
-		$http({
-			method : 'POST',
-			url : './../BlossomStatComputing',
-			data : force.nodes()
-		}).success(function(data, status, header, config) {
-			console.log('Success');
-			console.log("data - " + data);
-			maxAndMap = data;
-			console.log("status - " + status);
-			console.log("header - " + header);
-			console.log("config - " + config);
-			buildStatGraph(maxAndMap);
-		}).error(function(data, status, header, config) {
-			console.log('Error');
-		});
-	}
-
 	buildStatGraph = function(map) {
 
 		var barHeight = 20;
@@ -416,8 +508,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		var stats = [];
 		for (a in map.map) {
 			count++;
-			// console.log("a " + a + " " + map.map[a]);
-			// stats.push(map.map[a]);
 			console.log("a " + a + " " + map.map[a].stat);
 			stats.push(map.map[a].stat);
 		}
@@ -430,7 +520,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		var linearScale = d3.scale.linear().domain([ 0, d3.max(stats) ]).range([ 0, statchart[0][0].clientWidth ]);
 
 		var singlebar = statchart.selectAll("g").data(stats).enter().append("g").attr("transform", function(d, i) {
-			console.log("trans " + " " + i);
 			return "translate(0," + i * barHeight + ")";
 		}).attr("id", "chartbar");
 

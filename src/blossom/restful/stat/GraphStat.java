@@ -10,7 +10,7 @@ public class GraphStat {
     private List<GraphStatItem> map;
 
     public Integer getMax() {
-        return max;
+        return this.max;
     }
 
     public void setMax(final Integer max) {
@@ -18,11 +18,19 @@ public class GraphStat {
     }
 
     public List<GraphStatItem> getMap() {
-        return map;
+        return this.map;
     }
 
     public void setMap(final List<GraphStatItem> stats) {
         this.map = stats;
     }
 
+    public GraphStatItem getByName(final String name) {
+        for (final GraphStatItem graphStatItem : this.map) {
+            if (name.equals(graphStatItem.getName())) {
+                return graphStatItem;
+            }
+        }
+        return null;
+    }
 }
