@@ -1,32 +1,74 @@
+<head>
+<link rel="stylesheet" href="../css/ol.css">
+
 <style>
 body {
-	padding-top: 60px;
-	padding-bottom: 60px;
-	padding-left: 10px;
-	padding-right: 10px;
+	padding-top: 50px;
+	/*  	padding-bottom: 60px; */
+	/*  	padding-left: 10px; */
+	/* 	padding-right: 10px;  */
 }
 
-</style>
+.buttonsMap {
+	position: absolute;
+	top: 95px;
+	left: 8px;
+	background: rgba(255, 255, 255, 0.4);
+	border-radius: 4px;
+	padding: 2px;
+}
 
-<div class="panel panel-primary">
-	<div class="panel-heading">
-		<h3 class="panel-title">Map</h3>
+#map {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+
+#toolbox {
+	position: absolute;
+	top: 80px;
+	right: 30px;
+	padding: 3px;
+	border-radius: 4px;
+	color: #fff;
+	background: rgba(255, 255, 255, 0.4);
+	z-index: 100;
+}
+
+#layerswitcher {
+	/* 	position: absolute; */
+	margin: 0;
+	padding: 10px;
+	border-radius: 4px;
+	background: rgba(0, 60, 136, 0.5);
+	list-style-type: none;
+}
+</style>
+</head>
+<div id="map">
+	<div class="ol-overlaycontainer-stopevent">
+		<div class="ol-zoom ol-unselectable ol-control">
+			<button class="ol-zoom-in ol-has-tooltip" type="button">
+				<span role="tooltip">Zoom in</span>+
+			</button>
+			<button class="ol-zoom-out  ol-has-tooltip" type="button">
+				<span role="tooltip">Zoom out</span>−
+			</button>
+		</div>
 	</div>
-	<div class="panel-body">
-		<div id="map" class="map"></div>
-		<script type="text/javascript">
-			var map = new ol.Map({
-				target : 'map',
-				layers : [ new ol.layer.Tile({
-					source : new ol.source.MapQuest({
-						layer : 'sat'
-					})
-				}) ],
-				view : new ol.View({
-					center : ol.proj.transform([ 37.41, 8.82 ], 'EPSG:4326', 'EPSG:3857'),
-					zoom : 4
-				})
-			});
-		</script>
+	<div id="toolbox">
+		<ul id="layerswitcher">
+			<li><label><input type="radio" name="layer" value="0"
+					checked=""> MapQuest Satellite</label></li>
+			<li><label><input type="radio" name="layer" value="1">
+					MapQuest Hybrid</label></li>
+			<li><label><input type="radio" name="layer" value="2">
+					MapQuest OSM</label></li>
+			<li><label><input type="radio" name="layer" value="3">
+					OSM</label></li>
+		</ul>
+	</div>
+	<div id="wesh" class="buttonsMap">
+		<button class="btn btn-default">W</button>
 	</div>
 </div>
