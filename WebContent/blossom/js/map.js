@@ -1,6 +1,9 @@
 var module = angular.module('blossom.map', [ 'ngRoute' ]);
 
 module.controller('MapCtrl', function($scope) {
+
+	$scope.layerName = "0";
+
 	var defaultStyle = {
 		'Point' : [ new ol.style.Style({
 			image : new ol.style.Circle({
@@ -64,6 +67,7 @@ module.controller('MapCtrl', function($scope) {
 			layer : 'sat'
 		})
 	});
+	layers[0].setVisible(true);
 	layers[1] = new ol.layer.Group({
 		layers : [ new ol.layer.Tile({
 			source : new ol.source.MapQuest({
@@ -75,6 +79,7 @@ module.controller('MapCtrl', function($scope) {
 			})
 		}) ]
 	});
+
 	layers[2] = new ol.layer.Tile({
 		source : new ol.source.MapQuest({
 			layer : 'osm'
@@ -83,7 +88,8 @@ module.controller('MapCtrl', function($scope) {
 	layers[3] = new ol.layer.Tile({
 		source : new ol.source.OSM()
 	});
-
+	for (i = 1, ii = layers.length; i < ii; ++i)
+		layers[i].setVisible(false);
 	$scope.switchLayer = function() {
 		for (i = 0, ii = layers.length; i < ii; ++i)
 			layers[i].setVisible(i == $scope.layerName);
