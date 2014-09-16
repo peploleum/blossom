@@ -1,6 +1,4 @@
-<head>
 <link rel="stylesheet" href="../css/ol.css">
-
 <style>
 body {
 	padding-top: 50px;
@@ -44,7 +42,7 @@ body {
 	list-style-type: none;
 }
 </style>
-</head>
+
 <div id="map">
 	<div class="ol-overlaycontainer-stopevent">
 		<div class="ol-zoom ol-unselectable ol-control">
@@ -58,17 +56,21 @@ body {
 	</div>
 	<div id="toolbox">
 		<ul id="layerswitcher">
-			<li><label><input type="radio" name="layer" value="0"
-					checked=""> MapQuest Satellite</label></li>
-			<li><label><input type="radio" name="layer" value="1">
+			<li><label><input type="radio" name="layer"
+					ng-model="layerName" value="0" ng-change="switchLayer()">
+					MapQuest Satellite</label></li>
+			<li><label><input type="radio" name="layer"
+					ng-model="layerName" value="1" ng-change="switchLayer()">
 					MapQuest Hybrid</label></li>
-			<li><label><input type="radio" name="layer" value="2">
+			<li><label><input type="radio" name="layer"
+					ng-model="layerName" value="2" ng-change="switchLayer()">
 					MapQuest OSM</label></li>
-			<li><label><input type="radio" name="layer" value="3">
+			<li><label><input type="radio" name="layer"
+					ng-model="layerName" value="3" ng-change="switchLayer()">
 					OSM</label></li>
 		</ul>
 	</div>
 	<div id="wesh" class="buttonsMap">
-		<button class="btn btn-default">W</button>
+		<button id="geoJson">Add GeoJSON</button>
 	</div>
 </div>
