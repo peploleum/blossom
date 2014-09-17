@@ -22,6 +22,9 @@ module.factory('GraphFactory', function($resource) {
 
 module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory) {
 
+	var navbarul = d3.selectAll('ul#navbarul>li');
+	navbarul.attr("class", null);
+	d3.select('#networkNavItem').attr("class", "active");
 	// init some control scope vars used to pop error display
 	$scope.addNodeError = false;
 	$scope.addNodeSuccess = true;

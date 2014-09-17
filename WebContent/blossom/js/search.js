@@ -1,6 +1,11 @@
 var module = angular.module('blossom.search', [ 'ngRoute' ])
 
 module.controller('SearchCtrl', function($scope, $http, $templateCache) {
+
+	var navbarul = d3.selectAll('ul#navbarul>li');
+	navbarul.attr("class", null);
+	d3.select('#searchNavItem').attr("class", "active");
+
 	$scope.results = [];
 	$scope.solrerror = false;
 	$scope.solrsuccess = true;
@@ -33,6 +38,3 @@ module.controller('SearchCtrl', function($scope, $http, $templateCache) {
 		});
 	}
 })
-
-
-

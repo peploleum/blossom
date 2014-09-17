@@ -2,8 +2,12 @@ var module = angular.module('blossom.map', [ 'ngRoute' ]);
 
 module.controller('MapCtrl', function($scope) {
 
+	var navbarul = d3.selectAll('ul#navbarul>li');
+	navbarul.attr("class", null);
+	d3.select('#mapNavItem').attr("class", "active");
 	$scope.layerName = "0";
 
+	// styles
 	var defaultStyle = {
 		'Point' : [ new ol.style.Style({
 			image : new ol.style.Circle({
@@ -61,6 +65,18 @@ module.controller('MapCtrl', function($scope) {
 		}) ]
 	};
 
+	var iconStyle = new ol.style.Style({
+		image : new ol.style.Icon(({
+			anchor : [ 0.5, 46 ],
+			scale : 0.5,
+			anchorXUnits : 'fraction',
+			anchorYUnits : 'pixels',
+			opacity : 0.75,
+			src : 'resources/scruffy.png'
+		}))
+	});
+
+	// layers to have something to show
 	var layers = [];
 	layers[0] = new ol.layer.Tile({
 		source : new ol.source.MapQuest({
@@ -99,11 +115,14 @@ module.controller('MapCtrl', function($scope) {
 		projection : 'EPSG:3857',
 		url : 'data/point-samples.geojson'
 	});
+
 	var points = new ol.layer.Vector({
 		source : geoj,
-		style : defaultStyle['Point']
+		style : iconStyle
+	// style : defaultStyle['Point']
 	});
 
+	// the map (default renderer)
 	var map = new ol.Map({
 		controls : ol.control.defaults(),
 		target : 'map',
@@ -113,21 +132,29 @@ module.controller('MapCtrl', function($scope) {
 			zoom : 4
 		})
 	});
-	submitFeature = function() {
-		console.log("haha");
+
+	// control callback
+	addGeoJSONCallback = function() {
 		map.getLayers().push(points);
 		var view = map.getView();
 		console.log("extent " + geoj.getExtent() + " size " + map.getSize());
 		view.fitExtent(geoj.getExtent(), map.getSize());
 	}
+
+	// control callback
+	pointToCoordCallback = function() {
+		console.log("toubidou");
+	}
 	// creating a control
 	customControl = function() {
-		var wesh = document.getElementById("wesh");
-		var getJson = document.getElementById("wesh");
-		getJson.addEventListener('click', submitFeature, false);
+		var toolbar = document.getElementById("toolbar");
+		var getJson = document.getElementById("geoJson");
+		var addObject = document.getElementById("addObject");
+		getJson.addEventListener('click', addGeoJSONCallback, false);
+		addObject.addEventListener('click', pointToCoordCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
-			element : wesh,
+			element : toolbar,
 		});
 	};
 	// basically it just needs to inherit control
