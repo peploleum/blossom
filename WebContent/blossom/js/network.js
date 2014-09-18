@@ -21,6 +21,7 @@ module.factory('GraphFactory', function($resource) {
 });
 
 module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory) {
+	var symbo = true;
 
 	var navbarul = d3.selectAll('ul#navbarul>li');
 	navbarul.attr("class", null);
@@ -127,94 +128,99 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			return d.id
 		}).call(force.drag);
 
-		var images = node.append("image").attr("xlink:href", function(d) {
-			return "resources/" + d.name + ".png"
-		}).attr("x", function(d) {
-			return -1 * d.size / 2
-		}).attr("y", function(d) {
-			return -1 * d.size / 2
-		}).attr("width", function(d) {
-			return d.size
-		}).attr("height", function(d) {
-			return d.size
-		}).attr("custom", function(d) {
-			return d.catchphrase
-		});
+		if (symbo) {
+			var images = node.append("image").attr("xlink:href", function(d) {
+				return "resources/" + d.name + ".png"
+			}).attr("x", function(d) {
+				return -1 * d.size / 2
+			}).attr("y", function(d) {
+				return -1 * d.size / 2
+			}).attr("width", function(d) {
+				return d.size
+			}).attr("height", function(d) {
+				return d.size
+			}).attr("custom", function(d) {
+				return d.catchphrase
+			});
 
-		// no need for a title we aim to provide our own tooltip
+			// no need for a title we aim to provide our own tooltip
 
-		// this is hidden in the html, we use it to pop it on the grid of the
-		// svg when needed
-		var tooltip = d3.select(".tooltipcustom");
+			// this is hidden in the html, we use it to pop it on the grid of
+			// the
+			// svg when needed
+			var tooltip = d3.select(".tooltipcustom");
 
-		d3.selectAll("image").each(function(d, i) {
-			if (d.catchphrase != null) {
-				var catchphrase = d3.select(this).attr("custom");
-				d3.select(this).on("mouseover", function(d) {
-					tooltip.text(function(d) {
-						return catchphrase;
+			d3.selectAll("image").each(function(d, i) {
+				if (d.catchphrase != null) {
+					var catchphrase = d3.select(this).attr("custom");
+					d3.select(this).on("mouseover", function(d) {
+						tooltip.text(function(d) {
+							return catchphrase;
+						});
+						tooltip.style("visibility", "visible")
+					}).on("mousemove", function() {
+						return tooltip.style("top", (d3.event.pageY + 16) + "px").style("left", (d3.event.pageX + 16) + "px");
+					}).on("mouseout", function() {
+						return tooltip.style("visibility", "hidden")
 					});
-					tooltip.style("visibility", "visible")
-				}).on("mousemove", function() {
-					return tooltip.style("top", (d3.event.pageY + 16) + "px").style("left", (d3.event.pageX + 16) + "px");
-				}).on("mouseout", function() {
-					return tooltip.style("visibility", "hidden")
-				});
+				}
+			});
+
+			d3.selectAll("image").each(function(d, i) {
+				paintItem(this);
+			});
+
+			function paintItem(imageItem) {
+				var retrievedCustomFieldAsId = d3.select(imageItem.parentNode).attr("custom");
+
+				// manage selection
+				if (selection.indexOf(retrievedCustomFieldAsId) != -1) {
+					console.log("adding " + retrievedCustomFieldAsId);
+					console.log(selection);
+					var selectedImageItem = d3.select(imageItem);
+					var selectionWidth = selectedImageItem.attr("width");
+					var selectionHeight = selectedImageItem.attr("height");
+					var selectionX = selectedImageItem.attr("x");
+					var selectionY = selectedImageItem.attr("y");
+					d3.select(imageItem.parentNode).append("rect").attr("class", "graphnodeselect").attr("width", selectionWidth).attr("height", selectionHeight).attr("x", selectionX).attr("y", selectionY).attr("custom", retrievedCustomFieldAsId).on("click", function(d) {
+						console.log("rect clicked");
+						if (d3.event.ctrlKey) {
+							var selectedRect = d3.select(this);
+							selectedRect.remove();
+							console.log("index to remove: " + selectedRect.attr("custom"))
+							selection.splice(selection.indexOf(selectedRect.attr("custom")), 1);
+
+							console.log(selection);
+						}
+					});
+
+				}
+
+				// manage pins
+				if (pinnedNodes.indexOf(retrievedCustomFieldAsId) != -1) {
+					console.log("pinning " + retrievedCustomFieldAsId);
+					console.log(selection);
+					var PIN_SIZE = 10;
+					var selectedImageItem = d3.select(imageItem);
+					var imageWidth = selectedImageItem.attr("width");
+					var imageHeight = selectedImageItem.attr("height");
+					var pinX = selectedImageItem.attr("x");
+					var pinY = selectedImageItem.attr("y");
+					d3.select(imageItem.parentNode).append("rect").attr("class", "pinnode").attr("width", PIN_SIZE).attr("height", PIN_SIZE).attr("x", pinX).attr("y", pinY).attr("custom", retrievedCustomFieldAsId);
+
+				}
 			}
-		});
-
-		d3.selectAll("image").each(function(d, i) {
-			paintItem(this);
-		});
-
-		function paintItem(imageItem) {
-			var retrievedCustomFieldAsId = d3.select(imageItem.parentNode).attr("custom");
-
-			// manage selection
-			if (selection.indexOf(retrievedCustomFieldAsId) != -1) {
-				console.log("adding " + retrievedCustomFieldAsId);
-				console.log(selection);
-				var selectedImageItem = d3.select(imageItem);
-				var selectionWidth = selectedImageItem.attr("width");
-				var selectionHeight = selectedImageItem.attr("height");
-				var selectionX = selectedImageItem.attr("x");
-				var selectionY = selectedImageItem.attr("y");
-				d3.select(imageItem.parentNode).append("rect").attr("class", "graphnodeselect").attr("width", selectionWidth).attr("height", selectionHeight).attr("x", selectionX).attr("y", selectionY).attr("custom", retrievedCustomFieldAsId).on("click", function(d) {
-					console.log("rect clicked");
-					if (d3.event.ctrlKey) {
-						var selectedRect = d3.select(this);
-						selectedRect.remove();
-						console.log("index to remove: " + selectedRect.attr("custom"))
-						selection.splice(selection.indexOf(selectedRect.attr("custom")), 1);
-
-						console.log(selection);
-					}
-				});
-
-			}
-
-			// manage pins
-			if (pinnedNodes.indexOf(retrievedCustomFieldAsId) != -1) {
-				console.log("pinning " + retrievedCustomFieldAsId);
-				console.log(selection);
-				var PIN_SIZE = 10;
-				var selectedImageItem = d3.select(imageItem);
-				var imageWidth = selectedImageItem.attr("width");
-				var imageHeight = selectedImageItem.attr("height");
-				var pinX = selectedImageItem.attr("x");
-				var pinY = selectedImageItem.attr("y");
-				d3.select(imageItem.parentNode).append("rect").attr("class", "pinnode").attr("width", PIN_SIZE).attr("height", PIN_SIZE).attr("x", pinX).attr("y", pinY).attr("custom", retrievedCustomFieldAsId);
-
-			}
+			d3.selectAll("image").on("click", function(d) {
+				console.log("node clicked");
+				var retrievedCustomFieldAsId = d3.select(this.parentNode).attr("custom");
+				if (selection.indexOf(retrievedCustomFieldAsId) == -1) {
+					selection.push(retrievedCustomFieldAsId);
+				}
+				paintItem(this);
+			});
+		} else {
+			node.append("circle").attr("class", "nudenode").attr("r", 5).style("fill", "yellow");
 		}
-		d3.selectAll("image").on("click", function(d) {
-			console.log("node clicked");
-			var retrievedCustomFieldAsId = d3.select(this.parentNode).attr("custom");
-			if (selection.indexOf(retrievedCustomFieldAsId) == -1) {
-				selection.push(retrievedCustomFieldAsId);
-			}
-			paintItem(this);
-		});
 
 		node.append("text").attr("dx", function(d) {
 			return 2 + d.size / 2
@@ -417,6 +423,10 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			pinnedNodes.splice(force.nodes()[sourceIndex].id);
 		}
 	}
+
+	toggleSymbo = function() {
+		symbo = !symbo;
+	}
 	// sureley there is a pro way of doing this, we use a var to store the
 	// button we click on
 	$scope.submitFormNode = function() {
@@ -454,6 +464,10 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 
 		} else if (selectionClicked == 'ComputeStats') {
 			computeStatsRest();
+			force.start();
+			updateGraph();
+		} else if (selectionClicked == 'ToggleSymbo') {
+			toggleSymbo();
 			force.start();
 			updateGraph();
 		}
