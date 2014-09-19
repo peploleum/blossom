@@ -41,8 +41,38 @@ body {
 	background: rgba(0, 60, 136, 0.5);
 	list-style-type: none;
 }
-</style>
 
+.popover {
+	z-index: auto;
+}
+
+.popover-content {
+	min-width: 220px;
+}
+
+.statusbar {
+	position: absolute;
+	bottom: 80px;
+	right: 300px;
+	padding: 3px;
+	border-radius: 4px;
+	color: #fff;
+	background: rgba(255, 255, 255, 0.4);
+	z-index: 100;
+}
+
+.geoform {
+	visibility: hidden;
+	background: lightblue;
+	border: solid gray;
+	stroke: #999;
+	position: absolute;
+	z-index: 100;
+}
+</style>
+<!-- <div> -->
+<!-- <label id="coordLabel2">coordinates {{currentCoordinates}}</label>-->
+<!-- </div> -->
 <div id="map">
 	<div class="ol-overlaycontainer-stopevent">
 		<div class="ol-zoom ol-unselectable ol-control">
@@ -52,6 +82,12 @@ body {
 			<button class="ol-zoom-out  ol-has-tooltip" type="button">
 				<span role="tooltip">Zoom out</span>−
 			</button>
+		</div>
+		<div id="popup" title="" data-original-title="Information"></div>
+		<div class="popover top in">
+			<div class="arrow"></div>
+			<h3 class="popover-title"></h3>
+			<div class="popover-content" id="popupcontent"></div>
 		</div>
 	</div>
 	<div id="toolbox">
@@ -75,3 +111,15 @@ body {
 		<button id="addObject">Add Business Object</button>
 	</div>
 </div>
+<div id="geoform">
+	<form class="form-horizontal" role="form" ng-submit="submitFormItem()">
+		<div class="form-group">
+			<label for="inputText" class="col-sm-4 control-label">Name</label>
+			<div class="col-sm-8">
+				<input ng-model="formhelper.name" type="text" class="form-control"
+					id="inputText" placeholder="Text">
+			</div>
+		</div>
+	</form>
+</div>
+

@@ -1,7 +1,6 @@
 var module = angular.module('blossom.map', [ 'ngRoute' ]);
 
 module.controller('MapCtrl', function($scope) {
-
 	var navbarul = d3.selectAll('ul#navbarul>li');
 	navbarul.attr("class", null);
 	d3.select('#mapNavItem').attr("class", "active");
@@ -163,4 +162,68 @@ module.controller('MapCtrl', function($scope) {
 	map.addControl(new ol.control.FullScreen());
 	map.addControl(new customControl());
 
+	var mousePositionControl = new ol.control.MousePosition({
+		coordinateFormat : ol.coordinate.createStringXY(4),
+		projection : 'EPSG:4326',
+		className : 'statusbar',
+		undefinedHTML : '&nbsp;'
+	});
+
+	map.addControl(mousePositionControl);
+
+	// manageing interactions with map
+	onClick = function(evt) {
+		var coord = evt.coordinate;
+		$scope.$apply(function() {
+			var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+			$scope.currentCoordinates = hdms;
+		});
+	}
+	// Popup showing the position the user clicked
+	var popup = new ol.Overlay({
+		element : document.getElementById('popup')
+	});
+	map.addOverlay(popup);
+
+	buildGeoForm = function() {
+		var attrs = [ 'toubidou', 'scrapidou', 'roubidou' ];
+		var geoForm = document.getElementById('geoform');
+		console.log(geoForm);
+		var div = d3.select(geoForm);
+		return geoForm;
+	}
+
+	map.on('singleclick', function(evt) {
+		onClick(evt);
+		var element = popup.getElement();
+		var coordinate = evt.coordinate;
+		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
+
+		$(element).popover('destroy');
+		popup.setPosition(coordinate);
+		// the keys are quoted to prevent renaming in ADVANCED_OPTIMIZATIONS
+		// mode.
+		$(element).popover({
+			'placement' : 'top',
+			'animation' : true,
+			'html' : true,
+			// 'content' : '<p>The location you clicked was:</p><code>' +
+			// $scope.currentCoordinates + '</code>'
+			'content' : buildGeoForm()
+		});
+		$(element).popover('show');
+	});
+	// manage key events for the whole body
+	d3.select("body").on("keydown", function(d) {
+		if (d3.event.keyCode == 27) // the famous ESC key ...
+		{
+			console.log("ESC pressed");
+			var element = popup.getElement();
+			$(element).popover('destroy');
+		}
+	});
+	$scope.submitFormItem = function() {
+		console.log("toubidou");
+		console.log("form  " + $scope.formhelper.name);
+	}
 })
