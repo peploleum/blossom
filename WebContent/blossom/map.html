@@ -61,13 +61,17 @@ body {
 	z-index: 100;
 }
 
-.geoform {
+.formControl {
 	visibility: hidden;
-	background: lightblue;
-	border: solid gray;
-	stroke: #999;
 	position: absolute;
+	top: 200px;
+	left: 8px;
+	/* 	color: #fff; */
+	background: rgba(255, 255, 255, 1);
+	border-radius: 4px;
+	/* 	padding: 2px; */
 	z-index: 100;
+	left: 8px;
 }
 </style>
 <!-- <div> -->
@@ -82,6 +86,23 @@ body {
 			<button class="ol-zoom-out  ol-has-tooltip" type="button">
 				<span role="tooltip">Zoom out</span>−
 			</button>
+		</div>
+		<div id="formControl" class="formControl">
+			<div class="form-group has-success">
+				<label class="control-label" for="inputSuccess">Input with
+					success</label> <input type="text" class="form-control" id="inputSuccess">
+				<span class="help-block">Woohoo!</span>
+			</div>
+			<div class="form-group has-warning">
+				<label class="control-label" for="inputWarning">Input with
+					warning</label> <input type="text" class="form-control" id="inputWarning">
+				<span class="help-block">Something may have gone wrong</span>
+			</div>
+			<div class="form-group has-error">
+				<label class="control-label" for="inputError">Input with
+					error</label> <input type="text" class="form-control" id="inputError">
+				<span class="help-block">Please correct the error</span>
+			</div>
 		</div>
 		<div id="popup" title="" data-original-title="Information"></div>
 		<div class="popover top in">
@@ -109,6 +130,7 @@ body {
 	<div id="toolbar" class="toolbar">
 		<button id="geoJson">Add GeoJSON</button>
 		<button id="addObject">Add Business Object</button>
+		<button id="showForm">Show form</button>
 	</div>
 </div>
 <div id="geoform">
@@ -119,6 +141,19 @@ body {
 				<input ng-model="formhelper.name" type="text" class="form-control"
 					id="inputText" placeholder="Text">
 			</div>
+			<p>hdms : {{currentCoordinates}}</p>
+		</div>
+	</form>
+</div>
+<div id="geoformcontrol">
+	<form class="form-horizontal" role="form" ng-submit="submitFormItem()">
+		<div class="form-group">
+			<label for="inputText" class="col-sm-4 control-label">Name</label>
+			<div class="col-sm-8">
+				<input ng-model="formhelper.name" type="text" class="form-control"
+					id="inputText" placeholder="Text">
+			</div>
+			<p>hdms : {{currentCoordinates}}</p>
 		</div>
 	</form>
 </div>

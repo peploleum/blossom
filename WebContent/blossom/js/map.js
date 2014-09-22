@@ -132,6 +132,14 @@ module.controller('MapCtrl', function($scope) {
 		})
 	});
 
+	buildGeoForm = function() {
+		var attrs = [ 'toubidou', 'scrapidou', 'roubidou' ];
+		var geoForm = document.getElementById('geoform');
+		console.log(geoForm);
+		var div = d3.select(geoForm);
+		return geoForm;
+	}
+
 	// control callback
 	addGeoJSONCallback = function() {
 		map.getLayers().push(points);
@@ -144,13 +152,35 @@ module.controller('MapCtrl', function($scope) {
 	pointToCoordCallback = function() {
 		console.log("toubidou");
 	}
+
+	// $(formOverlay.getElement()).popover({
+	// 'placement' : 'top',
+	// 'animation' : true,
+	// 'html' : true,
+	// // 'content' : '<p>The location you clicked was:</p><code>' +
+	// // $scope.currentCoordinates + '</code>'
+	// 'content' : buildGeoForm()
+	// });
+	// show form overlay callback
+	showFormCallback = function() {
+		console.log("toubidou");
+		var elementById = document.getElementById("formControl");
+		var select = d3.select("#formControl");
+		// select.selectAll("p").remove();
+		select.style("visibility", "visible");
+
+		console.log(elementById);
+	}
+
 	// creating a control
 	customControl = function() {
 		var toolbar = document.getElementById("toolbar");
 		var getJson = document.getElementById("geoJson");
 		var addObject = document.getElementById("addObject");
+		var showForm = document.getElementById("showForm");
 		getJson.addEventListener('click', addGeoJSONCallback, false);
 		addObject.addEventListener('click', pointToCoordCallback, false);
+		showForm.addEventListener('click', showFormCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : toolbar,
@@ -168,7 +198,6 @@ module.controller('MapCtrl', function($scope) {
 		className : 'statusbar',
 		undefinedHTML : '&nbsp;'
 	});
-
 	map.addControl(mousePositionControl);
 
 	// manageing interactions with map
@@ -177,6 +206,7 @@ module.controller('MapCtrl', function($scope) {
 		$scope.$apply(function() {
 			var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
 			$scope.currentCoordinates = hdms;
+			$scope.coord = coord;
 		});
 	}
 	// Popup showing the position the user clicked
@@ -185,32 +215,24 @@ module.controller('MapCtrl', function($scope) {
 	});
 	map.addOverlay(popup);
 
-	buildGeoForm = function() {
-		var attrs = [ 'toubidou', 'scrapidou', 'roubidou' ];
-		var geoForm = document.getElementById('geoform');
-		console.log(geoForm);
-		var div = d3.select(geoForm);
-		return geoForm;
-	}
+	$(popup.getElement()).popover({
+		'placement' : 'top',
+		'animation' : true,
+		'html' : true,
+		// 'content' : '<p>The location you clicked was:</p><code>' +
+		// $scope.currentCoordinates + '</code>'
+		'content' : buildGeoForm()
+	});
 
 	map.on('singleclick', function(evt) {
 		onClick(evt);
 		var element = popup.getElement();
 		var coordinate = evt.coordinate;
 		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
-
-		$(element).popover('destroy');
+		$scope.hdms = hdms;
+		// $(element).popover('hide');
 		popup.setPosition(coordinate);
-		// the keys are quoted to prevent renaming in ADVANCED_OPTIMIZATIONS
-		// mode.
-		$(element).popover({
-			'placement' : 'top',
-			'animation' : true,
-			'html' : true,
-			// 'content' : '<p>The location you clicked was:</p><code>' +
-			// $scope.currentCoordinates + '</code>'
-			'content' : buildGeoForm()
-		});
+
 		$(element).popover('show');
 	});
 	// manage key events for the whole body
@@ -219,7 +241,7 @@ module.controller('MapCtrl', function($scope) {
 		{
 			console.log("ESC pressed");
 			var element = popup.getElement();
-			$(element).popover('destroy');
+			$(element).popover('hide');
 		}
 	});
 	$scope.submitFormItem = function() {
