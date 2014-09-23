@@ -9,19 +9,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Geometry {
     private String type;
-    // @XmlAnyElement(lax = true)
-    private Coordinate[] coordinates;
 
     @XmlAnyElement(lax = true)
-    Object[] arguments;
-
-    public Object[] getArguments() {
-        return arguments;
-    }
-
-    public void setArguments(Object[] arguments) {
-        this.arguments = arguments;
-    }
+    private Object[] coordinates;
 
     public String getType() {
         return type;
@@ -31,11 +21,11 @@ public class Geometry {
         this.type = type;
     }
 
-    public Coordinate[] getCoordinates() {
+    public Object[] getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(Coordinate[] coordinates) {
+    public void setCoordinates(Object[] coordinates) {
         this.coordinates = coordinates;
     }
 }

@@ -1,4 +1,4 @@
-package blossom.restful.service;
+package blossom.restful.service.graph;
 
 import java.util.ArrayList;
 import java.util.List;

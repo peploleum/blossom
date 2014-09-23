@@ -1,4 +1,4 @@
-package blossom.restful.service;
+package blossom.restful.service.graph;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

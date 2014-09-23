@@ -26,7 +26,7 @@ public class GeoEntityTest {
         property.setName("urn:ogc:def:crs:OGC:1.3:CRS84");
         final CRS crs = new CRS();
         crs.setType("name");
-        crs.setProperties(Arrays.asList(new Property[] { property }));
+        crs.setProperties(property);
         final Coordinate coordinate1 = new Coordinate();
         coordinate1.setValue(-75.849253579389796);
         final Coordinate coordinate2 = new Coordinate();
@@ -34,14 +34,14 @@ public class GeoEntityTest {
 
         final Geometry geometry = new Geometry();
         geometry.setType("Point");
-        geometry.setCoordinates(new Coordinate[] { coordinate1, coordinate2 });
-        geometry.setArguments(new Object[] { "a", "b" });
+        geometry.setCoordinates(new Object[] { -75.849253579389796, 47.6434349837781 });
+        // geometry.setArguments(new Object[] { "a", "b" });
         final Property featureProperty = new Property();
         featureProperty.setName("Saguenay (Arrondissement Latterière)");
 
         final Feature feature = new Feature();
         feature.setType("Feature");
-        feature.setProperties(Arrays.asList(new Property[] { featureProperty }));
+        feature.setProperties(featureProperty);
         feature.setGeometry(geometry);
 
         final GeoEntity geoEntity = new GeoEntity();
@@ -54,8 +54,8 @@ public class GeoEntityTest {
             jc = JAXBContext.newInstance(GeoEntity.class);
             final Marshaller marshaller = jc.createMarshaller();
             marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            // marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "arguments");
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "coordinates");
             marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
             marshaller.marshal(geoEntity, System.out);
         } catch (final JAXBException e) {

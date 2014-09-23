@@ -1,7 +1,5 @@
 package blossom.restful.geo.entity;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -12,7 +10,7 @@ public class Feature {
         this.type = type;
     }
 
-    public void setProperties(final List<Property> properties) {
+    public void setProperties(final Property properties) {
         this.properties = properties;
     }
 
@@ -20,14 +18,15 @@ public class Feature {
         this.geometry = geometry;
     }
 
-    private List<Property> properties;
+    private Property properties;
+
     private Geometry geometry;
 
     public String getType() {
         return this.type;
     }
 
-    public List<Property> getProperties() {
+    public Property getProperties() {
         return this.properties;
     }
 

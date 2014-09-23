@@ -1,13 +1,11 @@
 package blossom.restful.geo.entity;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class CRS {
     private String type;
-    private List<Property> properties;
+    private Property properties;
 
     public String getType() {
         return type;
@@ -17,11 +15,11 @@ public class CRS {
         this.type = type;
     }
 
-    public List<Property> getProperties() {
+    public Property getProperties() {
         return properties;
     }
 
-    public void setProperties(List<Property> properties) {
+    public void setProperties(Property properties) {
         this.properties = properties;
     }
 

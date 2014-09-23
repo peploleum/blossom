@@ -6,7 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.restful.graph.Graph;
-import blossom.restful.service.GraphSingleton;
+import blossom.restful.service.graph.GraphSingleton;
 
 @Path("/graphstat")
 public class StatRestService {

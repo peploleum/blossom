@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import blossom.restful.graph.Graph;
 import blossom.restful.graph.LinkItem;
 import blossom.restful.graph.NodeItem;
-import blossom.restful.service.GraphSingleton;
+import blossom.restful.service.graph.GraphSingleton;
 import blossom.restful.stat.GraphStat;
 import blossom.restful.stat.GraphStatItem;
 
@@ -74,13 +74,5 @@ public class GraphRestService {
             gs.getGraph().getLinks().add(linkItem);
         }
     }
-
-    // @PUT
-    // @Consumes(MediaType.APPLICATION_JSON)
-    // @Path("/addLink")
-    // public void addLink(final LinkItem link) {
-    // final GraphSingleton gs = GraphSingleton.getInstance();
-    // gs.getGraph().getLinks().add(link);
-    // }
 
 }

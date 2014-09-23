@@ -120,6 +120,16 @@ module.controller('MapCtrl', function($scope) {
 		style : iconStyle
 	// style : defaultStyle['Point']
 	});
+	var geojbo = new ol.source.GeoJSON({
+		projection : 'EPSG:3857',
+		url : 'data/sample.geojson'
+	});
+
+	var pointsbo = new ol.layer.Vector({
+		source : geojbo,
+		style : iconStyle
+	// style : defaultStyle['Point']
+	});
 
 	// the map (default renderer)
 	var map = new ol.Map({
@@ -149,18 +159,18 @@ module.controller('MapCtrl', function($scope) {
 	}
 
 	// control callback
+	addGeoJSONBOCallback = function() {
+		map.getLayers().push(pointsbo);
+		var view = map.getView();
+		console.log("extent bo " + geojbo.getExtent() + " size " + map.getSize());
+		view.fitExtent(geojbo.getExtent(), map.getSize());
+	}
+
+	// control callback
 	pointToCoordCallback = function() {
 		console.log("toubidou");
 	}
 
-	// $(formOverlay.getElement()).popover({
-	// 'placement' : 'top',
-	// 'animation' : true,
-	// 'html' : true,
-	// // 'content' : '<p>The location you clicked was:</p><code>' +
-	// // $scope.currentCoordinates + '</code>'
-	// 'content' : buildGeoForm()
-	// });
 	// show form overlay callback
 	showFormCallback = function() {
 		console.log("toubidou");
@@ -179,7 +189,7 @@ module.controller('MapCtrl', function($scope) {
 		var addObject = document.getElementById("addObject");
 		var showForm = document.getElementById("showForm");
 		getJson.addEventListener('click', addGeoJSONCallback, false);
-		addObject.addEventListener('click', pointToCoordCallback, false);
+		addObject.addEventListener('click', addGeoJSONBOCallback, false);
 		showForm.addEventListener('click', showFormCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
