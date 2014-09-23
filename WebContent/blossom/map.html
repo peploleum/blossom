@@ -69,7 +69,7 @@ body {
 	/* 	color: #fff; */
 	background: rgba(255, 255, 255, 1);
 	border-radius: 4px;
-	/* 	padding: 2px; */
+	padding: 4px;
 	z-index: 100;
 	left: 8px;
 }
@@ -87,23 +87,43 @@ body {
 				<span role="tooltip">Zoom out</span>−
 			</button>
 		</div>
-		<div id="formControl" class="formControl">
-			<div class="form-group has-success">
-				<label class="control-label" for="inputSuccess">Input with
-					success</label> <input type="text" class="form-control" id="inputSuccess">
-				<span class="help-block">Woohoo!</span>
+		<form id="formControl" class="formControl" name="formControl">
+			<!-- 			<div class="form-group has-success"> -->
+			<!-- 				<label class="control-label" for="inputSuccess">Input with -->
+			<!-- 					success</label> <input type="text" class="form-control" id="inputSuccess"> -->
+			<!-- 				<span class="help-block">Woohoo!</span> -->
+			<!-- 			</div> -->
+			<!-- 			<div class="form-group has-warning"> -->
+			<!-- 				<label class="control-label" for="inputWarning">Input with -->
+			<!-- 					warning</label> <input type="text" class="form-control" id="inputWarning"> -->
+			<!-- 				<span class="help-block">Something may have gone wrong</span> -->
+			<!-- 			</div> -->
+			<!-- 			<div class="form-group has-error"> -->
+			<!-- 				<label class="control-label" for="inputError">Input with -->
+			<!-- 					error</label> <input type="text" class="form-control" id="inputError"> -->
+			<!-- 				<span class="help-block">Please correct the error</span> -->
+			<!-- 			</div> -->
+			<div class="form-group has-feedback"
+				ng-class="{'has-error': formControl.name.$invalid, 'has-success': !formControl.name.$invalid}">
+				<label>Name</label> <input class="form-control" type="text"
+					name="name" ng-model="formhelper.name" required> <span
+					ng-show="!formControl.name.$invalid"
+					class="glyphicon glyphicon-ok form-control-feedback"></span> <span
+					ng-show="formControl.name.$error.required" class="help-inline">
+					Required</span>
 			</div>
-			<div class="form-group has-warning">
-				<label class="control-label" for="inputWarning">Input with
-					warning</label> <input type="text" class="form-control" id="inputWarning">
-				<span class="help-block">Something may have gone wrong</span>
+			<div class="form-group has-feedback"
+				ng-class="{'has-error': formControl.coord.$invalid, 'has-success': !formControl.coord.$invalid}">
+				<label>Grid</label> <input class="form-control" type="text"
+					name="coord" ng-model="currentCoordinates" required> <span
+					ng-show="!formControl.coord.$invalid"
+					class="glyphicon glyphicon-ok form-control-feedback"></span> <span
+					ng-show="formControl.coord.$error.required" class="help-inline">
+					Required</span>
 			</div>
-			<div class="form-group has-error">
-				<label class="control-label" for="inputError">Input with
-					error</label> <input type="text" class="form-control" id="inputError">
-				<span class="help-block">Please correct the error</span>
-			</div>
-		</div>
+			<button ng-click="submitFormItem()"
+				ng-disabled="formControl.$invalid" class="btn btn-primary">Submit</button>
+		</form>
 		<div id="popup" title="" data-original-title="Information"></div>
 		<div class="popover top in">
 			<div class="arrow"></div>
