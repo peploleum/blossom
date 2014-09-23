@@ -154,16 +154,8 @@ body {
 	</div>
 </div>
 <div id="geoform">
-	<form class="form-horizontal" role="form" ng-submit="submitFormItem()">
-		<div class="form-group">
-			<label for="inputText" class="col-sm-4 control-label">Name</label>
-			<div class="col-sm-8">
-				<input ng-model="formhelper.name" type="text" class="form-control"
-					id="inputText" placeholder="Text">
-			</div>
-			<p>hdms : {{currentCoordinates}}</p>
-		</div>
-	</form>
+	<label>you just clicked here:</label>
+	<p>{{currentCoordinates}}</p>
 </div>
 <div id="geoformcontrol">
 	<form class="form-horizontal" role="form" ng-submit="submitFormItem()">

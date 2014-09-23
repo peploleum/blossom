@@ -219,8 +219,6 @@ module.controller('MapCtrl', function($scope) {
 		'placement' : 'top',
 		'animation' : true,
 		'html' : true,
-		// 'content' : '<p>The location you clicked was:</p><code>' +
-		// $scope.currentCoordinates + '</code>'
 		'content' : buildGeoForm()
 	});
 
@@ -230,7 +228,6 @@ module.controller('MapCtrl', function($scope) {
 		var coordinate = evt.coordinate;
 		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
 		$scope.hdms = hdms;
-		// $(element).popover('hide');
 		popup.setPosition(coordinate);
 
 		$(element).popover('show');
@@ -244,8 +241,8 @@ module.controller('MapCtrl', function($scope) {
 			$(element).popover('hide');
 		}
 	});
+
 	$scope.submitFormItem = function() {
-		console.log("toubidou");
-		console.log("form  " + $scope.formhelper.name);
+		console.log("submitting " + $scope.formhelper.name + " @ " + $scope.currentCoordinates);
 	}
 })
