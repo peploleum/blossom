@@ -30,7 +30,6 @@ public class GraphTest {
         // JSONConfiguration.mapped().
     }
 
-
     private static void writeGraph() {
         final NodeItem gi1 = new NodeItem();
         gi1.setId("15766ad3-db4a-469f-95ca-7f61b49c7443");
