@@ -256,14 +256,6 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	}
 
 	// control callback
-	addGeoJSONBOCallback = function() {
-		map.getLayers().push(pointsbo);
-		var view = map.getView();
-		console.log("extent bo " + geojbo.getExtent() + " size " + map.getSize());
-		view.fitExtent(geojbo.getExtent(), map.getSize());
-	}
-
-	// control callback
 	pointToCoordCallback = function() {
 		console.log("toubidou");
 	}
@@ -330,6 +322,12 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		}
 
 	}
+	fitExtentCallBack = function() {
+		console.log("fit extent current map extent is " + map.getView().calculateExtent(map.getSize()));
+		console.log("extent " + source.getExtent() + " size " + map.getSize());
+		map.getView().fitExtent(source.getExtent(), map.getSize());
+		console.log("extent " + source.getExtent(),map.getView().calculateExtent(map.getSize()));
+	}
 	// creating a control
 	customControl = function() {
 		var toolbar = document.getElementById("toolbar");
@@ -337,10 +335,12 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		var visualizeBusinessObjects = document.getElementById("visualizeBusinessObjects");
 		var showForm = document.getElementById("showForm");
 		var addSample = document.getElementById("addSample");
+		var fitExtent = document.getElementById("fitExtent");
 		toggleStyle.addEventListener('click', toggleIconStyle, false);
 		visualizeBusinessObjects.addEventListener('click', visualizeBOCallback, false);
 		showForm.addEventListener('click', showFormCallback, false);
 		addSample.addEventListener('click', addGeoJSONCallback, false);
+		fitExtent.addEventListener('click', fitExtentCallBack, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : toolbar,
@@ -354,7 +354,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 
 	var mousePositionControl = new ol.control.MousePosition({
 		coordinateFormat : ol.coordinate.createStringXY(4),
-		projection : 'EPSG:4326',
+		projection : 'EPSG:3857',
 		className : 'statusbar',
 		undefinedHTML : '&nbsp;'
 	});
