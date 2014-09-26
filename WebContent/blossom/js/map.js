@@ -1,5 +1,6 @@
 var module = angular.module('blossom.map', [ 'ngRoute' ]);
 
+// access WebService to CRUD geolocalized business objects
 module.factory('geoFactory', [ '$http', function($http) {
 
 	var urlBase = './rest/geo';
@@ -19,6 +20,7 @@ module.factory('geoFactory', [ '$http', function($http) {
 module.controller('MapCtrl', function($scope, geoFactory) {
 	$scope.currentCoordinates;
 	var coordinate;
+	var isIconStyle = false;
 	var navbarul = d3.selectAll('ul#navbarul>li');
 	navbarul.attr("class", null);
 	d3.select('#mapNavItem').attr("class", "active");
@@ -82,9 +84,76 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		}) ]
 	};
 
+	customCircleStyle = [ new ol.style.Style({
+		image : new ol.style.Circle({
+			fill : new ol.style.Fill({
+				color : 'rgba(255,0,0,0.5)'
+			}),
+			radius : 10,
+			stroke : new ol.style.Stroke({
+				color : '#ff0',
+				width : 1
+			})
+		}),
+		text : new ol.style.Text({
+			text : 'toubidou',
+			fill : new ol.style.Fill({
+				color : 'green'
+			}),
+			stroke : new ol.style.Stroke({
+				color : 'white',
+				width : 3
+			}),
+			font : 'Normal' + ' ' + '12px' + ' ' + 'Arial',
+			offsetX : 0,
+			offsetY : 0,
+			textAlign : 'Center',
+			textBaseline : 'Middle',
+		})
+	}) ]
+
+	// custom text depending on feature name
+	createTextStyle = function(feature) {
+		return new ol.style.Text({
+			text : feature.get('name'),
+			fill : new ol.style.Fill({
+				color : 'green'
+			}),
+			stroke : new ol.style.Stroke({
+				color : 'white',
+				width : 3
+			}),
+			font : 'Normal' + ' ' + '12px' + ' ' + 'Arial',
+			offsetX : 0,
+			offsetY : 0,
+			textAlign : 'Center',
+			textBaseline : 'Middle',
+		});
+	}
+
+	// custom point style depending on feature
+	createPointStyle = function() {
+		return function(feature, resolution) {
+			var pointStyle = new ol.style.Style({
+				image : new ol.style.Circle({
+					fill : new ol.style.Fill({
+						color : 'rgba(255,0,0,0.5)'
+					}),
+					radius : 10,
+					stroke : new ol.style.Stroke({
+						color : '#ff0',
+						width : 1
+					})
+				}),
+				text : createTextStyle(feature)
+			})
+			return [ pointStyle ];
+		}
+	}
+
 	var iconStyle = new ol.style.Style({
 		image : new ol.style.Icon(({
-			anchor : [ 0.5, 46 ],
+			anchor : [ 0, 0 ],
 			scale : 0.5,
 			anchorXUnits : 'fraction',
 			anchorYUnits : 'pixels',
@@ -156,7 +225,11 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		target : 'map',
 		layers : layers,
 		view : new ol.View({
-			center : ol.proj.transform([ 37.41, 8.82 ], 'EPSG:4326', 'EPSG:3857'),
+			// projection: 'EPSG:4326',
+			projection : 'EPSG:3857',
+			// center : ol.proj.transform([ 37.41, 8.82 ], 'EPSG:4326',
+			// 'EPSG:3857'),
+			center : [ 0, 0 ],
 			zoom : 4
 		})
 	});
@@ -212,9 +285,8 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	});
 	var businessObjectsLayer = new ol.layer.Vector({
 		source : source,
-		style : iconStyle
+		style : createPointStyle()
 	});
-
 	map.getLayers().push(businessObjectsLayer);
 	visualizeBOCallback = function() {
 		geoFactory.getGeoEntity().success(function(geoEntity) {
@@ -229,8 +301,14 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 			});
 			source.clear();
 			source.addFeatures(feats);
+			// object : is another way to populate JSON source
+			// source = new ol.source.GeoJSON({
+			// projection : 'EPSG:3857',
+			// object : geoEntity
+			// });
 			var view = map.getView();
 			console.log("extent " + source.getExtent() + " size " + map.getSize());
+
 			if (businessObjectsLayer.getSource().getFeatures().length > 1) {
 				// view.fitExtent(source.getExtent(), map.getSize());
 			}
@@ -241,15 +319,28 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 
 	}
 
+	toggleIconStyle = function() {
+		isIconStyle = !isIconStyle;
+		console.log("inconstyle : " + isIconStyle);
+		if (!isIconStyle) {
+			// businessObjectsLayer.setStyle(defaultStyle['Point'])
+			businessObjectsLayer.setStyle(createPointStyle())
+		} else {
+			businessObjectsLayer.setStyle(iconStyle)
+		}
+
+	}
 	// creating a control
 	customControl = function() {
 		var toolbar = document.getElementById("toolbar");
-		var getJson = document.getElementById("geoJson");
+		var toggleStyle = document.getElementById("toggleStyle");
 		var visualizeBusinessObjects = document.getElementById("visualizeBusinessObjects");
 		var showForm = document.getElementById("showForm");
-		getJson.addEventListener('click', addGeoJSONCallback, false);
+		var addSample = document.getElementById("addSample");
+		toggleStyle.addEventListener('click', toggleIconStyle, false);
 		visualizeBusinessObjects.addEventListener('click', visualizeBOCallback, false);
 		showForm.addEventListener('click', showFormCallback, false);
+		addSample.addEventListener('click', addGeoJSONCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : toolbar,
@@ -315,8 +406,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		console.log("submitting " + $scope.formhelper.name + " @ " + $scope.currentCoordinates);
 		var feature = {};
 		// ol.coordinate.
-		// coordinate = ol.proj.transform(coordinate,
-		// 'EPSG:3857', 'EPSG:4326');
+		// coordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
 		console.log("  " + coordinate);
 
 		feature.geometry = {
@@ -324,7 +414,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 			"coordinates" : coordinate
 		};
 		feature.properties = {
-			"name" : "awesome business Object"
+			"name" : $scope.formhelper.name
 		}
 		feature.type = "Feature";
 		geoFactory.addFeature(feature);
