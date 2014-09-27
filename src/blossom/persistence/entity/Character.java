@@ -11,4 +11,5 @@ public class Character {
     @Id
     @Column(name = "id")
     private String id;
+
 }
