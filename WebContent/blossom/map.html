@@ -1,25 +1,26 @@
 <link rel="stylesheet" href="../css/ol.css">
 <style>
+/* body { */
+/*  	padding-top: 0px;  */
+/* 	height: 100%; */
+/* 	padding-bottom: 60px; */
+/*  	padding-left: 10px; */
+/* 	padding-right: 10px;  */
+/* } */
 body {
 	padding-top: 50px;
-	/*  	padding-bottom: 60px; */
-	/*  	padding-left: 10px; */
-	/* 	padding-right: 10px;  */
+	/* 	padding-bottom: 70px; */
+	/* 	padding-left: 70px; */
+	/* 	padding-right: 70px; */
 }
 
 .toolbar {
 	position: absolute;
-	top: 95px;
-	left: 8px;
+	top: 8px;
+	left: 45px;
 	background: rgba(255, 255, 255, 0);
 	border-radius: 0px;
 	padding: 2px;
-}
-
-#map {
-	width: 100%;
-	height: 100%;
-	margin: 0;
 }
 
 #toolbox {
@@ -34,7 +35,6 @@ body {
 }
 
 #layerswitcher {
-	/* 	position: absolute; */
 	margin: 0;
 	padding: 10px;
 	border-radius: 4px;
@@ -52,7 +52,7 @@ body {
 
 .statusbar {
 	position: absolute;
-	bottom: 80px;
+	bottom: 8px;
 	right: 300px;
 	padding: 3px;
 	border-radius: 4px;
@@ -64,8 +64,8 @@ body {
 .formControl {
 	visibility: hidden;
 	position: absolute;
-	top: 200px;
-	left: 8px;
+	top: 80px;
+	left: 80px;
 	color: #fff;
 	/* 	background: rgba(255, 255, 255, 0); */
 	background: rgba(0, 60, 136, 0.5);
@@ -77,107 +77,101 @@ body {
 }
 
 .geoform {
+	visibility: hidden;
 	position: absolute;
 	bottom: 80px;
-	visibility: hidden
 }
-</style>
-<div id="map">
-	<div class="ol-overlaycontainer-stopevent">
-		<div class="ol-zoom ol-unselectable ol-control">
-			<button class="ol-zoom-in ol-has-tooltip" type="button">
-				<span role="tooltip">Zoom in</span>+
-			</button>
-			<button class="ol-zoom-out  ol-has-tooltip" type="button">
-				<span role="tooltip">Zoom out</span>−
-			</button>
-		</div>
-		<form id="formControl" class="formControl" name="formControl">
-			<div class="form-group has-feedback"
-				ng-class="{'has-error': formControl.name.$invalid, 'has-success': !formControl.name.$invalid}">
-				<label>Name</label> <input class="form-control" type="text"
-					name="name" ng-model="formhelper.name" required> <span
-					ng-show="!formControl.name.$invalid"
-					class="glyphicon glyphicon-ok form-control-feedback"></span> <span
-					ng-show="formControl.name.$error.required" class="help-inline">
-					Required</span>
-			</div>
-			<div class="form-group has-feedback"
-				ng-class="{'has-error': formControl.name.$invalid, 'has-success': !formControl.name.$invalid}">
-				<label>Name Select</label> <select class="form-control"
-					ng-model="formhelper.name"
-					ng-options="name for name in names | orderBy:'toString()'">
-				</select><br />
-			</div>
-			<div class="form-group has-feedback"
-				ng-class="{'has-error': formControl.coord.$invalid, 'has-success': !formControl.coord.$invalid}">
-				<label>Grid</label> <input class="form-control" type="text"
-					name="coord" ng-model="currentCoordinates" required> <span
-					ng-show="!formControl.coord.$invalid"
-					class="glyphicon glyphicon-ok form-control-feedback"></span> <span
-					ng-show="formControl.coord.$error.required" class="help-inline">
-					Required</span>
-			</div>
-			<button ng-click="submitFormItem()"
-				ng-disabled="formControl.$invalid" class="btn btn-primary">Submit</button>
-		</form>
-		<div id="popup" title="" data-original-title="Information"></div>
-		<div class="popover top in">
-			<div class="arrow"></div>
-			<h3 class="popover-title"></h3>
-			<div class="popover-content" id="popupcontent"></div>
-		</div>
-	</div>
-	<div id="toolbox">
-		<ul id="layerswitcher">
-			<li><label><input type="radio" name="layer"
-					ng-model="layerName" value="0" ng-change="switchLayer()">
-					MapQuest Satellite </label></li>
-			<li><label><input type="radio" name="layer"
-					ng-model="layerName" value="1" ng-change="switchLayer()">
-					MapQuest Hybrid</label></li>
-			<li><label><input type="radio" name="layer"
-					ng-model="layerName" value="2" ng-change="switchLayer()">
-					MapQuest OSM</label></li>
-			<li><label><input type="radio" name="layer"
-					ng-model="layerName" value="3" ng-change="switchLayer()">
-					OSM</label></li>
-		</ul>
-	</div>
-	<div id="toolbar" class="toolbar">
-		<div class="btn-toolbar" role="toolbar">
-			<div class="btn-group">
-				<button id="toggleStyle" type="button"
-					class="btn btn-default btn-lg">
-					<span class="glyphicon glyphicon-eye-open"></span>
-				</button>
-			</div>
-			<div class="btn-group">
-				<button id="visualizeBusinessObjects" type="button"
-					class="btn btn-default btn-lg">
-					<span class="glyphicon glyphicon-globe"></span>
-				</button>
-			</div>
-			<div class="btn-group">
-				<button id="showForm" type="button" class="btn btn-default btn-lg">
-					<span class="glyphicon glyphicon-pencil"></span>
-				</button>
-			</div>
-			<div class="btn-group">
-				<button id="addSample" type="button" class="btn btn-default btn-lg">
-					<span class="glyphicon glyphicon-plus"></span>
-				</button>
-			</div>
-			<div class="btn-group">
-				<button id="fitExtent" type="button" class="btn btn-default btn-lg">
-					<span class="glyphicon glyphicon-resize-full"></span>
-				</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="geoform" id="geoform">
-	<label>you just clicked here:</label>
-	<p>{{currentCoordinates}}</p>
-</div>
 
+</style>
+<div>
+	<div id="map" class="container-full">
+		<div class="ol-overlaycontainer-stopevent">
+			<form id="formControl" class="formControl" name="formControl">
+				<div class="form-group has-feedback"
+					ng-class="{'has-error': formControl.name.$invalid, 'has-success': !formControl.name.$invalid}">
+					<label>Name</label> <input class="form-control" type="text"
+						name="name" ng-model="formhelper.name" required> <span
+						ng-show="!formControl.name.$invalid"
+						class="glyphicon glyphicon-ok form-control-feedback"></span> <span
+						ng-show="formControl.name.$error.required" class="help-inline">
+						Required</span>
+				</div>
+				<div class="form-group has-feedback"
+					ng-class="{'has-error': formControl.name.$invalid, 'has-success': !formControl.name.$invalid}">
+					<label>Name Select</label> <select class="form-control"
+						ng-model="formhelper.name"
+						ng-options="name for name in names | orderBy:'toString()'">
+					</select><br />
+				</div>
+				<div class="form-group has-feedback"
+					ng-class="{'has-error': formControl.coord.$invalid, 'has-success': !formControl.coord.$invalid}">
+					<label>Grid</label> <input class="form-control" type="text"
+						name="coord" ng-model="currentCoordinates" required> <span
+						ng-show="!formControl.coord.$invalid"
+						class="glyphicon glyphicon-ok form-control-feedback"></span> <span
+						ng-show="formControl.coord.$error.required" class="help-inline">
+						Required</span>
+				</div>
+				<button ng-click="submitFormItem()"
+					ng-disabled="formControl.$invalid" class="btn btn-primary">Submit</button>
+			</form>
+			<div id="popup" title="" data-original-title="Information"></div>
+			<div class="popover top in">
+				<div class="arrow"></div>
+				<h3 class="popover-title"></h3>
+				<div class="popover-content" id="popupcontent"></div>
+			</div>
+		</div>
+		<div id="toolbox">
+			<ul id="layerswitcher">
+				<li><label><input type="radio" name="layer"
+						ng-model="layerName" value="0" ng-change="switchLayer()">
+						MapQuest Satellite </label></li>
+				<li><label><input type="radio" name="layer"
+						ng-model="layerName" value="1" ng-change="switchLayer()">
+						MapQuest Hybrid</label></li>
+				<li><label><input type="radio" name="layer"
+						ng-model="layerName" value="2" ng-change="switchLayer()">
+						MapQuest OSM</label></li>
+				<li><label><input type="radio" name="layer"
+						ng-model="layerName" value="3" ng-change="switchLayer()">
+						OSM</label></li>
+			</ul>
+		</div>
+		<div id="toolbar" class="toolbar">
+			<div class="btn-toolbar" role="toolbar">
+				<div class="btn-group">
+					<button id="toggleStyle" type="button"
+						class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon-eye-open"></span>
+					</button>
+				</div>
+				<div class="btn-group">
+					<button id="visualizeBusinessObjects" type="button"
+						class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon-globe"></span>
+					</button>
+				</div>
+				<div class="btn-group">
+					<button id="showForm" type="button" class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon-pencil"></span>
+					</button>
+				</div>
+				<div class="btn-group">
+					<button id="addSample" type="button" class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon-plus"></span>
+					</button>
+				</div>
+				<div class="btn-group">
+					<button id="fitExtent" type="button" class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon-resize-full"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="geoform" id="geoform">
+		<label id="geoformlabel">you just clicked here:</label>
+		<p>{{currentCoordinates}}</p>
+	</div>
+</div>

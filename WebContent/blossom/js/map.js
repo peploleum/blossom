@@ -135,7 +135,6 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 			var anchorX = -(iconWidth * scale / 2);
 			var anchorY = -(iconWidth * scale / 2);
 			var opacity = 1;
-			console.log("anchorX : " + anchorX + " anchorY : " + anchorY);
 			var offset = [];
 			offset.x = anchorX;
 			offset.y = anchorY;
@@ -143,8 +142,6 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 				image : new ol.style.Icon(({
 					anchor : [ 0.5, 0.5 ],
 					scale : scale,
-					// radius : 3,
-					// anchorXUnits : 'fraction',
 					anchorXUnits : 'fraction',
 					anchorYUnits : 'fraction',
 					// anchorYUnits : 'pixels',
@@ -241,7 +238,6 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	});
 
 	buildGeoForm = function() {
-		// var attrs = [ 'toubidou', 'scrapidou', 'roubidou' ];
 		var geoForm = document.getElementById('geoform');
 		var select = d3.select("#geoform");
 		select.style({
@@ -288,15 +284,8 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	map.getLayers().push(businessObjectsLayer);
 	visualizeBOCallback = function() {
 		geoFactory.getGeoEntity().success(function(geoEntity) {
-			console.log("success " + geoEntity.features);
 			var parser = new ol.format.GeoJSON();
 			feats = parser.readFeatures(geoEntity);
-			console.log("proj " + parser.readProjection(geoEntity).getCode());
-			feats.forEach(function(feat) {
-				console.log("feat : " + feat);
-				console.log("geom " + feat.getGeometry().getType());
-				console.log("geom coord " + feat.getGeometry().getCoordinates());
-			});
 			source.clear();
 			source.addFeatures(feats);
 			// object : is another way to populate JSON source
@@ -305,7 +294,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 			// object : geoEntity
 			// });
 			var view = map.getView();
-			console.log("extent " + source.getExtent() + " size " + map.getSize());
+//			console.log("extent " + source.getExtent() + " size " + map.getSize());
 
 			if (businessObjectsLayer.getSource().getFeatures().length > 1) {
 				// view.fitExtent(source.getExtent(), map.getSize());
@@ -319,9 +308,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 
 	toggleIconStyle = function() {
 		isIconStyle = !isIconStyle;
-		console.log("inconstyle : " + isIconStyle);
 		if (!isIconStyle) {
-			// businessObjectsLayer.setStyle(defaultStyle['Point'])
 			businessObjectsLayer.setStyle(createPointStyle())
 		} else {
 			businessObjectsLayer.setStyle(createIconStyle())
@@ -360,7 +347,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 
 	var mousePositionControl = new ol.control.MousePosition({
 		coordinateFormat : ol.coordinate.createStringXY(4),
-		projection : 'EPSG:3857',
+		projection : 'EPSG:4326',
 		className : 'statusbar',
 		undefinedHTML : '&nbsp;'
 	});
@@ -381,15 +368,14 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	});
 	map.addOverlay(popup);
 
-	$(popup.getElement()).popover({
-		'placement' : 'top',
-		'animation' : true,
-		'html' : true,
-		'content' : buildGeoForm()
-	});
-
 	map.on('singleclick', function(evt) {
 		onClick(evt);
+		$(popup.getElement()).popover({
+			'placement' : 'top',
+			'animation' : true,
+			'html' : true,
+			'content' : buildGeoForm()
+		});
 		var element = popup.getElement();
 		coordinate = evt.coordinate;
 		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));

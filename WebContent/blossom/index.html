@@ -9,35 +9,34 @@
 <title>Blossom : a Peploleum adventure</title>
 </head>
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container-full">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">Blossom</a>
-			</div>
-			<div class="collapse navbar-collapse">
-				<ul id="navbarul" class="nav navbar-nav">
-					<li id="homeNavItem" class="active"><a href="#">Home</a></li>
-					<li id="searchNavItem"><a href="#search">Search</a></li>
-					<li id="networkNavItem"><a href="#network">Network</a></li>
-					<li id="mapNavItem"><a href="#map">Map</a></li>
-					<li id="aboutNavItem"><a href="#about">About</a></li>
-					<li id="contactNavItem"><a href="#contact">Contact</a></li>
-				</ul>
-			</div>
-			<!--/.nav-collapse -->
-		</div>
-	</div>
-
 	<div class="container-full">
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-full">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Blossom</a>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul id="navbarul" class="nav navbar-nav">
+						<li id="homeNavItem" class="active"><a href="#">Home</a></li>
+						<li id="searchNavItem"><a href="#search">Search</a></li>
+						<li id="networkNavItem"><a href="#network">Network</a></li>
+						<li id="mapNavItem"><a href="#map">Map</a></li>
+						<li id="aboutNavItem"><a href="#about">About</a></li>
+						<li id="contactNavItem"><a href="#contact">Contact</a></li>
+					</ul>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</div>
+
+
 		<div ng-view class="view-animate"></div>
-
-
 	</div>
 	<!-- /.container -->
 	<script src="../vendor/jquery.min.js"></script>
