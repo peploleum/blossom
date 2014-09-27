@@ -18,7 +18,7 @@ import blossom.test.GraphTest;
 public class GraphSingleton {
 
     private static GraphSingleton INSTANCE = null;
-
+    
     private static final Logger LOGGER = Logger.getLogger(GraphSingleton.class.getName());
 
     private Graph graph;

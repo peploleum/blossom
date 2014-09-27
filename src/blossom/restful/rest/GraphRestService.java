@@ -2,14 +2,19 @@ package blossom.restful.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import blossom.persistence.EntityManagerFactorySingleton;
+import blossom.persistence.entity.CharacterEntity;
 import blossom.restful.graph.Graph;
 import blossom.restful.graph.LinkItem;
 import blossom.restful.graph.NodeItem;
@@ -19,6 +24,9 @@ import blossom.restful.stat.GraphStatItem;
 
 @Path("/graph")
 public class GraphRestService {
+
+    private static final Logger LOGGER = Logger.getLogger(GraphRestService.class.getName());
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Graph getGraph() {
@@ -57,15 +65,37 @@ public class GraphRestService {
         return graphStat;
     }
 
-    @PUT
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/addNode")
     public void addNode(final NodeItem node) {
         final GraphSingleton gs = GraphSingleton.getInstance();
-        gs.getGraph().getNodes().add(node);
+
+        final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            try {
+                final CharacterEntity characterEntity = new CharacterEntity();
+                characterEntity.setName(node.getName());
+                characterEntity.setId(node.getId());
+                characterEntity.setCatchphrase(node.getCatchphrase());
+                characterEntity.setSize(node.getSize());
+                entityManager.persist(characterEntity);
+                entityManager.getTransaction().commit();
+                gs.addNode(node);
+            } catch (final Exception e) {
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        } finally {
+            entityManager.close();
+        }
+
     }
 
-    @PUT
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/addLink")
     public void addLink(final List<LinkItem> link) {
@@ -73,6 +103,11 @@ public class GraphRestService {
         for (final LinkItem linkItem : link) {
             gs.getGraph().getLinks().add(linkItem);
         }
+    }
+
+    @POST
+    @Path("/persistGraph")
+    public void persistGraph(final Graph graph) {
     }
 
 }

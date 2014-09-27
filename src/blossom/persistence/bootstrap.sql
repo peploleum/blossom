@@ -10,7 +10,7 @@ DROP TABLE blossom."character";
 
 CREATE TABLE blossom."character"
 (
-   id varchar(36)[] primary key not null,
+   id varchar(36) primary key not null,
    name varchar(250),
    catchphrase varchar(250),
    size integer

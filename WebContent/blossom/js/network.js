@@ -322,7 +322,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 				}
 
 			}
-			$http.put('./rest/graph/addLink', newLinks).success(function() {
+			$http.post('./rest/graph/addLink', newLinks).success(function() {
 				console.log("success");
 				console.log(newLinks);
 				for (link in newLinks) {
@@ -355,7 +355,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			"size" : size,
 			"catchphrase" : $scope.nodehelper.catchphrase
 		};
-		$http.put('./rest/graph/addNode', newNode).success(function() {
+		$http.post('./rest/graph/addNode', newNode).success(function() {
 			console.log("success");
 			force.nodes().push(newNode);
 			force.start();
@@ -427,6 +427,10 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 	toggleSymbo = function() {
 		symbo = !symbo;
 	}
+
+	saveGraph = function() {
+		//TODO persist graph in database
+	}
 	// sureley there is a pro way of doing this, we use a var to store the
 	// button we click on
 	$scope.submitFormNode = function() {
@@ -470,6 +474,8 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			toggleSymbo();
 			force.start();
 			updateGraph();
+		} else if (selectionClicked == 'SaveGraph') {
+			saveGraph();
 		}
 		$scope.addNodeSuccess = true;
 		selectionClicked = null;
