@@ -11,8 +11,8 @@ body {
 	position: absolute;
 	top: 95px;
 	left: 8px;
-	background: rgba(255, 255, 255, 0.4);
-	border-radius: 4px;
+	background: rgba(255, 255, 255, 0);
+	border-radius: 0px;
 	padding: 2px;
 }
 
@@ -66,12 +66,14 @@ body {
 	position: absolute;
 	top: 200px;
 	left: 8px;
-	/* 	color: #fff; */
-	background: rgba(255, 255, 255, 1);
+	color: #fff;
+	/* 	background: rgba(255, 255, 255, 0); */
+	background: rgba(0, 60, 136, 0.5);
 	border-radius: 4px;
 	padding: 4px;
 	z-index: 100;
 	left: 8px;
+	border-radius: 4px;
 }
 
 .geoform {
@@ -80,9 +82,6 @@ body {
 	visibility: hidden
 }
 </style>
-<!-- <div> -->
-<!-- <label id="coordLabel2">coordinates {{currentCoordinates}}</label>-->
-<!-- </div> -->
 <div id="map">
 	<div class="ol-overlaycontainer-stopevent">
 		<div class="ol-zoom ol-unselectable ol-control">
@@ -102,6 +101,13 @@ body {
 					class="glyphicon glyphicon-ok form-control-feedback"></span> <span
 					ng-show="formControl.name.$error.required" class="help-inline">
 					Required</span>
+			</div>
+			<div class="form-group has-feedback"
+				ng-class="{'has-error': formControl.name.$invalid, 'has-success': !formControl.name.$invalid}">
+				<label>Name Select</label> <select class="form-control"
+					ng-model="formhelper.name"
+					ng-options="name for name in names | orderBy:'toString()'">
+				</select><br />
 			</div>
 			<div class="form-group has-feedback"
 				ng-class="{'has-error': formControl.coord.$invalid, 'has-success': !formControl.coord.$invalid}">
@@ -139,12 +145,35 @@ body {
 		</ul>
 	</div>
 	<div id="toolbar" class="toolbar">
-		<button id="toggleStyle">Toggle Icons</button>
-		<button id="visualizeBusinessObjects">Visualize Business
-			Objects</button>
-		<button id="showForm">Show form</button>
-		<button id="addSample">add Sample</button>
-		<button id="fitExtent">Fit Extent</button>
+		<div class="btn-toolbar" role="toolbar">
+			<div class="btn-group">
+				<button id="toggleStyle" type="button"
+					class="btn btn-default btn-lg">
+					<span class="glyphicon glyphicon-eye-open"></span>
+				</button>
+			</div>
+			<div class="btn-group">
+				<button id="visualizeBusinessObjects" type="button"
+					class="btn btn-default btn-lg">
+					<span class="glyphicon glyphicon-globe"></span>
+				</button>
+			</div>
+			<div class="btn-group">
+				<button id="showForm" type="button" class="btn btn-default btn-lg">
+					<span class="glyphicon glyphicon-pencil"></span>
+				</button>
+			</div>
+			<div class="btn-group">
+				<button id="addSample" type="button" class="btn btn-default btn-lg">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+			</div>
+			<div class="btn-group">
+				<button id="fitExtent" type="button" class="btn btn-default btn-lg">
+					<span class="glyphicon glyphicon-resize-full"></span>
+				</button>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="geoform" id="geoform">

@@ -19,6 +19,7 @@ module.factory('geoFactory', [ '$http', function($http) {
 
 module.controller('MapCtrl', function($scope, geoFactory) {
 	$scope.currentCoordinates;
+	$scope.names = [ 'amy', 'bender', 'farnsworth', 'fry', 'zoidberg', 'scruffy', 'nibbler', 'leela', 'hermes' ];
 	var coordinate;
 	var isIconStyle = false;
 	var navbarul = d3.selectAll('ul#navbarul>li');
@@ -84,36 +85,8 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		}) ]
 	};
 
-	customCircleStyle = [ new ol.style.Style({
-		image : new ol.style.Circle({
-			fill : new ol.style.Fill({
-				color : 'rgba(255,0,0,0.5)'
-			}),
-			radius : 10,
-			stroke : new ol.style.Stroke({
-				color : '#ff0',
-				width : 1
-			})
-		}),
-		text : new ol.style.Text({
-			text : 'toubidou',
-			fill : new ol.style.Fill({
-				color : 'green'
-			}),
-			stroke : new ol.style.Stroke({
-				color : 'white',
-				width : 3
-			}),
-			font : 'Normal' + ' ' + '12px' + ' ' + 'Arial',
-			offsetX : 0,
-			offsetY : 0,
-			textAlign : 'Center',
-			textBaseline : 'Middle',
-		})
-	}) ]
-
 	// custom text depending on feature name
-	createTextStyle = function(feature) {
+	createTextStyle = function(feature, offset) {
 		return new ol.style.Text({
 			text : feature.get('name'),
 			fill : new ol.style.Fill({
@@ -124,8 +97,8 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 				width : 3
 			}),
 			font : 'Normal' + ' ' + '12px' + ' ' + 'Arial',
-			offsetX : 0,
-			offsetY : 0,
+			offsetX : offset.x,
+			offsetY : offset.y,
 			textAlign : 'Center',
 			textBaseline : 'Middle',
 		});
@@ -134,6 +107,9 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	// custom point style depending on feature
 	createPointStyle = function() {
 		return function(feature, resolution) {
+			var offset = [];
+			offset.x = 0;
+			offset.y = 0;
 			var pointStyle = new ol.style.Style({
 				image : new ol.style.Circle({
 					fill : new ol.style.Fill({
@@ -145,7 +121,37 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 						width : 1
 					})
 				}),
-				text : createTextStyle(feature)
+				text : createTextStyle(feature, offset)
+			})
+			return [ pointStyle ];
+		}
+	}
+
+	// custom point style depending on feature
+	createIconStyle = function() {
+		return function(feature, resolution) {
+			var iconWidth = 256;
+			var scale = 0.3;
+			var anchorX = -(iconWidth * scale / 2);
+			var anchorY = -(iconWidth * scale / 2);
+			var opacity = 1;
+			console.log("anchorX : " + anchorX + " anchorY : " + anchorY);
+			var offset = [];
+			offset.x = anchorX;
+			offset.y = anchorY;
+			var pointStyle = new ol.style.Style({
+				image : new ol.style.Icon(({
+					anchor : [ 0.5, 0.5 ],
+					scale : scale,
+					// radius : 3,
+					// anchorXUnits : 'fraction',
+					anchorXUnits : 'fraction',
+					anchorYUnits : 'fraction',
+					// anchorYUnits : 'pixels',
+					opacity : opacity,
+					src : 'resources/' + feature.get('name') + '.png'
+				})),
+				text : createTextStyle(feature, offset)
 			})
 			return [ pointStyle ];
 		}
@@ -318,7 +324,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 			// businessObjectsLayer.setStyle(defaultStyle['Point'])
 			businessObjectsLayer.setStyle(createPointStyle())
 		} else {
-			businessObjectsLayer.setStyle(iconStyle)
+			businessObjectsLayer.setStyle(createIconStyle())
 		}
 
 	}
@@ -326,7 +332,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		console.log("fit extent current map extent is " + map.getView().calculateExtent(map.getSize()));
 		console.log("extent " + source.getExtent() + " size " + map.getSize());
 		map.getView().fitExtent(source.getExtent(), map.getSize());
-		console.log("extent " + source.getExtent(),map.getView().calculateExtent(map.getSize()));
+		console.log("extent " + source.getExtent(), map.getView().calculateExtent(map.getSize()));
 	}
 	// creating a control
 	customControl = function() {
