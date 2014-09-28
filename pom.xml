@@ -23,6 +23,27 @@
 				<configuration>
 					<warSourceDirectory>WebContent</warSourceDirectory>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
+<!-- 					<webResources> -->
+<!-- 						<resource> -->
+<!-- 							the default value is ** -->
+<!-- 							<directory>src/blossom/restful/graph</directory> -->
+<!-- 							<targetPath>WEB-INF/classes/blossom/restful/graph</targetPath> -->
+<!-- 							<includes> -->
+<!-- 								<include>**/jaxb.properties</include> -->
+<!-- 							</includes> -->
+<!-- 							there's no default value for this -->
+<!-- 							<excludes> -->
+<!-- 							<exclude>*pattern3/pattern3</exclude> -->
+<!-- 							</excludes> -->
+<!-- 						</resource> -->
+<!-- 						<resource> -->
+<!--  							<directory>src/blossom/restful/geo/entity</directory> -->
+<!-- 							<targetPath>WEB-INF/classes/blossom/restful/geo/entity</targetPath> -->
+<!-- 							<includes> -->
+<!-- 								<include>**/jaxb.properties</include> -->
+<!-- 							</includes> -->
+<!-- 						</resource> -->
+<!-- 					</webResources> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -46,11 +67,6 @@
 			<version>4.11</version>
 		</dependency>
 		<dependency>
-			<groupId>org.glassfish.jersey.containers</groupId>
-			<artifactId>jersey-container-servlet</artifactId>
-			<version>2.12</version>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
@@ -66,14 +82,19 @@
 			<version>9.3-1102-jdbc41</version>
 		</dependency>
 		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-moxy</artifactId>
-			<version>2.12</version>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>org.eclipse.persistence.jpa</artifactId>
 			<version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-moxy</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>2.5</version>
 		</dependency>
 	</dependencies>
 </project>
