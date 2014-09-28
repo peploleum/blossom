@@ -6,7 +6,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -34,7 +36,35 @@ public class GraphRestService {
         // seems we need to deploy heavy artillery with glassfish servlet + moxy
         // ...
         final GraphSingleton gs = GraphSingleton.getInstance();
-        return gs.getGraph();
+        final Graph graph = gs.getGraph();
+
+        final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
+        try {
+            final List<NodeItem> nodeList = new ArrayList<NodeItem>();
+            final Query nameQuery = entityManager.createNamedQuery("CharacterEntity.findAll");
+            try {
+                @SuppressWarnings("unchecked")
+                final List<CharacterEntity> resultList = nameQuery.getResultList();
+                for (final CharacterEntity result : resultList) {
+                    final NodeItem nodeItem = new NodeItem();
+                    nodeItem.setId(result.getId());
+                    nodeItem.setCatchphrase(result.getCatchphrase());
+                    nodeItem.setName(result.getName());
+                    nodeItem.setSize(result.getSize());
+                    nodeList.add(nodeItem);
+                }
+                graph.setNodes(nodeList);
+
+            } catch (final Exception e) {
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        } finally {
+            entityManager.close();
+        }
+        return graph;
     }
 
     @GET
@@ -108,6 +138,38 @@ public class GraphRestService {
     @POST
     @Path("/persistGraph")
     public void persistGraph(final Graph graph) {
+    }
+
+    @DELETE
+    // @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/removeNode")
+    public void deleteNode(final String nodeId) {
+        final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            try {
+                // for (String nodeId : nodeIds) {
+                final Query namedQuery = entityManager.createNamedQuery("CharacterEntity.findById");
+                namedQuery.setParameter("id", nodeId);
+                final CharacterEntity result = (CharacterEntity) namedQuery.getSingleResult();
+                LOGGER.log(Level.INFO, "Merging " + result.toString());
+                entityManager.merge(result);
+                LOGGER.log(Level.INFO, "Removing " + result.toString());
+                entityManager.remove(result);
+                final GraphSingleton gs = GraphSingleton.getInstance();
+                gs.removeNodeById(nodeId);
+                // }
+                entityManager.getTransaction().commit();
+            } catch (final Exception e) {
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        } finally {
+            entityManager.close();
+        }
+
     }
 
 }

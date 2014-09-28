@@ -23,27 +23,15 @@
 				<configuration>
 					<warSourceDirectory>WebContent</warSourceDirectory>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
-<!-- 					<webResources> -->
-<!-- 						<resource> -->
-<!-- 							the default value is ** -->
-<!-- 							<directory>src/blossom/restful/graph</directory> -->
-<!-- 							<targetPath>WEB-INF/classes/blossom/restful/graph</targetPath> -->
-<!-- 							<includes> -->
-<!-- 								<include>**/jaxb.properties</include> -->
-<!-- 							</includes> -->
-<!-- 							there's no default value for this -->
-<!-- 							<excludes> -->
-<!-- 							<exclude>*pattern3/pattern3</exclude> -->
-<!-- 							</excludes> -->
-<!-- 						</resource> -->
-<!-- 						<resource> -->
-<!--  							<directory>src/blossom/restful/geo/entity</directory> -->
-<!-- 							<targetPath>WEB-INF/classes/blossom/restful/geo/entity</targetPath> -->
-<!-- 							<includes> -->
-<!-- 								<include>**/jaxb.properties</include> -->
-<!-- 							</includes> -->
-<!-- 						</resource> -->
-<!-- 					</webResources> -->
+					<webResources>
+						<resource>
+							<directory>src/META-INF</directory>
+							<targetPath>WEB-INF/classes/META-INF</targetPath>
+							<!-- <includes> -->
+							<!-- <include>**/jaxb.properties</include> -->
+							<!-- </includes> -->
+						</resource>
+					</webResources>
 				</configuration>
 			</plugin>
 			<plugin>

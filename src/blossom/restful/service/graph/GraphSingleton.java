@@ -1,10 +1,10 @@
 package blossom.restful.service.graph;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
@@ -18,15 +18,16 @@ import blossom.test.GraphTest;
 public class GraphSingleton {
 
     private static GraphSingleton INSTANCE = null;
-    
+    public static boolean debugMode = false;
     private static final Logger LOGGER = Logger.getLogger(GraphSingleton.class.getName());
 
     private Graph graph;
 
     private GraphSingleton() {
-        graph = initGraph();
-        if (graph == null)
-            graph = new Graph();
+        this.graph = initGraph();
+        if (this.graph == null) {
+            this.graph = new Graph();
+        }
     }
 
     public static GraphSingleton getInstance() {
@@ -37,11 +38,15 @@ public class GraphSingleton {
     }
 
     public Graph getGraph() {
-        return graph;
+        return this.graph;
     }
 
     public void addNode(final NodeItem node) {
         getGraph().getNodes().add(node);
+    }
+
+    public void removeNode(final NodeItem nodeItem) {
+        getGraph().getNodes().remove(nodeItem);
     }
 
     public void addLink(final LinkItem link) {
@@ -49,19 +54,43 @@ public class GraphSingleton {
     }
 
     private Graph initGraph() {
-        JAXBContext jc;
-        Graph g = null;
-        try {
-            jc = JAXBContext.newInstance(Graph.class);
-            final Unmarshaller unmarshaller = jc.createUnmarshaller();
-            unmarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            unmarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            // this is so intuitive ... or not
-            g = unmarshaller.unmarshal(new StreamSource(GraphTest.class.getResourceAsStream("data.json")), Graph.class).getValue();
-            // anyway it works...
-        } catch (final JAXBException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        if (debugMode) {
+            JAXBContext jc;
+            Graph g = null;
+            try {
+                jc = JAXBContext.newInstance(Graph.class);
+                final Unmarshaller unmarshaller = jc.createUnmarshaller();
+                unmarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+                unmarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
+                // this is so intuitive ... or not
+                g = unmarshaller.unmarshal(new StreamSource(GraphTest.class.getResourceAsStream("data.json")), Graph.class).getValue();
+                // anyway it works...
+            } catch (final Exception e) {
+                LOGGER.log(Level.SEVERE, "Failed to load sample data. Will provide empty Graph. " + e.getMessage(), e);
+                g = new Graph();
+            }
+            return g;
+        } else {
+            final Graph g = new Graph();
+            return g;
         }
-        return g;
     }
+
+    public void removeNodeById(String nodeId) {
+        List<NodeItem> nodes = getGraph().getNodes();
+        int indexToRemove = 0;
+        boolean found = false;
+        for (NodeItem nodeItem : nodes) {
+            if (nodeId.equals(nodeItem.getId())) {
+                indexToRemove = nodes.indexOf(nodeItem);
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            LOGGER.log(Level.INFO, "removing node at index: " + indexToRemove);
+            nodes.remove(indexToRemove);
+        }
+    }
+
 }

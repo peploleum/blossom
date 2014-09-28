@@ -41,4 +41,14 @@ public class NodeItem {
         this.catchphrase = catchphrase;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof NodeItem) {
+            return ((NodeItem) obj).getId().equals(this.id);
+        } else {
+            return false;
+        }
+
+    }
+
 }

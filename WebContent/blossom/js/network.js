@@ -368,6 +368,46 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			$scope.addNodeSuccess = false;
 		});
 	}
+	// adding a node - server-side
+	removeNode = function() {
+		console.log("removing selected nodes ");
+		console.log("size from selection: " + selection.length);
+		for (i = 0; i < selection.length; i++) {
+			var toRemove = selection[i];
+			console.log("removing " + toRemove);
+			$http({
+				method : 'DELETE',
+				url : './rest/graph/removeNode',
+				data : toRemove
+			}).success(function() {
+				console.log("success we need to remove " + toRemove);
+				indexToSplice = -1;
+				for (j = 0; j < force.nodes().length; j++) {
+					console.log("searching " + force.nodes()[j].id + " against " + toRemove);
+					if (force.nodes()[j].id == toRemove) {
+						indexToSplice = j;
+						console.log("found at index " + indexToSplice);
+					}
+				}
+				if (indexToSplice != -1) {
+					console.log("splicing index: " + indexToSplice);
+					force.nodes().splice(indexToSplice, 1);
+				}
+				// selection has been removed
+				clearSelection();
+				force.start();
+				updateGraph();
+				$scope.addNodeError = false;
+				$scope.addNodeSuccess = true;
+			}).error(function() {
+				console.log("error");
+				$scope.addNodeError = true;
+				$scope.addNodeSuccess = false;
+			});
+
+		}
+
+	}
 
 	// adding a node - client side
 	addNode = function() {
@@ -429,17 +469,21 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 	}
 
 	saveGraph = function() {
-		//TODO persist graph in database
+		// TODO persist graph in database
 	}
 	// sureley there is a pro way of doing this, we use a var to store the
 	// button we click on
 	$scope.submitFormNode = function() {
 		if (selectionClicked == 'AddLink') {
-			// addLink();
+			// addLink();RemoveNode
 			addLinkPut();
 		} else if (selectionClicked == 'AddNode') {
 			// addNode();
 			addNodePut();
+			computeStatsRest();
+		} else if (selectionClicked == 'RemoveNode') {
+			// addNode();
+			removeNode();
 			computeStatsRest();
 		} else if (selectionClicked == 'Start') {
 			startGraph();
@@ -529,14 +573,11 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		var stats = [];
 		for (a in map.map) {
 			count++;
-			console.log("a " + a + " " + map.map[a].stat);
 			stats.push(map.map[a].stat);
 		}
-		console.log("heightt: " + count + " widthFunction " + linearScale);
 		d3.selectAll("#chartbar").remove();
 		var statchart = d3.select(".statgraph");
 
-		console.log("map.max: " + map.max + " statwidth " + statchart[0][0].clientWidth);
 		statchart.attr("width", statchart[0][0].clientWidth).attr("height", barHeight * count);
 		var linearScale = d3.scale.linear().domain([ 0, d3.max(stats) ]).range([ 0, statchart[0][0].clientWidth ]);
 
