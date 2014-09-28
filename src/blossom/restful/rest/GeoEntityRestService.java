@@ -28,6 +28,8 @@ public class GeoEntityRestService {
     @Path("/getgeoentity")
     public GeoEntity getGeoEntity() {
         final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
+        
+        //for now, for debug, we marshall it this way to check what's coming out against what's coming in on clien-side.
         JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(GeoEntity.class);
