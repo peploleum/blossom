@@ -51,6 +51,7 @@ public class GeoEntityRestService {
     public void addNode(final Feature feature) {
 
         JAXBContext jc;
+        //same here, for debug purposes
         try {
             jc = JAXBContext.newInstance(Feature.class);
             final Marshaller marshaller = jc.createMarshaller();
