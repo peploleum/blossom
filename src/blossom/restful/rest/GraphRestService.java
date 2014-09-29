@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
 import blossom.restful.graph.Graph;
+import blossom.restful.graph.GraphNodeIdCollection;
 import blossom.restful.graph.LinkItem;
 import blossom.restful.graph.NodeItem;
 import blossom.restful.service.graph.GraphSingleton;
@@ -141,14 +142,12 @@ public class GraphRestService {
     }
 
     @DELETE
-    // @Consumes(MediaType.APPLICATION_JSON)
     @Path("/removeNode")
     public void deleteNode(final String nodeId) {
         final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
             try {
-                // for (String nodeId : nodeIds) {
                 final Query namedQuery = entityManager.createNamedQuery("CharacterEntity.findById");
                 namedQuery.setParameter("id", nodeId);
                 final CharacterEntity result = (CharacterEntity) namedQuery.getSingleResult();
@@ -158,7 +157,38 @@ public class GraphRestService {
                 entityManager.remove(result);
                 final GraphSingleton gs = GraphSingleton.getInstance();
                 gs.removeNodeById(nodeId);
-                // }
+                entityManager.getTransaction().commit();
+            } catch (final Exception e) {
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        } finally {
+            entityManager.close();
+        }
+
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/removeNodes")
+    public void deleteNodes(final GraphNodeIdCollection ids) {
+        final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            try {
+                for (final String nodeId : ids.getIds()) {
+                    final Query namedQuery = entityManager.createNamedQuery("CharacterEntity.findById");
+                    namedQuery.setParameter("id", nodeId);
+                    final CharacterEntity result = (CharacterEntity) namedQuery.getSingleResult();
+                    LOGGER.log(Level.INFO, "Merging " + result.toString());
+                    entityManager.merge(result);
+                    LOGGER.log(Level.INFO, "Removing " + result.toString());
+                    entityManager.remove(result);
+                    final GraphSingleton gs = GraphSingleton.getInstance();
+                    gs.removeNodeById(nodeId);
+                }
                 entityManager.getTransaction().commit();
             } catch (final Exception e) {
                 if (entityManager.getTransaction().isActive()) {

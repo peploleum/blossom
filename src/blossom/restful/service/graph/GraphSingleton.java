@@ -1,5 +1,6 @@
 package blossom.restful.service.graph;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,11 +77,11 @@ public class GraphSingleton {
         }
     }
 
-    public void removeNodeById(String nodeId) {
-        List<NodeItem> nodes = getGraph().getNodes();
+    public void removeNodeById(final String nodeId) {
+        final List<NodeItem> nodes = getGraph().getNodes();
         int indexToRemove = 0;
         boolean found = false;
-        for (NodeItem nodeItem : nodes) {
+        for (final NodeItem nodeItem : nodes) {
             if (nodeId.equals(nodeItem.getId())) {
                 indexToRemove = nodes.indexOf(nodeItem);
                 found = true;
@@ -90,7 +91,16 @@ public class GraphSingleton {
         if (found) {
             LOGGER.log(Level.INFO, "removing node at index: " + indexToRemove);
             nodes.remove(indexToRemove);
+            // we need to spot involved links ...
+            final List<LinkItem> linksToRemove = new ArrayList<LinkItem>();
+            final List<LinkItem> links = getGraph().getLinks();
+            for (final LinkItem linkItem : links) {
+                if (linkItem.getSource() == indexToRemove || linkItem.getTarget() == indexToRemove) {
+                    LOGGER.log(Level.INFO, "marking link for removal: " + linkItem.toString());
+                    linksToRemove.add(linkItem);
+                }
+            }
+            getGraph().getLinks().removeAll(linksToRemove);
         }
     }
-
 }

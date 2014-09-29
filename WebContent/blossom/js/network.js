@@ -93,8 +93,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			console.log(graphFactory);
 			// just another way of pushing nodes
 			force.nodes(graphFactory.nodes)
-			links = force.links();
-			links = [];
 			force.links(graphFactory.links);
 			force.start();
 
@@ -378,6 +376,10 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			$http({
 				method : 'DELETE',
 				url : './rest/graph/removeNode',
+				dataType : "json",
+				headers : {
+					"Content-Type" : "application/json"
+				},
 				data : toRemove
 			}).success(function() {
 				console.log("success we need to remove " + toRemove);
@@ -406,6 +408,51 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			});
 
 		}
+
+	}
+
+	// removing bulk nodes
+	removeNodes = function() {
+		console.log("removing selected nodes ...");
+		console.log("selection size: " + selection.length);
+		var toRemove = selection;
+		var toRemoveJson = {
+			'ids' : toRemove
+		};
+		console.log("removing " + toRemove);
+		console.log("removing " + toRemoveJson);
+		// in eclipse, i can't use reserverd keyword delete, which obviously is
+		// shit, and i'm too lazy to fix it
+		$http.post('./rest/graph/removeNodes', toRemoveJson).success(function() {
+//			console.log("success we need to remove " + toRemove);
+//			indexToSplice = [];
+//			for (j = 0; j < selection.length; j++) {
+//				console.log("searching index of " + toRemove[j]);
+//				for (k = 0; k < force.nodes().length; k++) {
+//					if (force.nodes()[k].id == toRemove[j]) {
+//						indexToSplice.push(k);
+//						console.log("found " + toRemove[j] + "at index " + k);
+//					}
+//				}
+//			}
+//			if (indexToSplice.length > 0) {
+//				for (i = 0; i < indexToSplice.length; i++) {
+//					console.log("splicing index: " + indexToSplice);
+//					force.nodes().splice(indexToSplice, 1);
+//				}
+//			}
+			computeGraphRest();
+			// selection has been removed
+			clearSelection();
+			force.start();
+			updateGraph();
+			$scope.addNodeError = false;
+			$scope.addNodeSuccess = true;
+		}).error(function() {
+			console.log("error");
+			$scope.addNodeError = true;
+			$scope.addNodeSuccess = false;
+		});
 
 	}
 
@@ -483,7 +530,8 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			computeStatsRest();
 		} else if (selectionClicked == 'RemoveNode') {
 			// addNode();
-			removeNode();
+			// removeNode();
+			removeNodes();
 			computeStatsRest();
 		} else if (selectionClicked == 'Start') {
 			startGraph();
