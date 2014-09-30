@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
 import blossom.restful.graph.Graph;
@@ -32,7 +33,7 @@ public class GraphRestService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Graph getGraph() {
+    public Graph getGraph() throws TopLevelBlossomException {
         // to be able to return a marshalled json object based on a Jaxb bean it
         // seems we need to deploy heavy artillery with glassfish servlet + moxy
         // ...
@@ -61,6 +62,7 @@ public class GraphRestService {
                     entityManager.getTransaction().rollback();
                 }
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                throw new TopLevelBlossomException(e, "Failed to remove Nodes from database.");
             }
         } finally {
             entityManager.close();
@@ -71,35 +73,39 @@ public class GraphRestService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/stat")
-    public GraphStat computeStats() {
-        final Graph graph = GraphSingleton.getInstance().getGraph();
-        final List<NodeItem> nodes = graph.getNodes();
-        final GraphStat graphStat = new GraphStat();
-        final List<GraphStatItem> map = new ArrayList<GraphStatItem>();
-        graphStat.setMap(map);
-        int max = 0;
-        for (final NodeItem nodeItem : nodes) {
-            final String name = nodeItem.getName();
-            final GraphStatItem byName = graphStat.getByName(name);
-            if (byName != null) {
-                final Integer stat = byName.getStat();
-                final Integer computedStat = (stat == null) ? Integer.valueOf(1) : Integer.valueOf(stat.intValue() + 1);
-                max = Math.max(computedStat.intValue(), max);
-                byName.setStat(computedStat);
-            } else {
-                final GraphStatItem graphStatItem = new GraphStatItem();
-                graphStatItem.setName(name);
-                graphStatItem.setStat(Integer.valueOf(1));
-                graphStat.getMap().add(graphStatItem);
+    public GraphStat computeStats() throws TopLevelBlossomException {
+        try {
+            final Graph graph = GraphSingleton.getInstance().getGraph();
+            final List<NodeItem> nodes = graph.getNodes();
+            final GraphStat graphStat = new GraphStat();
+            final List<GraphStatItem> map = new ArrayList<GraphStatItem>();
+            graphStat.setMap(map);
+            int max = 0;
+            for (final NodeItem nodeItem : nodes) {
+                final String name = nodeItem.getName();
+                final GraphStatItem byName = graphStat.getByName(name);
+                if (byName != null) {
+                    final Integer stat = byName.getStat();
+                    final Integer computedStat = (stat == null) ? Integer.valueOf(1) : Integer.valueOf(stat.intValue() + 1);
+                    max = Math.max(computedStat.intValue(), max);
+                    byName.setStat(computedStat);
+                } else {
+                    final GraphStatItem graphStatItem = new GraphStatItem();
+                    graphStatItem.setName(name);
+                    graphStatItem.setStat(Integer.valueOf(1));
+                    graphStat.getMap().add(graphStatItem);
+                }
             }
+            return graphStat;
+        } catch (Exception e) {
+            throw new TopLevelBlossomException(e, "Failed to remove Nodes from database.");
         }
-        return graphStat;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/addNode")
-    public void addNode(final NodeItem node) {
+    public void addNode(final NodeItem node) throws TopLevelBlossomException {
         final GraphSingleton gs = GraphSingleton.getInstance();
 
         final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
@@ -119,6 +125,7 @@ public class GraphRestService {
                     entityManager.getTransaction().rollback();
                 }
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                throw new TopLevelBlossomException(e, "Failed to remove Nodes from database.");
             }
         } finally {
             entityManager.close();
@@ -129,10 +136,14 @@ public class GraphRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/addLink")
-    public void addLink(final List<LinkItem> link) {
-        final GraphSingleton gs = GraphSingleton.getInstance();
-        for (final LinkItem linkItem : link) {
-            gs.getGraph().getLinks().add(linkItem);
+    public void addLink(final List<LinkItem> link) throws TopLevelBlossomException {
+        try {
+            final GraphSingleton gs = GraphSingleton.getInstance();
+            for (final LinkItem linkItem : link) {
+                gs.getGraph().getLinks().add(linkItem);
+            }
+        } catch (Exception e) {
+            throw new TopLevelBlossomException(e, "Failed to remove Nodes from database.");
         }
     }
 
@@ -143,7 +154,7 @@ public class GraphRestService {
 
     @DELETE
     @Path("/removeNode")
-    public void deleteNode(final String nodeId) {
+    public void deleteNode(final String nodeId) throws TopLevelBlossomException {
         final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -163,6 +174,7 @@ public class GraphRestService {
                     entityManager.getTransaction().rollback();
                 }
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                throw new TopLevelBlossomException(e, "Failed to remove Node from database.");
             }
         } finally {
             entityManager.close();
@@ -173,7 +185,7 @@ public class GraphRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/removeNodes")
-    public void deleteNodes(final GraphNodeIdCollection ids) {
+    public void deleteNodes(final GraphNodeIdCollection ids) throws TopLevelBlossomException {
         final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -195,11 +207,11 @@ public class GraphRestService {
                     entityManager.getTransaction().rollback();
                 }
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                throw new TopLevelBlossomException(e, "Failed to remove Nodes from database.");
             }
         } finally {
             entityManager.close();
         }
-
     }
 
 }

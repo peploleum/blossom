@@ -27,8 +27,9 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 	navbarul.attr("class", null);
 	d3.select('#networkNavItem').attr("class", "active");
 	// init some control scope vars used to pop error display
-	$scope.addNodeError = false;
-	$scope.addNodeSuccess = true;
+	$scope.serviceError = false;
+	$scope.serviceSuccess = true;
+	$scope.serviceErrorDetails = false;
 
 	var selectionClicked = null; // id the clicked button in a group
 	selection = []; // selection model : stores ids of selected nodes
@@ -327,14 +328,15 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 					console.log(newLinks[link]);
 					force.links().push(newLinks[link]);
 				}
-				$scope.addNodeError = false;
-				$scope.addNodeSuccess = true;
+				$scope.serviceError = false;
+				$scope.serviceSuccess = true;
 				force.start();
 				updateGraph();
 			}).error(function() {
 				console.log("error");
-				$scope.addNodeError = true;
-				$scope.addNodeSuccess = false;
+				$scope.serviceError = true;
+				$scope.errorMessage = 'Add link failed';
+				$scope.serviceSuccess = false;
 			});
 		}
 	}
@@ -358,12 +360,13 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			force.nodes().push(newNode);
 			force.start();
 			updateGraph();
-			$scope.addNodeError = false;
-			$scope.addNodeSuccess = true;
+			$scope.serviceError = false;
+			$scope.serviceSuccess = true;
 		}).error(function() {
 			console.log("error");
-			$scope.addNodeError = true;
-			$scope.addNodeSuccess = false;
+			$scope.serviceError = true;
+			$scope.errorMessage = 'Add node failed'
+			$scope.serviceSuccess = false;
 		});
 	}
 	// adding a node - server-side
@@ -399,12 +402,13 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 				clearSelection();
 				force.start();
 				updateGraph();
-				$scope.addNodeError = false;
-				$scope.addNodeSuccess = true;
-			}).error(function() {
-				console.log("error");
-				$scope.addNodeError = true;
-				$scope.addNodeSuccess = false;
+				$scope.serviceError = false;
+				$scope.serviceSuccess = true;
+			}).error(function(data, status, headers, config) {
+				console.log("error " + status + " " + data + " " + config);
+				$scope.serviceError = true;
+				$scope.errorMessage = 'Remove selected node failed'
+				$scope.serviceSuccess = false;
 			});
 
 		}
@@ -424,34 +428,23 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		// in eclipse, i can't use reserverd keyword delete, which obviously is
 		// shit, and i'm too lazy to fix it
 		$http.post('./rest/graph/removeNodes', toRemoveJson).success(function() {
-//			console.log("success we need to remove " + toRemove);
-//			indexToSplice = [];
-//			for (j = 0; j < selection.length; j++) {
-//				console.log("searching index of " + toRemove[j]);
-//				for (k = 0; k < force.nodes().length; k++) {
-//					if (force.nodes()[k].id == toRemove[j]) {
-//						indexToSplice.push(k);
-//						console.log("found " + toRemove[j] + "at index " + k);
-//					}
-//				}
-//			}
-//			if (indexToSplice.length > 0) {
-//				for (i = 0; i < indexToSplice.length; i++) {
-//					console.log("splicing index: " + indexToSplice);
-//					force.nodes().splice(indexToSplice, 1);
-//				}
-//			}
+			// we reload the entire graph
+			// not optimal but does the job for now
 			computeGraphRest();
 			// selection has been removed
 			clearSelection();
 			force.start();
 			updateGraph();
-			$scope.addNodeError = false;
-			$scope.addNodeSuccess = true;
-		}).error(function() {
-			console.log("error");
-			$scope.addNodeError = true;
-			$scope.addNodeSuccess = false;
+			$scope.serviceError = false;
+			$scope.serviceSuccess = true;
+			$scope.serviceErrorDetails = false;
+		}).error(function(data, status, headers, config) {
+			console.log("error " + status + " data " + data + " config " + config);
+			$scope.serviceError = true;
+			$scope.errorMessage = 'Remove selected Nodes failed'
+			$scope.serviceErrorDetails = true;
+			d3.select('#detailwell').html(data);
+			$scope.serviceSuccess = false;
 		});
 
 	}
@@ -569,7 +562,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		} else if (selectionClicked == 'SaveGraph') {
 			saveGraph();
 		}
-		$scope.addNodeSuccess = true;
+		$scope.serviceSuccess = true;
 		selectionClicked = null;
 	}
 

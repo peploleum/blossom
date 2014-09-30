@@ -10,7 +10,17 @@ public class TopLevelBlossomException extends Exception {
         this.reason = reason;
     }
 
+    public TopLevelBlossomException(final Throwable throwable, final String reason) {
+        super(throwable);
+        this.reason = reason;
+    }
+
     public String getReason() {
-        return reason;
+        return this.reason;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.reason;
     }
 }

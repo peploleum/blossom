@@ -209,9 +209,10 @@ body {
 			</div>
 		</div>
 		<div class="row">
-			<div ng-show="addNodeError" ng-hide="addNodeSuccess"
+			<div ng-show="serviceError" ng-hide="serviceSuccess"
 				class="alert alert-danger" role="alert">
-				<strong>Error</strong> Adding node failed.
+				<strong>Error</strong> {{errorMessage}}.  <span ng-show="serviceErrorDetails"  class="glyphicon glyphicon-warning-sign"> Details</span>
+				<div id="detailwell" class="well">hey dude</div>
 			</div>
 		</div>
 	</div>
