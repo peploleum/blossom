@@ -99,13 +99,11 @@ body {
 							<div class="btn-group">
 								<button type="submit" class="btn btn-default"
 									ng-click="setClick('ClearSel')">
-									<span class="glyphicon glyphicon-check"></span> Clear
-									selection
+									<span class="glyphicon glyphicon-check"></span> Clear selection
 								</button>
 								<button type="submit" class="btn btn-default"
 									ng-click="setClick('PinSelection')">
-									<span class="glyphicon glyphicon-pushpin"></span> Pin
-									selection
+									<span class="glyphicon glyphicon-pushpin"></span> Pin selection
 								</button>
 								<button type="submit" class="btn btn-default"
 									ng-click="setClick('UnPinSelection')">
@@ -211,10 +209,59 @@ body {
 		<div class="row">
 			<div ng-show="serviceError" ng-hide="serviceSuccess"
 				class="alert alert-danger" role="alert">
-				<strong>Error</strong> {{errorMessage}}.  <span ng-show="serviceErrorDetails"  class="glyphicon glyphicon-warning-sign"> Details</span>
-				<div id="detailwell" class="well">hey dude</div>
+				<strong>Error</strong> {{errorMessage}}. <span
+					ng-show="serviceErrorDetails"
+					class="glyphicon glyphicon-warning-sign"> Details</span>
+				<div id="detailwell" class="well">Details</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Stats</h3>
+			</div>
+			<div class="panel-body">
+				<div class="col-md-12">
+					<svg class="graphsvg"></svg>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">Charcaters</h3>
+			</div>
+			<div class="panel-body">
+				<div class="col-md-12">
+					<div id="table">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Name</th>
+									<th>Catchphrase</th>
+									<th>Size</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr
+									ng-repeat="result in tablerows | filter:search | orderBy:'name'">
+									<td><a ng-href="{{result.id}}" target="_blank">{{result.id}}</a></td>
+									<td>{{result.name}}</td>
+									<td>{{result.catchphrase}}</td>
+									<td>{{result.size}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 <div class="tooltipcustom">{{tooltipmessage}}</div>
+

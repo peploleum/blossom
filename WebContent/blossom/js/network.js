@@ -1,4 +1,4 @@
-var module = angular.module('blossom.network', [ 'ngRoute', 'ngResource' ]);
+var module = angular.module('blossom.network', [ 'ngRoute', 'ngResource', 'blossom.table' ]);
 
 module.factory('StatFactory', function($resource) {
 	return $resource('./rest/graph/stat', {}, {
@@ -20,13 +20,14 @@ module.factory('GraphFactory', function($resource) {
 	})
 });
 
-module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory) {
+module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory, TableGetFactory) {
 	var symbo = true;
 
 	var navbarul = d3.selectAll('ul#navbarul>li');
 	navbarul.attr("class", null);
 	d3.select('#networkNavItem').attr("class", "active");
 	// init some control scope vars used to pop error display
+	$scope.tablerows = [];
 	$scope.serviceError = false;
 	$scope.serviceSuccess = true;
 	$scope.serviceErrorDetails = false;
@@ -50,30 +51,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 	var width = $("svg").parent().width();
 	var height = $("svg").height();
 
-	var graph = d3.select(".graphsvg").attr("width", width).attr("height", width);
-
-	d3.json("data/data2.json", function(json) {
-		var circles = graph.selectAll("cirle").data(json.nodes).enter().append("circle");
-		var circleAttributes = circles.attr("cx", function(d) {
-			return d.x;
-		}).attr("cy", function(d) {
-			return d.y;
-		}).attr("r", function(d) {
-			return d.radius;
-		}).style("fill", function(d) {
-			return d.color;
-		});
-
-		var text = graph.selectAll("text").data(json.nodes).enter().append("text");
-
-		var textLabels = text.attr("x", function(d) {
-			return d.x;
-		}).attr("y", function(d) {
-			return d.y;
-		}).text(function(d) {
-			return "(" + d.name + ")";
-		}).attr("font-family", "sans-serif").attr("font-size", "10px").attr("fill", "black").attr("text-anchor", "middle");
-	})
 	$scope.tooltipmessage = "tooltiptext";
 	console.log("width : " + width + " height " + height);
 	var graphplus = d3.select(".graphsvgplus").attr("width", "100%").attr("height", 500);
@@ -91,8 +68,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		// this is the RESTful version of the graph initialization, we aim to
 		// have a server-side model
 		GraphFactory.get({}, function(graphFactory) {
-			console.log(graphFactory);
-			// just another way of pushing nodes
 			force.nodes(graphFactory.nodes)
 			force.links(graphFactory.links);
 			force.start();
@@ -101,19 +76,8 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		})
 	}
 	computeGraphRest();
-	// d3.json("data/data.json", function(json) {
-	//
-	// // just another way of pushing nodes
-	// json.nodes.forEach(function(n) {
-	// force.nodes().push(n)
-	// });
-	// force.links(json.links);
-	// force.start();
-	//
-	// updateGraph();
-	//
-	// });
 
+	// clears links and nodes in svg and redraws it from force current data
 	updateGraph = function() {
 		// this is an update: removing existing links & nodes before adding them
 		graphplus.selectAll(".link").remove();
@@ -239,23 +203,12 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			}).attr("y2", function(d) {
 				return d.target.y;
 			});
-
+			// basically it means that @every tick we translate the node
 			node.attr("transform", function(d) {
 				return "translate(" + d.x + "," + d.y + ")";
 			});
 
 		});
-	}
-
-	findNodeById = function(id) {
-		console.log("searching for node by id:" + id);
-		var matchingNode;
-		force.nodes().forEach(function(n) {
-			if (n.id == id) {
-				matchingNode = n
-			}
-		});
-		console.log("matchingNode:" + matchingNode);
 	}
 
 	findNodeIndexByNodeId = function(id) {
@@ -321,25 +274,25 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 				}
 
 			}
-			$http.post('./rest/graph/addLink', newLinks).success(function() {
+			$http.post('./rest/graph/addLink', newLinks).success(function(data, status, headers, config) {
 				console.log("success");
 				console.log(newLinks);
 				for (link in newLinks) {
 					console.log(newLinks[link]);
 					force.links().push(newLinks[link]);
 				}
-				$scope.serviceError = false;
-				$scope.serviceSuccess = true;
+				onSuccess(data, status, headers, config);
 				force.start();
 				updateGraph();
-			}).error(function() {
-				console.log("error");
-				$scope.serviceError = true;
-				$scope.errorMessage = 'Add link failed';
-				$scope.serviceSuccess = false;
+			}).error(function(data, status, headers, config) {
+				onError(data, status, headers, config, 'Add link failed');
 			});
 		}
 	}
+
+	/**
+	 * Manage actions on graph (adding, removing, pinning, unpinning nodes ..)
+	 */
 
 	// adding a node - server-side
 	addNodePut = function() {
@@ -355,18 +308,14 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			"size" : size,
 			"catchphrase" : $scope.nodehelper.catchphrase
 		};
-		$http.post('./rest/graph/addNode', newNode).success(function() {
+		$http.post('./rest/graph/addNode', newNode).success(function(data, status, headers, config) {
 			console.log("success");
 			force.nodes().push(newNode);
 			force.start();
 			updateGraph();
-			$scope.serviceError = false;
-			$scope.serviceSuccess = true;
-		}).error(function() {
-			console.log("error");
-			$scope.serviceError = true;
-			$scope.errorMessage = 'Add node failed'
-			$scope.serviceSuccess = false;
+			onSuccess(data, status, headers, config);
+		}).error(function(data, status, headers, config) {
+			onError(data, status, headers, config, 'Add node failed');
 		});
 	}
 	// adding a node - server-side
@@ -384,7 +333,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 					"Content-Type" : "application/json"
 				},
 				data : toRemove
-			}).success(function() {
+			}).success(function(data, status, headers, config) {
 				console.log("success we need to remove " + toRemove);
 				indexToSplice = -1;
 				for (j = 0; j < force.nodes().length; j++) {
@@ -402,17 +351,35 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 				clearSelection();
 				force.start();
 				updateGraph();
-				$scope.serviceError = false;
-				$scope.serviceSuccess = true;
+				onSuccess(data, status, headers, config)
 			}).error(function(data, status, headers, config) {
-				console.log("error " + status + " " + data + " " + config);
-				$scope.serviceError = true;
-				$scope.errorMessage = 'Remove selected node failed'
-				$scope.serviceSuccess = false;
+				onError(data, status, headers, config, 'Remove selected node failed');
 			});
 
 		}
 
+	}
+
+	onSuccess = function(data, status, headers, config) {
+		console.log("success " + status + " " + data + " " + config);
+		$scope.serviceError = false;
+		$scope.serviceSuccess = true;
+		$scope.errorMessage = '';
+
+		// d3.select('#table').html('<p>salut<p>');
+		$scope.tablerows = TableGetFactory.getData().success(function(data, status, headers, config) {
+			console.log("ok: " + data + " rows " + data.rows);
+			$scope.tablerows = data.rows;
+		}).error(function(data, status, headers, config) {
+			console.log("ko");
+		});
+	}
+
+	onError = function(data, status, headers, config, message) {
+		console.log("error " + status + " " + data + " " + config);
+		$scope.serviceError = true;
+		$scope.errorMessage = message;
+		$scope.serviceSuccess = false;
 	}
 
 	// removing bulk nodes
@@ -427,7 +394,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		console.log("removing " + toRemoveJson);
 		// in eclipse, i can't use reserverd keyword delete, which obviously is
 		// shit, and i'm too lazy to fix it
-		$http.post('./rest/graph/removeNodes', toRemoveJson).success(function() {
+		$http.post('./rest/graph/removeNodes', toRemoveJson).success(function(data, status, headers, config) {
 			// we reload the entire graph
 			// not optimal but does the job for now
 			computeGraphRest();
@@ -435,16 +402,9 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			clearSelection();
 			force.start();
 			updateGraph();
-			$scope.serviceError = false;
-			$scope.serviceSuccess = true;
-			$scope.serviceErrorDetails = false;
+			onSuccess(data, status, headers, config)
 		}).error(function(data, status, headers, config) {
-			console.log("error " + status + " data " + data + " config " + config);
-			$scope.serviceError = true;
-			$scope.errorMessage = 'Remove selected Nodes failed'
-			$scope.serviceErrorDetails = true;
-			d3.select('#detailwell').html(data);
-			$scope.serviceSuccess = false;
+			onError(data, status, header, config, 'Remove selected Nodes failed');
 		});
 
 	}
@@ -504,6 +464,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		}
 	}
 
+	// if !symbo then we display only defaut symbol
 	toggleSymbo = function() {
 		symbo = !symbo;
 	}
@@ -511,11 +472,14 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 	saveGraph = function() {
 		// TODO persist graph in database
 	}
+
+	/**
+	 * Toolbar actions callbacks
+	 */
 	// sureley there is a pro way of doing this, we use a var to store the
 	// button we click on
 	$scope.submitFormNode = function() {
 		if (selectionClicked == 'AddLink') {
-			// addLink();RemoveNode
 			addLinkPut();
 		} else if (selectionClicked == 'AddNode') {
 			// addNode();
@@ -578,34 +542,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		})
 	}
 
-	computeStats = function() {
-		// we since placed this logic
-		// server-side
-		// this is the full client version
-		console.log("computing stats");
-		var max = 0;
-		var checkedNames = {};
-		for (var i = 0; i < force.nodes().length; i++) {
-			var name = force.nodes()[i].name;
-			if (name in checkedNames)
-				checkedNames[name] = checkedNames[name] + 1;
-			else
-				checkedNames[name] = 1;
-		}
-		for ( var key in checkedNames) {
-			console.log("pushing " + key + " " + checkedNames[key]);
-			if (max < checkedNames[key]) {
-				max = checkedNames[key];
-			}
-		}
-		var maxAndMap = {};
-		maxAndMap.max = max;
-		maxAndMap.map = checkedNames;
-		console.log("result: " + maxAndMap);
-		buildStatGraph(maxAndMap);
-		return maxAndMap;
-	}
-
+	// builds a histogram based on a value map
 	buildStatGraph = function(map) {
 
 		var barHeight = 20;
@@ -637,6 +574,33 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		}).attr("id", "chartbar");
 	}
 
+	var graph = d3.select(".graphsvg").attr("width", width).attr("height", width);
+
+	d3.json("data/data2.json", function(json) {
+		var circles = graph.selectAll("cirle").data(json.nodes).enter().append("circle");
+		var circleAttributes = circles.attr("cx", function(d) {
+			return d.x;
+		}).attr("cy", function(d) {
+			return d.y;
+		}).attr("r", function(d) {
+			return d.radius;
+		}).style("fill", function(d) {
+			return d.color;
+		});
+
+		var text = graph.selectAll("text").data(json.nodes).enter().append("text");
+
+		var textLabels = text.attr("x", function(d) {
+			return d.x;
+		}).attr("y", function(d) {
+			return d.y;
+		}).text(function(d) {
+			return "(" + d.name + ")";
+		}).attr("font-family", "sans-serif").attr("font-size", "10px").attr("fill", "black").attr("text-anchor", "middle");
+	})
+
+	
+	
 	generateUUID = function() {
 		return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
