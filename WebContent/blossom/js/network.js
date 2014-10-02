@@ -50,13 +50,20 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 
 	var width = $("svg").parent().width();
 	var height = $("svg").height();
-
+	height = 600;
 	$scope.tooltipmessage = "tooltiptext";
 	console.log("width : " + width + " height " + height);
 	var graphplus = d3.select(".graphsvgplus").attr("width", "100%").attr("height", 500);
 	graphplus.append("rect").attr("width", "100%").attr("height", 600).style("fill", "white");// .style("stroke",
 	// "gray").style("stroke-width",
 	// 0);
+
+	var brush = graphplus.append("g").datum(function() {
+		return {
+			selected : false,
+			previouslySelected : false
+		};
+	}).attr("class", "brush");
 	var force = d3.layout.force().gravity(.05).distance(150).charge(-200).size([ width, 500 ]);
 
 	clearSelection = function() {
@@ -91,6 +98,8 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			return d.id
 		}).call(force.drag);
 
+		shiftKey = false;
+
 		if (symbo) {
 			var images = node.append("image").attr("xlink:href", function(d) {
 				return "resources/" + d.name + ".png"
@@ -104,7 +113,27 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 				return d.size
 			}).attr("custom", function(d) {
 				return d.catchphrase
+			}).attr("id", function(d) {
+				return "image" + d.id
 			});
+			brush.call(d3.svg.brush().x(d3.scale.identity().domain([ 0, width ])).y(d3.scale.identity().domain([ 0, height ])).on("brushstart", function(d) {
+				node.each(function(d) {
+					d.previouslySelected = shiftKey && d.selected;
+				});
+			}).on("brush", function() {
+				var extent = d3.event.target.extent();
+				images.each(function(d) {
+					if (extent[0][0] <= d.x && d.x < extent[1][0] && extent[0][1] <= d.y && d.y < extent[1][1]) {
+						if (selection.indexOf(d.id) == -1) {
+							selection.push(d.id);
+							paintItem(this);
+						}
+					}
+				})
+			}).on("brushend", function() {
+				d3.event.target.clear();
+				d3.select(this).call(d3.event.target);
+			}));
 
 			// no need for a title we aim to provide our own tooltip
 
@@ -134,8 +163,9 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			});
 
 			function paintItem(imageItem) {
+				console.log("painting 1");
 				var retrievedCustomFieldAsId = d3.select(imageItem.parentNode).attr("custom");
-
+				console.log("painting 2");
 				// manage selection
 				if (selection.indexOf(retrievedCustomFieldAsId) != -1) {
 					console.log("adding " + retrievedCustomFieldAsId);
@@ -599,8 +629,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		}).attr("font-family", "sans-serif").attr("font-size", "10px").attr("fill", "black").attr("text-anchor", "middle");
 	})
 
-	
-	
 	generateUUID = function() {
 		return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
