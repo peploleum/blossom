@@ -1,4 +1,4 @@
-var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.map', 'blossom.misc' ]);
+var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.map', 'blossom.stats', 'blossom.misc' ]);
 
 blossomModule.config(function($routeProvider) {
 	$routeProvider.when('/about', {
@@ -19,6 +19,9 @@ blossomModule.config(function($routeProvider) {
 	}).when('/search', {
 		controller : 'SearchCtrl',
 		templateUrl : 'search.html'
+	}).when('/stat', {
+		controller : 'StatCtrl',
+		templateUrl : 'stats.html'
 	}).otherwise({
 		redirectTo : '/home'
 	});

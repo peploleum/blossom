@@ -163,9 +163,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			});
 
 			function paintItem(imageItem) {
-				console.log("painting 1");
 				var retrievedCustomFieldAsId = d3.select(imageItem.parentNode).attr("custom");
-				console.log("painting 2");
 				// manage selection
 				if (selection.indexOf(retrievedCustomFieldAsId) != -1) {
 					console.log("adding " + retrievedCustomFieldAsId);
@@ -603,31 +601,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			return d;
 		}).attr("id", "chartbar");
 	}
-
-	var graph = d3.select(".graphsvg").attr("width", width).attr("height", width);
-
-	d3.json("data/data2.json", function(json) {
-		var circles = graph.selectAll("cirle").data(json.nodes).enter().append("circle");
-		var circleAttributes = circles.attr("cx", function(d) {
-			return d.x;
-		}).attr("cy", function(d) {
-			return d.y;
-		}).attr("r", function(d) {
-			return d.radius;
-		}).style("fill", function(d) {
-			return d.color;
-		});
-
-		var text = graph.selectAll("text").data(json.nodes).enter().append("text");
-
-		var textLabels = text.attr("x", function(d) {
-			return d.x;
-		}).attr("y", function(d) {
-			return d.y;
-		}).text(function(d) {
-			return "(" + d.name + ")";
-		}).attr("font-family", "sans-serif").attr("font-size", "10px").attr("fill", "black").attr("text-anchor", "middle");
-	})
 
 	generateUUID = function() {
 		return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
