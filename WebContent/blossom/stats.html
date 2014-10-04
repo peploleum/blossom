@@ -1,19 +1,35 @@
 <style>
-.graphsvg text {
+.jsonstatablehisto text {
 	fill: black;
 	font: 10px sans-serif;
-/* 	text-anchor: end; */
+}
+.arc path {
+  stroke: #fff;
 }
 </style>
 <div class="row">
 	<div class="col-md-12">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-				<h3 class="panel-title">Stats</h3>
+				<h3 class="panel-title">Stats pie</h3>
 			</div>
 			<div class="panel-body">
 				<div class="col-md-12">
-					<svg id="jsonstatable" class="graphsvg"></svg>
+					<svg id="jsonstatablepie"></svg>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Stats bar chart</h3>
+			</div>
+			<div class="panel-body">
+				<div class="col-md-12">
+					<svg id="jsonstatablehisto"></svg>
 				</div>
 			</div>
 		</div>
