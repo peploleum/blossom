@@ -1,13 +1,1 @@
-{"dataset":[
-{"valued":"value1","value":200},
-{"valued":"value2","value":20},
-{"valued":"value3","value":100},
-{"valued":"value4","value":120},
-{"valued":"value5","value":130},
-{"valued":"value6","value":150},
-{"valued":"value7","value":190},
-{"valued":"value8","value":190},
-{"valued":"value9","value":190},
-{"valued":"value10","value":30}
-]
-}
+{"dataset":[{"value":1,"valued":"fry"},{"value":5,"valued":"hermes"},{"value":3,"valued":"leela"},{"value":2,"valued":"nibbler"}]}

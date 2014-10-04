@@ -10,6 +10,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "character", schema = "blossom")
 @NamedQueries({ @NamedQuery(name = "CharacterEntity.findAll", query = "SELECT characterentity FROM CharacterEntity characterentity"),
+        @NamedQuery(name = "CharacterEntity.countByName", query = "SELECT count(c)  FROM CharacterEntity c WHERE c.name = :name"),
+        @NamedQuery(name = "CharacterEntity.findNames", query = "SELECT name  FROM CharacterEntity name"),
         @NamedQuery(name = "CharacterEntity.findById", query = "SELECT c FROM CharacterEntity c WHERE c.id = :id") })
 public class CharacterEntity {
     @Id
@@ -56,6 +58,7 @@ public class CharacterEntity {
     public void setSize(final int size) {
         this.size = size;
     }
+
 
     @Override
     public String toString() {
