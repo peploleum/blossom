@@ -14,10 +14,26 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 	var navbarul = d3.selectAll('ul#navbarul>li');
 	navbarul.attr("class", null);
 	d3.select('#statNavItem').attr("class", "active");
+
+	// d3.json("data/datastat.json", function(json) {
+	// buildBartChart(json);
+	// });
+	var cachedResult = {};
+	DatabaseStatFactory.get({}, function(retrievedStats) {
+		console.log("retrieved data");
+		showBarChart(retrievedStats);
+		showPieChart(retrievedStats);
+		showHorizBarChart(retrievedStats);
+		cachedResult = retrievedStats;
+	});
 	$(window).resize(function() {
-		showBarChart();
-		showPieChart();
-		showHorizBarChart();
+		if (cachedResult == undefined) {
+			console.log("nothing to show yet");
+			return;
+		}
+		showBarChart(cachedResult);
+		showPieChart(cachedResult);
+		showHorizBarChart(cachedResult);
 	});
 
 	var ORIENTATION = {};
@@ -26,7 +42,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 	ORIENTATION.UP = 2;
 	ORIENTATION.DOWN = 3;
 
-	showBarChart = function() {
+	showBarChart = function(json) {
 		var histosvg = d3.select("#jsonstatablehisto").attr("width", "100%").attr("height", "100%");
 		histosvg.append("rect").attr("width", "100%").attr("height", "100%").style("fill", "white").style("stroke", "white").style("stroke-width", 1);
 		var offset = 20;
@@ -34,14 +50,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 		var scaleWidth = 60;
 		var sceneWidth = $("#jsonstatablehisto").width() - scaleWidth;
 		var sceneHeight = $("#jsonstatablehisto").height() - (sceneOffset);
-
-		d3.json("data/datastat.json", function(json) {
-			buildHistogram(json);
-		});
-
-		// DatabaseStatFactory.get({}, function(retrievedStats) {
-		// buildHistogram(retrievedStats);
-		// });
+		
 		buildHistogram = function(json) {
 			var color = d3.scale.ordinal().range([ "#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00" ]);
 			d3.selectAll("#scaleoverlay").remove();
@@ -123,16 +132,18 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 			scaleOverlayArea.append("line").attr("x1", 0).attr("y1", 0).attr("x2", sceneWidth).attr("xy", 0).style("stroke", "black").style("stroke-dasharray", "0.2 5").attr("id", "scaleline");
 
 		}
+		buildHistogram(json);
 	}
-	showHorizBarChart = function() {
+	showHorizBarChart = function(json) {
 		var histosvg = d3.select("#jsonstatablehistohoriz").attr("width", "100%").attr("height", "100%");
 		var offset = 3;
 		var sceneOffset = 50;
 		var scaleSize = 15;
+		var valueFitOffset = 5;
 		// var sceneWidth = $("#jsonstatablehistohoriz").width() - scaleSize;
 		// var sceneHeight = $("#jsonstatablehistohoriz").height() -
 		// (sceneOffset);
-		var sceneWidth = $("#jsonstatablehistohoriz").width() - sceneOffset;
+		var sceneWidth = $("#jsonstatablehistohoriz").width() - (sceneOffset + valueFitOffset);
 		var sceneHeight = $("#jsonstatablehistohoriz").height() - (scaleSize);
 		console.log("sceneWidth: " + sceneWidth);
 		computeScaleMaxValueBaseline = function(orientation) {
@@ -142,10 +153,10 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 				return sceneHeight
 			}
 		}
-
-		d3.json("data/datastat.json", function(json) {
-			buildBartChart(json);
-		});
+		
+		// d3.json("data/datastat.json", function(json) {
+		// buildBartChart(json);
+		// });
 
 		// DatabaseStatFactory.get({}, function(retrievedStats) {
 		// buildHistogram(retrievedStats);
@@ -161,10 +172,11 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 			d3.selectAll("#horizchartrect").remove();
 			d3.selectAll("#horizchartrect").remove();
 			d3.selectAll("#horizscene").remove();
-			histosvg.append("rect").attr("width", "100%").attr("height", "100%").style("fill", "white").style("stroke", "red").style("stroke-width", 1).attr("id", "horizscene");
+			histosvg.append("rect").attr("width", "100%").attr("height", "100%").style("fill", "white").style("stroke", "white").style("stroke-width", 1).attr("id", "horizscene");
 			var orientation = ORIENTATION.HORIZ;
 			var textBaseline = -10;
-			var rectBaseline = 6;
+			// var rectBaseline = 6;
+			var rectBaseline = 10;
 			var valuesLength = json.dataset.length;
 			console.log("valuesLength: " + valuesLength);
 			computeSingleBarDimensions = function(orientation) {
@@ -224,7 +236,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 					translate.y = rectBaseline;
 				} else if (orientation == ORIENTATION.VERT) {
 					translate.x = 0;
-					translate.y = rectBaseline;
+					translate.y = scaleSize + d;
 				}
 				return translate;
 			}
@@ -265,7 +277,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 					coords.y = 7;
 				} else if (orientation == ORIENTATION.VERT) {
 					coords.x = scaleSize / 2;
-					coords.y = 4;
+					coords.y = -4;
 				}
 				return coords;
 			}
@@ -303,35 +315,68 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 			}).attr("width", function(d) {
 				return computeSingleBarRectangleDimensions(d).width
 			}).attr("id", "horizchartrect");
+
+			computeTextCoords = function(d) {
+				var coords = {};
+				if (orientation == ORIENTATION.HORIZ) {
+					coords.x = 0;
+					coords.y = (equalSplit / 2);
+				} else if (orientation == ORIENTATION.VERT) {
+					coords.x = (equalSplit / 2);
+					coords.y = 0;
+				}
+				return coords;
+			}
 			singlebar.append("text").attr("x", function(d) {
-				return 0;
+				return computeTextCoords(d).x;
 			}).attr("y", function(d) {
-				return (equalSplit / 2);
+				return computeTextCoords(d).y;
 			}).text(function(d) {
 				return d.valued
 			}).style("fill", "black").style("text-anchor", "end");
 			//
+			computeOverlayTranslate = function(d) {
+				var translate = {};
+				if (orientation == ORIENTATION.HORIZ) {
+					translate.x = sceneOffset + d;
+					translate.y = 0;
+				} else if (orientation == ORIENTATION.VERT) {
+					translate.x = scaleSize;
+					translate.y = rectBaseline + d;
+				}
+				return translate;
+
+			}
+			computeOverlayLineX2Y2Coords = function() {
+				var coords = {};
+				if (orientation == ORIENTATION.HORIZ) {
+					coords.x = 0;
+					coords.y = sceneHeight;
+				} else if (orientation == ORIENTATION.VERT) {
+					coords.x = sceneWidth;
+					coords.y = 0;
+				}
+				return coords;
+			}
 			var scaleOverlayArea = histosvg.selectAll("g#horizscaleoverlay").data(scaledValuesForScale).enter().append("g").attr("id", "scaleoverlay").attr("transform", function(d, i) {
-				return "translate( " + (sceneOffset + d) + "," + 0 + ")";
+				return "translate( " + computeOverlayTranslate(d).x + "," + computeOverlayTranslate(d).y + ")";
 			})
-			scaleOverlayArea.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", sceneHeight).style("stroke", "black").style("stroke-dasharray", "0.2 5").attr("id", "horizscaleline");
+			scaleOverlayArea.append("line").attr("x1", 0).attr("y1", 0).attr("x2", computeOverlayLineX2Y2Coords().x).attr("y2", computeOverlayLineX2Y2Coords().y).style("stroke", "black").style("stroke-dasharray", "0.2 5").attr("id", "horizscaleline");
 
 		}
+		buildBartChart(json);
 	}
-	showPieChart = function() {
+	showPieChart = function(json) {
 		var piesvg = d3.select("#jsonstatablepie").attr("width", "100%").attr("height", "100%");
 		piesvg.append("rect").attr("width", "100%").attr("height", "100%").style("fill", "white").style("stroke", "white").style("stroke-width", 1);
 		var offset = 10;
 		var sceneWidth = $("#jsonstatablepie").width();
 		var sceneHeight = $("#jsonstatablepie").height();
 		var radius = Math.min(sceneWidth, sceneHeight) / 2;
-		d3.json("data/datastat.json", function(json) {
-			buildPie(json);
-		});
-
-		// DatabaseStatFactory.get({}, function(retrievedStats) {
-		// buildHistogram(retrievedStats);
+		// d3.json("data/datastat.json", function(json) {
+		// buildPie(json);
 		// });
+		
 		buildPie = function(json) {
 			var color = d3.scale.ordinal().range([ "#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00" ]);
 			var valuesLength = json.dataset.length;
@@ -348,19 +393,6 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 			var innerSvg = piesvg.append("g").attr("transform", "translate(" + sceneWidth / 2 + "," + sceneHeight / 2 + ")").attr("id", "pie");
 			// linearscale to adapt bar height to component dimensions
 			var g = innerSvg.selectAll(".arc").data(pie(json.dataset)).enter().append("g").attr("class", "arc");
-			// paths = innerSvg.selectAll("path").data(pie(json.dataset));
-			// paths = innerSvg.selectAll("path");
-			// console.log(paths);
-			// paths.transition().duration(1000).attr("d", function(d) {
-			// console.log(d);
-			// return pie(d)
-			// });
-			// paths.transition().duration(750).attrTween("d",
-			// function(d){return this});
-
-			// rectangles.transition().attr("height", function(d) {
-			// return linearScale(d.value);
-			// }).attr("width", barWidth).attr("id", "chartrect");
 			g.append("path").attr("d", arc).style("fill", function(d) {
 				return color(d.value);
 			});
@@ -371,6 +403,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 				return d.data.valued;
 			});
 		}
+		buildPie(json);
 	}
 	computeMax = function(dataset) {
 		var max = 0;
@@ -382,7 +415,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 		return max;
 	}
 
-	showBarChart();
-	showPieChart();
-	showHorizBarChart();
+	// showBarChart();
+	// showPieChart();
+	// showHorizBarChart();
 })
