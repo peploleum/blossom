@@ -12,15 +12,12 @@ import javax.persistence.Persistence;
  */
 public class EntityManagerFactorySingleton {
     private final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("BlossomLocal");
-    static EntityManagerFactorySingleton INSTANCE;
+    static EntityManagerFactorySingleton INSTANCE = new EntityManagerFactorySingleton();
 
     EntityManagerFactorySingleton() {
     }
 
     public static EntityManagerFactorySingleton getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new EntityManagerFactorySingleton();
-        }
         return INSTANCE;
     }
 

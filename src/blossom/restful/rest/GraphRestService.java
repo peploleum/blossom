@@ -14,10 +14,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
+import blossom.persistence.link.CharacterLink;
 import blossom.restful.graph.Graph;
 import blossom.restful.graph.GraphNodeIdCollection;
 import blossom.restful.graph.LinkItem;
@@ -42,6 +48,7 @@ public class GraphRestService {
 
         final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
         try {
+            // first we fetch nodes
             final List<NodeItem> nodeList = new ArrayList<NodeItem>();
             final Query nameQuery = entityManager.createNamedQuery("CharacterEntity.findAll");
             try {
@@ -57,6 +64,19 @@ public class GraphRestService {
                 }
                 graph.setNodes(nodeList);
 
+                // then we fetch links
+                final Query linksQuery = entityManager.createNamedQuery("CharacterLink.findAll");
+                @SuppressWarnings("unchecked")
+                final List<CharacterLink> links = linksQuery.getResultList();
+                final List<LinkItem> linkItems = new ArrayList<LinkItem>();
+                for (final CharacterLink characterLink : links) {
+                    final LinkItem li = new LinkItem();
+                    li.setSource(gs.getNodeIndexByNodeId(characterLink.getSource()));
+                    li.setTarget(gs.getNodeIndexByNodeId(characterLink.getDest()));
+                    linkItems.add(li);
+                }
+                graph.setLinks(linkItems);
+
             } catch (final Exception e) {
                 if (entityManager.getTransaction().isActive()) {
                     entityManager.getTransaction().rollback();
@@ -66,6 +86,18 @@ public class GraphRestService {
             }
         } finally {
             entityManager.close();
+        }
+        JAXBContext jc;
+        try {
+            jc = JAXBContext.newInstance(Graph.class);
+            final Marshaller marshaller = jc.createMarshaller();
+            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "coordinates");
+            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
+            marshaller.marshal(graph, System.out);
+        } catch (final JAXBException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return graph;
     }
@@ -97,7 +129,7 @@ public class GraphRestService {
                 }
             }
             return graphStat;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new TopLevelBlossomException(e, "Failed to remove Nodes from database.");
         }
     }
@@ -136,14 +168,29 @@ public class GraphRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/addLink")
-    public void addLink(final List<LinkItem> link) throws TopLevelBlossomException {
+    public void addLink(final List<LinkItem> links) throws TopLevelBlossomException {
+        final GraphSingleton gs = GraphSingleton.getInstance();
+        final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
         try {
-            final GraphSingleton gs = GraphSingleton.getInstance();
-            for (final LinkItem linkItem : link) {
-                gs.getGraph().getLinks().add(linkItem);
+            entityManager.getTransaction().begin();
+            try {
+                for (final LinkItem linkItem : links) {
+                    final CharacterLink cl = new CharacterLink();
+                    cl.setDest(gs.getGraph().getNodes().get(linkItem.getTarget()).getId());
+                    cl.setSource(gs.getGraph().getNodes().get(linkItem.getSource()).getId());
+                    entityManager.persist(cl);
+                    entityManager.getTransaction().commit();
+                    gs.addLink(linkItem);
+                }
+            } catch (final Exception e) {
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                throw new TopLevelBlossomException(e, "Failed to add link in database.");
             }
-        } catch (Exception e) {
-            throw new TopLevelBlossomException(e, "Failed to remove Nodes from database.");
+        } finally {
+            entityManager.close();
         }
     }
 

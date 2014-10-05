@@ -20,3 +20,12 @@ OIDS=FALSE
 );
 ALTER TABLE blossom."character"
 OWNER TO postgres;
+
+CREATE TABLE blossom."link"
+(
+   source varchar(36) primary key not null,
+   dest varchar(36),
+   name varchar(250)
+);
+ALTER TABLE blossom."link"
+OWNER TO postgres;

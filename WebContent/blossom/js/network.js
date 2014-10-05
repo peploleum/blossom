@@ -282,40 +282,27 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 	addLinkPut = function() {
 		console.log("selection clicked");
 		newLinks = [];
-		for (var i = 0; i < selection.length; i++) {
-			var sourceIndex = findNodeIndexByNodeId(selection[i]);
-			console.log("source index " + sourceIndex);
-			if (sourceIndex != -1) {
-				for (var j = 0; j < selection.length; j++) {
-					if (j != i) {
-						var destinationIndex = findNodeIndexByNodeId(selection[j]);
-						console.log("destination index " + destinationIndex);
-						if (destinationIndex != -1) {
-							console.log("drawing link from " + sourceIndex + " to " + destinationIndex);
-							link = {
-								"source" : sourceIndex,
-								"target" : destinationIndex
-							};
-							newLinks.push(link);
-						}
-					}
-				}
-
+		if (selection.length != 2)
+			return;
+		// we can add a link only when two nodes are selected ...
+		link = {
+			"source" : findNodeIndexByNodeId(selection[0]),
+			"target" : findNodeIndexByNodeId(selection[1])
+		};
+		newLinks.push(link)
+		$http.post('./rest/graph/addLink', newLinks).success(function(data, status, headers, config) {
+			console.log("success");
+			console.log(newLinks);
+			for (link in newLinks) {
+				console.log(newLinks[link]);
+				force.links().push(newLinks[link]);
 			}
-			$http.post('./rest/graph/addLink', newLinks).success(function(data, status, headers, config) {
-				console.log("success");
-				console.log(newLinks);
-				for (link in newLinks) {
-					console.log(newLinks[link]);
-					force.links().push(newLinks[link]);
-				}
-				onSuccess(data, status, headers, config);
-				force.start();
-				updateGraph();
-			}).error(function(data, status, headers, config) {
-				onError(data, status, headers, config, 'Add link failed');
-			});
-		}
+			onSuccess(data, status, headers, config);
+			force.start();
+			updateGraph();
+		}).error(function(data, status, headers, config) {
+			onError(data, status, headers, config, 'Add link failed');
+		});
 	}
 
 	/**

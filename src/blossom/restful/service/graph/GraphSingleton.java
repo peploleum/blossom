@@ -77,6 +77,15 @@ public class GraphSingleton {
         }
     }
 
+    public int getNodeIndexByNodeId(String id) {
+        List<NodeItem> nodes = getGraph().getNodes();
+        for (NodeItem nodeItem : nodes) {
+            if (nodeItem.getId().equals(id))
+                return nodes.indexOf(nodeItem);
+        }
+        return -1;
+    }
+
     public void removeNodeById(final String nodeId) {
         final List<NodeItem> nodes = getGraph().getNodes();
         int indexToRemove = 0;
