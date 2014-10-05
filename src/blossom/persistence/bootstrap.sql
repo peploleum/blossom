@@ -23,7 +23,7 @@ OWNER TO postgres;
 
 CREATE TABLE blossom."link"
 (
-   source varchar(36) primary key not null,
+   source varchar(36),
    dest varchar(36),
    name varchar(250)
 );
