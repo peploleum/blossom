@@ -50,7 +50,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 		var scaleWidth = 60;
 		var sceneWidth = $("#jsonstatablehisto").width() - scaleWidth;
 		var sceneHeight = $("#jsonstatablehisto").height() - (sceneOffset);
-		
+
 		buildHistogram = function(json) {
 			var color = d3.scale.ordinal().range([ "#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00" ]);
 			d3.selectAll("#scaleoverlay").remove();
@@ -140,6 +140,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 		var sceneOffset = 50;
 		var scaleSize = 15;
 		var valueFitOffset = 5;
+		var innerOffsetPercentage = 0.2;
 		// var sceneWidth = $("#jsonstatablehistohoriz").width() - scaleSize;
 		// var sceneHeight = $("#jsonstatablehistohoriz").height() -
 		// (sceneOffset);
@@ -153,7 +154,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 				return sceneHeight
 			}
 		}
-		
+
 		// d3.json("data/datastat.json", function(json) {
 		// buildBartChart(json);
 		// });
@@ -285,7 +286,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 				var dim = {};
 				if (orientation == ORIENTATION.HORIZ) {
 					dim.width = linearScaleFunction(d.value);
-					dim.height = equalSplit
+					dim.height = equalSplit - (equalSplit * innerOffsetPercentage);
 				} else if (orientation == ORIENTATION.VERT) {
 					dim.width = equalSplit
 					dim.height = linearScaleFunction(d.value);
@@ -307,7 +308,18 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 				return "translate( " + computeSingleBarTranslate(index).x + "," + computeSingleBarTranslate(index).y + ")";
 			}).attr("id", "horizchartbar");
 
-			var rectangles = singlebar.append("rect").attr("x", 0).attr("width", 0).attr("height", 0).style("fill", function(d) {
+			computeInnerCoordsWithOffset = function() {
+				var coords = {};
+				if (orientation == ORIENTATION.HORIZ) {
+					coords.x = 0;
+					coords.y = (equalSplit * innerOffsetPercentage);
+				} else if (orientation == ORIENTATION.VERT) {
+					coords.x = 0;
+					coords.y = (equalSplit * innerOffsetPercentage);
+				}
+				return coords;
+			}
+			var rectangles = singlebar.append("rect").attr("x", computeInnerCoordsWithOffset().x).attr("y", computeInnerCoordsWithOffset().y).attr("width", 0).attr("height", 0).style("fill", function(d) {
 				return color(linearScaleFunction(d.value))
 			}).attr("id", "horizchartbar");
 			rectangles.transition().attr("height", function(d) {
@@ -320,7 +332,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 				var coords = {};
 				if (orientation == ORIENTATION.HORIZ) {
 					coords.x = 0;
-					coords.y = (equalSplit / 2);
+					coords.y = (equalSplit / 2) + 6;
 				} else if (orientation == ORIENTATION.VERT) {
 					coords.x = (equalSplit / 2);
 					coords.y = 0;
@@ -376,7 +388,7 @@ module.controller('StatCtrl', function($scope, $http, DatabaseStatFactory) {
 		// d3.json("data/datastat.json", function(json) {
 		// buildPie(json);
 		// });
-		
+
 		buildPie = function(json) {
 			var color = d3.scale.ordinal().range([ "#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00" ]);
 			var valuesLength = json.dataset.length;
