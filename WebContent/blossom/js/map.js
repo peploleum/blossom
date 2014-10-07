@@ -265,7 +265,6 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	// show form overlay callback
 	showFormCallback = function() {
 		console.log("toubidou");
-		var elementById = document.getElementById("formControl");
 		var select = d3.select("#formControl");
 		select.style("visibility", "visible");
 		console.log(elementById);
@@ -294,7 +293,8 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 			// object : geoEntity
 			// });
 			var view = map.getView();
-//			console.log("extent " + source.getExtent() + " size " + map.getSize());
+			// console.log("extent " + source.getExtent() + " size " +
+			// map.getSize());
 
 			if (businessObjectsLayer.getSource().getFeatures().length > 1) {
 				// view.fitExtent(source.getExtent(), map.getSize());
@@ -321,6 +321,11 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		map.getView().fitExtent(source.getExtent(), map.getSize());
 		console.log("extent " + source.getExtent(), map.getView().calculateExtent(map.getSize()));
 	}
+
+	toggleDrawingToolCallback = function() {
+		var select = d3.select("#drawingToolForm");
+		select.style("visibility", "visible");
+	}
 	// creating a control
 	customControl = function() {
 		var toolbar = document.getElementById("toolbar");
@@ -329,11 +334,13 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		var showForm = document.getElementById("showForm");
 		var addSample = document.getElementById("addSample");
 		var fitExtent = document.getElementById("fitExtent");
+		var toggleDrawingTool = document.getElementById("toggleDrawingTool");
 		toggleStyle.addEventListener('click', toggleIconStyle, false);
 		visualizeBusinessObjects.addEventListener('click', visualizeBOCallback, false);
 		showForm.addEventListener('click', showFormCallback, false);
 		addSample.addEventListener('click', addGeoJSONCallback, false);
 		fitExtent.addEventListener('click', fitExtentCallBack, false);
+		toggleDrawingTool.addEventListener('click', toggleDrawingToolCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : toolbar,
@@ -391,6 +398,9 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 			console.log("ESC pressed");
 			var element = popup.getElement();
 			$(element).popover('hide');
+
+			var select = d3.select("#drawingToolForm");
+			select.style("visibility", "hidden");
 		}
 	});
 
@@ -411,4 +421,12 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		feature.type = "Feature";
 		geoFactory.addFeature(feature);
 	}
+
+	console.log("creating controls");
+	d3.select("#startPolygon").on("click", function(d) {
+		console.log("clicked");
+		dt.createControls(map, document.getElementById("drawingToolForm"))
+	});
+	// dt.createControls(map, document.getElementById("drawingToolForm"));
+
 })

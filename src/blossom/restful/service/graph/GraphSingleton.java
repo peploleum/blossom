@@ -77,11 +77,12 @@ public class GraphSingleton {
         }
     }
 
-    public int getNodeIndexByNodeId(String id) {
-        List<NodeItem> nodes = getGraph().getNodes();
-        for (NodeItem nodeItem : nodes) {
-            if (nodeItem.getId().equals(id))
+    public int getNodeIndexByNodeId(final String id) {
+        final List<NodeItem> nodes = getGraph().getNodes();
+        for (final NodeItem nodeItem : nodes) {
+            if (nodeItem.getId().equals(id)) {
                 return nodes.indexOf(nodeItem);
+            }
         }
         return -1;
     }
@@ -111,5 +112,17 @@ public class GraphSingleton {
             }
             getGraph().getLinks().removeAll(linksToRemove);
         }
+    }
+
+    public void removeLinkById(final String nodeId) {
+        final List<LinkItem> linksToRemove = new ArrayList<LinkItem>();
+        final List<LinkItem> links = getGraph().getLinks();
+        for (final LinkItem linkItem : links) {
+            if (nodeId.equals(getGraph().getNodes().get(linkItem.getSource()).getId())
+                    || nodeId.equals(getGraph().getNodes().get(linkItem.getTarget()).getId())) {
+                linksToRemove.add(linkItem);
+            }
+        }
+        getGraph().getLinks().removeAll(linksToRemove);
     }
 }

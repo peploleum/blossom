@@ -9,7 +9,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "link", schema = "blossom")
-@NamedQueries({ @NamedQuery(name = "CharacterLink.findAll", query = "SELECT cl FROM CharacterLink cl") })
+@NamedQueries({ @NamedQuery(name = "CharacterLink.findAll", query = "SELECT cl FROM CharacterLink cl"),
+        @NamedQuery(name = "CharacterLink.findById", query = "SELECT cl FROM CharacterLink cl WHERE (cl.source = :idsource OR cl.dest = :iddest)") })
 public class CharacterLink {
     @Id
     @Column(name = "source")
@@ -43,4 +44,17 @@ public class CharacterLink {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("CharacterLink : [source=");
+        stringBuilder.append(this.source);
+        stringBuilder.append("][dest=");
+        stringBuilder.append(this.dest);
+        stringBuilder.append("][name=");
+        stringBuilder.append(this.name);
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
+    }
 }

@@ -238,6 +238,7 @@ public class GraphRestService {
             entityManager.getTransaction().begin();
             try {
                 for (final String nodeId : ids.getIds()) {
+                    LOGGER.info("removing node " + nodeId);
                     final Query namedQuery = entityManager.createNamedQuery("CharacterEntity.findById");
                     namedQuery.setParameter("id", nodeId);
                     final CharacterEntity result = (CharacterEntity) namedQuery.getSingleResult();
@@ -247,6 +248,18 @@ public class GraphRestService {
                     entityManager.remove(result);
                     final GraphSingleton gs = GraphSingleton.getInstance();
                     gs.removeNodeById(nodeId);
+
+                    final Query findLinkQuery = entityManager.createNamedQuery("CharacterLink.findById");
+                    findLinkQuery.setParameter("idsource", nodeId);
+                    findLinkQuery.setParameter("iddest", nodeId);
+                    @SuppressWarnings("unchecked")
+                    final List<CharacterLink> resultList = findLinkQuery.getResultList();
+                    for (final CharacterLink characterLink : resultList) {
+                        LOGGER.info("removing link " + characterLink.toString());
+                        entityManager.remove(characterLink);
+                    }
+                    gs.removeLinkById(nodeId);
+
                 }
                 entityManager.getTransaction().commit();
             } catch (final Exception e) {

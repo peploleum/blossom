@@ -1,12 +1,5 @@
 <link rel="stylesheet" href="../css/ol.css">
 <style>
-/* body { */
-/*  	padding-top: 0px;  */
-/* 	height: 100%; */
-/* 	padding-bottom: 60px; */
-/*  	padding-left: 10px; */
-/* 	padding-right: 10px;  */
-/* } */
 body {
 	padding-top: 50px;
 	/* 	padding-bottom: 70px; */
@@ -27,10 +20,6 @@ body {
 	position: absolute;
 	top: 90px;
 	right: 8px;
-	/* 	padding: 3px; */
-	/*  	border-radius: 4px;  */
-	/* 	color: #fff; */
-	/* 	background: rgba(255, 255, 255, 0.4); */
 	z-index: 100;
 }
 
@@ -80,6 +69,18 @@ body {
 	border-radius: 4px;
 }
 
+.drawingTool {
+	visibility: hidden;
+	position: absolute;
+	top: 300px;
+	right: 08px;
+	color: #fff;
+	background: rgba(0, 60, 136, 0.5);
+	padding: 10px;
+	z-index: 100;
+	border-radius: 4px;
+}
+
 .geoform {
 	visibility: hidden;
 	position: absolute;
@@ -117,6 +118,20 @@ body {
 				</div>
 				<button ng-click="submitFormItem()"
 					ng-disabled="formControl.$invalid" class="btn btn-primary">Submit</button>
+			</form>
+			<form id="drawingToolForm" class="drawingTool" name="formControl">
+				<p>
+					<button id="startPolygon" type="button" class="btn btn-primary btn-lg">Polygon</button>
+				</p>
+				<p>
+					<button type="button" class="btn btn-primary btn-lg">Polyline</button>
+				</p>
+				<p>
+					<button type="button" class="btn btn-primary btn-lg">Circle</button>
+				</p>
+				<p>
+					<button type="button" class="btn btn-primary btn-lg">Point</button>
+				</p>
 			</form>
 			<div id="popup" title="" data-original-title="Information"></div>
 			<div class="popover top in">
@@ -174,6 +189,12 @@ body {
 					<button id="saveBusinessLayer" type="button"
 						class="btn btn-default btn-lg">
 						<span class="glyphicon glyphicon-floppy-save"></span>
+					</button>
+				</div>
+				<div class="btn-group">
+					<button id="toggleDrawingTool" type="button"
+						class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon-picture"></span>
 					</button>
 				</div>
 			</div>
