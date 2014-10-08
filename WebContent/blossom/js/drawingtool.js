@@ -3,9 +3,9 @@ dt.polygon = {
 	"type" : "polygon"
 };
 
-dt.createControls = function(map, linkedElement) {
+dt.createControls = function(map, linkedElement, button, geomType) {
 	dtControls = function() {
-		startPolygon.addEventListener('click', dt.initDrawingOverlay(map, 'Polygon'), false);
+		linkedElement.addEventListener('click', dt.initDrawingOverlay(map, geomType), false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : linkedElement,
@@ -37,7 +37,7 @@ dt.featureOverlay = new ol.FeatureOverlay({
 dt.initDrawingOverlay = function(map, geometryType) {
 	console.log("calling drawing callback");
 	var currentDrawnType = geometryType;
-
+	dt.removeDrawingOverlay(map);
 	// The features are not added to a regular vector layer/source,
 	// but to a feature overlay which holds a collection of features.
 	// This collection is passed to the modify and also the draw

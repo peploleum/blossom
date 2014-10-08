@@ -383,19 +383,20 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 
 	map.on('singleclick', function(evt) {
 		onClick(evt);
-		$(popup.getElement()).popover({
-			'placement' : 'top',
-			'animation' : true,
-			'html' : true,
-			'content' : buildGeoForm()
-		});
 		var element = popup.getElement();
 		coordinate = evt.coordinate;
 		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
 		$scope.hdms = hdms;
 		popup.setPosition(coordinate);
-		if (isShowPopUpOnMapClick)
+		if (isShowPopUpOnMapClick) {
+			$(popup.getElement()).popover({
+				'placement' : 'top',
+				'animation' : true,
+				'html' : true,
+				'content' : buildGeoForm()
+			});
 			$(element).popover('show');
+		}
 	});
 	// manage key events for the whole body
 	d3.select("body").on("keydown", function(d) {
@@ -407,7 +408,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 
 			var select = d3.select("#drawingToolForm");
 			select.style("visibility", "hidden");
-			
+
 			dt.removeDrawingOverlay(map);
 		}
 	});
@@ -433,8 +434,18 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	console.log("creating controls");
 	d3.select("#startPolygon").on("click", function(d) {
 		console.log("clicked");
-		dt.createControls(map, document.getElementById("drawingToolForm"))
+		dt.createControls(map, document.getElementById("drawingToolForm"), document.getElementById('startPolygon'), 'Polygon')
 	});
-	// dt.createControls(map, document.getElementById("drawingToolForm"));
+	d3.select("#startPolyline").on("click", function(d) {
+		dt.createControls(map, document.getElementById("drawingToolForm"), document.getElementById('startPolyline'), 'LineString')
+	});
+	d3.select("#startCircle").on("click", function(d) {
+		console.log("clicked");
+		dt.createControls(map, document.getElementById("drawingToolForm"), document.getElementById('startCircle'), 'Circle')
+	});
+	d3.select("#startPoint").on("click", function(d) {
+		console.log("clicked");
+		dt.createControls(map, document.getElementById("drawingToolForm"), document.getElementById('startPoint'), 'Point')
+	});
 
 })
