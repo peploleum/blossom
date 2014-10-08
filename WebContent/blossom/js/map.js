@@ -1,4 +1,4 @@
-var module = angular.module('blossom.map', [ 'ngRoute' ]);
+var module = angular.module('blossom.map', [ 'blossom.maps.businesslayer', 'ngRoute' ]);
 
 // access WebService to CRUD geolocalized business objects
 module.factory('geoFactory', [ '$http', function($http) {
@@ -22,6 +22,7 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 	$scope.names = [ 'amy', 'bender', 'farnsworth', 'fry', 'zoidberg', 'scruffy', 'nibbler', 'leela', 'hermes' ];
 	var coordinate;
 	var isIconStyle = false;
+	var isShowPopUpOnMapClick = false;
 	var navbarul = d3.selectAll('ul#navbarul>li');
 	navbarul.attr("class", null);
 	d3.select('#mapNavItem').attr("class", "active");
@@ -326,6 +327,9 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		var select = d3.select("#drawingToolForm");
 		select.style("visibility", "visible");
 	}
+	toggleShowPopupCallback = function() {
+		isShowPopUpOnMapClick = !isShowPopUpOnMapClick;
+	}
 	// creating a control
 	customControl = function() {
 		var toolbar = document.getElementById("toolbar");
@@ -335,12 +339,14 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		var addSample = document.getElementById("addSample");
 		var fitExtent = document.getElementById("fitExtent");
 		var toggleDrawingTool = document.getElementById("toggleDrawingTool");
+		var toggleShowPopUpOnClick = document.getElementById("toggleShowPopUpOnClick");
 		toggleStyle.addEventListener('click', toggleIconStyle, false);
 		visualizeBusinessObjects.addEventListener('click', visualizeBOCallback, false);
 		showForm.addEventListener('click', showFormCallback, false);
 		addSample.addEventListener('click', addGeoJSONCallback, false);
 		fitExtent.addEventListener('click', fitExtentCallBack, false);
 		toggleDrawingTool.addEventListener('click', toggleDrawingToolCallback, false);
+		toggleShowPopUpOnClick.addEventListener('click', toggleShowPopupCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : toolbar,
@@ -388,8 +394,8 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
 		$scope.hdms = hdms;
 		popup.setPosition(coordinate);
-
-		$(element).popover('show');
+		if (isShowPopUpOnMapClick)
+			$(element).popover('show');
 	});
 	// manage key events for the whole body
 	d3.select("body").on("keydown", function(d) {
@@ -401,6 +407,8 @@ module.controller('MapCtrl', function($scope, geoFactory) {
 
 			var select = d3.select("#drawingToolForm");
 			select.style("visibility", "hidden");
+			
+			dt.removeDrawingOverlay(map);
 		}
 	});
 
