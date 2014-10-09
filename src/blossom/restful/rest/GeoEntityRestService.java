@@ -65,6 +65,8 @@ public class GeoEntityRestService {
         }
         final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
         ges.addFeature(feature);
+        
+//        BusinessLayerEndpointConfiguration.getEndPointSingleton().onServerGeneratedMessage(feature);
     }
 
 }

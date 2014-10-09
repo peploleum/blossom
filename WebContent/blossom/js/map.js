@@ -17,7 +17,7 @@ module.factory('geoFactory', [ '$http', function($http) {
 	return geoFactory;
 } ]);
 
-module.controller('MapCtrl', function($scope, geoFactory) {
+module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 	$scope.currentCoordinates;
 	$scope.names = [ 'amy', 'bender', 'farnsworth', 'fry', 'zoidberg', 'scruffy', 'nibbler', 'leela', 'hermes' ];
 	var coordinate;

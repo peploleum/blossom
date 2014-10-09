@@ -1,6 +1,6 @@
 var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.map', 'blossom.stats', 'blossom.misc' ]);
 
-blossomModule.config(function($routeProvider) {
+blossomModule.config(function($routeProvider, $locationProvider) {
 	$routeProvider.when('/about', {
 		controller : 'AboutCtrl',
 		templateUrl : 'about.html'
@@ -25,4 +25,5 @@ blossomModule.config(function($routeProvider) {
 	}).otherwise({
 		redirectTo : '/home'
 	});
+//	$locationProvider.html5Mode(true);
 })
