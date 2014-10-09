@@ -4,7 +4,8 @@
 
 var module = angular.module('blossom.maps.businesslayer', [ 'ngRoute', 'ng' ]);
 
-// access WebService to CRUD geolocalized business objects
+// access the websocket to be notified of geolocalized business objects on the
+// server side.
 module.factory('refresherFactory', [ '$http', '$location', function($http, $location) {
 
 	var urlBase = 'ws://' + $location.host() + ':' + $location.port() + '/Blossom' + '/maps/businesslayerupdates';
@@ -14,24 +15,7 @@ module.factory('refresherFactory', [ '$http', '$location', function($http, $loca
 		websocket.send('maps module connected');
 	};
 
-	websocket.onmessage = function(event) {
-		console.log("received: " + event.data);
-		try {
-			var receivedFeature = JSON.parse(event.data);
-			console.log(receivedFeature.type);
-		} catch (e) {
-			console.log("we failed to parse JSON websocket payload");
-		}
-	};
-	// websocket.send("salut");
-
-	refresherFactory.onOpen = function() {
-		return $http.get(urlBase + '/' + 'getgeoentity');
-	};
-
-	refresherFactory.addFeature = function(feature) {
-		return $http.put(urlBase + '/' + 'addfeature', feature);
-	};
+	refresherFactory.webSocket = websocket;
 
 	return refresherFactory;
 } ]);

@@ -32,21 +32,22 @@ public class BusinessLayerEndPoint {
 
     @OnMessage
     public void onMessage(final String message, final Session userSession) {
-        LOGGER.info("message Received: from[" + userSession.getId() + "] content: [" + message + "].");
+
+        LOGGER.info("message Received: from[" + (userSession != null ? userSession.getId() : "no user session") + "] content: [" + message + "].");
         for (final Session session : this.userSessions) {
             System.out.println("Sending to " + session.getId());
             session.getAsyncRemote().sendText(message);
         }
     }
 
-//    @OnMessage
-//    public void onServerGeneratedMessage(final Object message) {
-//        LOGGER.info("message sent from server [ content: [" + message.toString() + "].");
-//        for (final Session session : this.userSessions) {
-//            System.out.println("Sending to " + session.getId());
-//            session.getAsyncRemote().sendObject(message);
-//        }
-//    }
+    @OnMessage
+    public void onServerGeneratedMessage(final byte[] message) {
+        LOGGER.info("message sent from server [ content: [" + message.toString() + "].");
+        for (final Session session : this.userSessions) {
+            System.out.println("Sending to " + session.getId());
+            session.getAsyncRemote().sendObject(message);
+        }
+    }
 
     @OnError
     public void onError(final Throwable throwable, final Session userSession) {

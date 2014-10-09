@@ -268,7 +268,6 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 		console.log("toubidou");
 		var select = d3.select("#formControl");
 		select.style("visibility", "visible");
-		console.log(elementById);
 	}
 
 	// using the restful client factory to interact with the
@@ -447,5 +446,17 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 		console.log("clicked");
 		dt.createControls(map, document.getElementById("drawingToolForm"), document.getElementById('startPoint'), 'Point')
 	});
+
+	refresherFactory.webSocket.onmessage = function(event) {
+		try {
+			var receivedFeature = JSON.parse(event.data);
+			console.log("received JSON: " + receivedFeature.type);
+			var parser = new ol.format.GeoJSON();
+			feats = parser.readFeatures(receivedFeature);
+			source.addFeatures(feats);
+		} catch (e) {
+			console.log("we failed to parse JSON websocket payload " + e);
+		}
+	};
 
 })

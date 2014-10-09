@@ -12,7 +12,7 @@ public class BusinessLayerEndpointConfiguration extends Configurator {
         return (T) businessLayerServer;
     }
 
-//    public static BusinessLayerEndPoint getEndPointSingleton() {
-//        return businessLayerServer;
-//    }
+    public static BusinessLayerEndPoint getEndPointSingleton() {
+        return businessLayerServer;
+    }
 }

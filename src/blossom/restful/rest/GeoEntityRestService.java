@@ -1,5 +1,6 @@
 package blossom.restful.rest;
 
+import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,7 @@ import org.eclipse.persistence.jaxb.MarshallerProperties;
 import blossom.restful.geo.entity.Feature;
 import blossom.restful.geo.entity.GeoEntity;
 import blossom.restful.service.geo.GeoEntitiesSingleton;
+import blossom.websocket.BusinessLayerEndpointConfiguration;
 
 @Path("/geo")
 public class GeoEntityRestService {
@@ -28,8 +30,9 @@ public class GeoEntityRestService {
     @Path("/getgeoentity")
     public GeoEntity getGeoEntity() {
         final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
-        
-        //for now, for debug, we marshall it this way to check what's coming out against what's coming in on clien-side.
+
+        // for now, for debug, we marshall it this way to check what's coming
+        // out against what's coming in on clien-side.
         JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(GeoEntity.class);
@@ -51,22 +54,22 @@ public class GeoEntityRestService {
     public void addNode(final Feature feature) {
 
         JAXBContext jc;
-        //same here, for debug purposes
+        // we need to marshall it to send it through the websocket pipe
         try {
+            StringWriter writer = new StringWriter();
             jc = JAXBContext.newInstance(Feature.class);
             final Marshaller marshaller = jc.createMarshaller();
             marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "coordinates");
             marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(feature, System.out);
+            marshaller.marshal(feature, writer);
+            BusinessLayerEndpointConfiguration.getEndPointSingleton().onMessage(writer.getBuffer().toString(), null);
+            final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
+            ges.addFeature(feature);
         } catch (final JAXBException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
-        final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
-        ges.addFeature(feature);
-        
-//        BusinessLayerEndpointConfiguration.getEndPointSingleton().onServerGeneratedMessage(feature);
-    }
 
+    }
 }
