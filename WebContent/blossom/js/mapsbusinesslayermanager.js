@@ -8,6 +8,7 @@ var module = angular.module('blossom.maps.businesslayer', [ 'ngRoute', 'ng' ]);
 // server side.
 module.factory('refresherFactory', [ '$http', '$location', function($http, $location) {
 
+	//must look at the $resource management to maybe write something simpler.
 	var urlBase = 'ws://' + $location.host() + ':' + $location.port() + '/' + $location.absUrl().split('/')[3] + '/maps/businesslayerupdates';
 	var refresherFactory = {};
 	var websocket = new WebSocket(urlBase);
