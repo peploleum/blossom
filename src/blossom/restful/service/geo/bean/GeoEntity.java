@@ -1,4 +1,4 @@
-package blossom.restful.geo.entity;
+package blossom.restful.service.geo.bean;
 
 import java.util.List;
 

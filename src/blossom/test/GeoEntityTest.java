@@ -10,12 +10,12 @@ import javax.xml.bind.Marshaller;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
-import blossom.restful.geo.entity.CRS;
-import blossom.restful.geo.entity.Coordinate;
-import blossom.restful.geo.entity.Feature;
-import blossom.restful.geo.entity.GeoEntity;
-import blossom.restful.geo.entity.Geometry;
-import blossom.restful.geo.entity.Property;
+import blossom.restful.service.geo.bean.CRS;
+import blossom.restful.service.geo.bean.Coordinate;
+import blossom.restful.service.geo.bean.Feature;
+import blossom.restful.service.geo.bean.GeoEntity;
+import blossom.restful.service.geo.bean.Geometry;
+import blossom.restful.service.geo.bean.Property;
 
 public class GeoEntityTest {
     private static final Logger LOGGER = Logger.getLogger(GeoEntityTest.class.getName());

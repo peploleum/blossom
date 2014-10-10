@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import blossom.restful.geo.entity.CRS;
-import blossom.restful.geo.entity.Feature;
-import blossom.restful.geo.entity.GeoEntity;
-import blossom.restful.geo.entity.Property;
+import blossom.restful.service.geo.bean.CRS;
+import blossom.restful.service.geo.bean.Feature;
+import blossom.restful.service.geo.bean.GeoEntity;
+import blossom.restful.service.geo.bean.Property;
 
 public class GeoEntitiesSingleton {
 
