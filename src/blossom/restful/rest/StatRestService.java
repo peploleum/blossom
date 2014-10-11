@@ -18,8 +18,8 @@ import javax.ws.rs.core.MediaType;
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
-import blossom.restful.stat.Stat;
-import blossom.restful.stat.StatItem;
+import blossom.restful.service.stat.Stat;
+import blossom.restful.service.stat.StatItem;
 
 @Path("/stat")
 public class StatRestService {

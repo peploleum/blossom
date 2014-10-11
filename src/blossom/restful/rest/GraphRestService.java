@@ -19,8 +19,8 @@ import blossom.restful.service.graph.dto.GraphNodeIdCollection;
 import blossom.restful.service.graph.dto.LinkItem;
 import blossom.restful.service.graph.dto.NodeItem;
 import blossom.restful.service.graph.transfer.GraphTransfer;
-import blossom.restful.stat.GraphStat;
-import blossom.restful.stat.GraphStatItem;
+import blossom.restful.service.stat.GraphStat;
+import blossom.restful.service.stat.GraphStatItem;
 
 @Path("/graph")
 public class GraphRestService {

@@ -1,4 +1,4 @@
-package blossom.restful.stat;
+package blossom.restful.service.stat;
 
 import java.util.List;
 

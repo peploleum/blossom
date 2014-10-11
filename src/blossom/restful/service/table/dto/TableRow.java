@@ -1,4 +1,4 @@
-package blossom.restful.table;
+package blossom.restful.service.table.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

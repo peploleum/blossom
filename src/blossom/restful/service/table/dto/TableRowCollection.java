@@ -1,4 +1,4 @@
-package blossom.restful.table;
+package blossom.restful.service.table.dto;
 
 import java.util.List;
 
