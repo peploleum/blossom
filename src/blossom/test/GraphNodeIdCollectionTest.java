@@ -9,7 +9,7 @@ import javax.xml.bind.Marshaller;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
-import blossom.restful.service.graph.bean.GraphNodeIdCollection;
+import blossom.restful.service.graph.dto.GraphNodeIdCollection;
 
 public class GraphNodeIdCollectionTest {
     private static final Logger LOGGER = Logger.getLogger(GraphNodeIdCollectionTest.class.getName());

@@ -1,4 +1,4 @@
-package blossom.restful.service.geo.bean;
+package blossom.restful.service.geo.dto;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A bean destined to be serialized to GeoJSON
- * 
+ *
  * @author peploleum
  *
  */
@@ -17,26 +17,26 @@ public class GeoEntity {
     private List<Feature> features;
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
     public CRS getCrs() {
-        return crs;
+        return this.crs;
     }
 
-    public void setCrs(CRS crs) {
+    public void setCrs(final CRS crs) {
         this.crs = crs;
     }
 
     public List<Feature> getFeatures() {
-        return features;
+        return this.features;
     }
 
-    public void setFeatures(List<Feature> features) {
+    public void setFeatures(final List<Feature> features) {
         this.features = features;
     }
 

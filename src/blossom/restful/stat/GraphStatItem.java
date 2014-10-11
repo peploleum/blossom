@@ -9,7 +9,7 @@ public class GraphStatItem {
     private Integer stat;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(final String name) {
@@ -17,7 +17,7 @@ public class GraphStatItem {
     }
 
     public Integer getStat() {
-        return stat;
+        return this.stat;
     }
 
     public void setStat(final Integer stat) {

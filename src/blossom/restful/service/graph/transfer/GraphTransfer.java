@@ -1,4 +1,4 @@
-package blossom.restful.service.graph.dto;
+package blossom.restful.service.graph.transfer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,10 @@ import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
 import blossom.persistence.link.CharacterLink;
 import blossom.restful.service.graph.GraphSingleton;
-import blossom.restful.service.graph.bean.Graph;
-import blossom.restful.service.graph.bean.GraphNodeIdCollection;
-import blossom.restful.service.graph.bean.LinkItem;
-import blossom.restful.service.graph.bean.NodeItem;
+import blossom.restful.service.graph.dto.Graph;
+import blossom.restful.service.graph.dto.GraphNodeIdCollection;
+import blossom.restful.service.graph.dto.LinkItem;
+import blossom.restful.service.graph.dto.NodeItem;
 
 /**
  * Handles Graph model interactions with persistence layer
@@ -160,8 +160,8 @@ public class GraphTransfer {
     }
 
     /**
-     * Remove node by unique identifier: fetches the node in the model, removes
-     * it and all the links to or from it
+     * Remove node by unique identifier: fetches the node in the model, removes it and all the links
+     * to or from it
      *
      * @param nodeId
      *            {@link String} unique id of the node
@@ -232,12 +232,11 @@ public class GraphTransfer {
     }
 
     /**
-     * Remove node by ids. Given a node ids collection, handles removal from the
-     * graph model and from the database
+     * Remove node by ids. Given a node ids collection, handles removal from the graph model and
+     * from the database
      *
      * @param ids
-     *            {@link GraphNodeIdCollection} the collection of node ids to
-     *            remove
+     *            {@link GraphNodeIdCollection} the collection of node ids to remove
      * @throws TopLevelBlossomException
      *             when persistence layer fails
      */

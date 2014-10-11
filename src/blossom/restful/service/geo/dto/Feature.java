@@ -1,4 +1,4 @@
-package blossom.restful.service.geo.bean;
+package blossom.restful.service.geo.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

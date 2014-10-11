@@ -52,9 +52,9 @@ public class StatRestService {
                     LOGGER.log(Level.INFO, "Computing stat for name: " + result);
                     final Query numberQuery = entityManager.createNamedQuery("CharacterEntity.countByName");
                     numberQuery.setParameter("name", result);
-                    Number statResult = (Number) numberQuery.getSingleResult();
+                    final Number statResult = (Number) numberQuery.getSingleResult();
                     LOGGER.log(Level.INFO, "Stat for name: " + result + "=" + statResult.intValue());
-                    StatItem statItem = new StatItem();
+                    final StatItem statItem = new StatItem();
                     statItem.setValue(statResult.intValue());
                     statItem.setValued(result);
                     dataset.add(statItem);

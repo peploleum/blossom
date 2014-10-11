@@ -1,11 +1,10 @@
-package blossom.restful.service.graph.bean;
+package blossom.restful.service.graph.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Convenient to transmit Collection of Items by their Ids with less bw
- * footprint
- * 
+ * Convenient to transmit Collection of Items by their Ids with less bw footprint
+ *
  * @author peploleum
  *
  */

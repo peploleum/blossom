@@ -1,4 +1,4 @@
-package blossom.restful.service.geo.dto;
+package blossom.restful.service.geo.transfer;
 
 import java.io.StringWriter;
 import java.util.logging.Level;
@@ -12,13 +12,13 @@ import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import blossom.exception.TopLevelBlossomException;
 import blossom.restful.service.geo.GeoEntitiesSingleton;
-import blossom.restful.service.geo.bean.Feature;
-import blossom.restful.service.geo.bean.GeoEntity;
+import blossom.restful.service.geo.dto.Feature;
+import blossom.restful.service.geo.dto.GeoEntity;
 import blossom.websocket.BusinessLayerEndpointConfiguration;
 
 /**
- * Build GeoEntities from business to persistence and the other way around, to
- * ensure database access is not done directly in the service layer.
+ * Build GeoEntities from business to persistence and the other way around, to ensure database
+ * access is not done directly in the service layer.
  *
  * @author peploleum
  *
@@ -30,6 +30,13 @@ public class GeoEntitiesTransfer {
 
     }
 
+    /**
+     * Retrieve localized entities model
+     *
+     * @return {@link GeoEntity} serializable as a JSON object
+     * @throws TopLevelBlossomException
+     *             if persistence access fails
+     */
     public GeoEntity getGeoEntity() throws TopLevelBlossomException {
         final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
 
@@ -51,6 +58,14 @@ public class GeoEntitiesTransfer {
         return ges.getEntity();
     }
 
+    /**
+     * Add a feature to the geo entities model
+     *
+     * @param feature
+     *            the {@link Feature} to add
+     * @throws TopLevelBlossomException
+     *             if persistence layer fails
+     */
     public void addFeature(final Feature feature) throws TopLevelBlossomException {
         JAXBContext jc;
         // we need to marshall it to send it through the websocket pipe

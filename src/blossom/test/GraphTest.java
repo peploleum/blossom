@@ -12,9 +12,9 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
-import blossom.restful.service.graph.bean.Graph;
-import blossom.restful.service.graph.bean.LinkItem;
-import blossom.restful.service.graph.bean.NodeItem;
+import blossom.restful.service.graph.dto.Graph;
+import blossom.restful.service.graph.dto.LinkItem;
+import blossom.restful.service.graph.dto.NodeItem;
 
 public class GraphTest {
 

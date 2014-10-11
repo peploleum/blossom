@@ -14,11 +14,11 @@ import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
 import blossom.restful.service.graph.GraphSingleton;
-import blossom.restful.service.graph.bean.Graph;
-import blossom.restful.service.graph.bean.GraphNodeIdCollection;
-import blossom.restful.service.graph.bean.LinkItem;
-import blossom.restful.service.graph.bean.NodeItem;
-import blossom.restful.service.graph.dto.GraphTransfer;
+import blossom.restful.service.graph.dto.Graph;
+import blossom.restful.service.graph.dto.GraphNodeIdCollection;
+import blossom.restful.service.graph.dto.LinkItem;
+import blossom.restful.service.graph.dto.NodeItem;
+import blossom.restful.service.graph.transfer.GraphTransfer;
 import blossom.restful.stat.GraphStat;
 import blossom.restful.stat.GraphStatItem;
 

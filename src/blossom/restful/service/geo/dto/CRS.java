@@ -1,4 +1,4 @@
-package blossom.restful.service.geo.bean;
+package blossom.restful.service.geo.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -8,18 +8,18 @@ public class CRS {
     private Property properties;
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
     public Property getProperties() {
-        return properties;
+        return this.properties;
     }
 
-    public void setProperties(Property properties) {
+    public void setProperties(final Property properties) {
         this.properties = properties;
     }
 

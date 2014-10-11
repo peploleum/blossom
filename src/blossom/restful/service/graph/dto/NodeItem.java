@@ -1,4 +1,4 @@
-package blossom.restful.service.graph.bean;
+package blossom.restful.service.graph.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -10,7 +10,7 @@ public class NodeItem {
     private String catchphrase;
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(final String id) {
@@ -18,7 +18,7 @@ public class NodeItem {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(final String name) {
@@ -26,7 +26,7 @@ public class NodeItem {
     }
 
     public int getSize() {
-        return size;
+        return this.size;
     }
 
     public void setSize(final int size) {
@@ -34,7 +34,7 @@ public class NodeItem {
     }
 
     public String getCatchphrase() {
-        return catchphrase;
+        return this.catchphrase;
     }
 
     public void setCatchphrase(final String catchphrase) {
@@ -42,7 +42,7 @@ public class NodeItem {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof NodeItem) {
             return ((NodeItem) obj).getId().equals(this.id);
         } else {

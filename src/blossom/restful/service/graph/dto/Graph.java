@@ -1,4 +1,4 @@
-package blossom.restful.service.graph.bean;
+package blossom.restful.service.graph.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,10 @@ public class Graph {
     private List<LinkItem> links;
 
     public List<NodeItem> getNodes() {
-        if (nodes == null) {
-            nodes = new ArrayList<NodeItem>();
+        if (this.nodes == null) {
+            this.nodes = new ArrayList<NodeItem>();
         }
-        return nodes;
+        return this.nodes;
     }
 
     public void setNodes(final List<NodeItem> nodes) {
@@ -22,10 +22,10 @@ public class Graph {
     }
 
     public List<LinkItem> getLinks() {
-        if (links == null) {
-            links = new ArrayList<LinkItem>();
+        if (this.links == null) {
+            this.links = new ArrayList<LinkItem>();
         }
-        return links;
+        return this.links;
     }
 
     public void setLinks(final List<LinkItem> links) {

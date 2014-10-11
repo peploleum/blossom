@@ -9,10 +9,10 @@ public class Stat {
     private List<StatItem> dataset;
 
     public List<StatItem> getDataset() {
-        return dataset;
+        return this.dataset;
     }
 
-    public void setDataset(List<StatItem> dataset) {
+    public void setDataset(final List<StatItem> dataset) {
         this.dataset = dataset;
     }
 

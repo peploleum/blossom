@@ -21,6 +21,11 @@ public class EntityManagerFactorySingleton {
         return INSTANCE;
     }
 
+    /**
+     * The application-wide JPA entity management scheme
+     * 
+     * @return {@link EntityManagerFactory}
+     */
     public EntityManagerFactory getEntityManagerFactory() {
         return this.entityManagerFactory;
     }

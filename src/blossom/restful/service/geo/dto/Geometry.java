@@ -1,4 +1,4 @@
-package blossom.restful.service.geo.bean;
+package blossom.restful.service.geo.dto;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -14,18 +14,18 @@ public class Geometry {
     private Object[] coordinates;
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
     public Object[] getCoordinates() {
-        return coordinates;
+        return this.coordinates;
     }
 
-    public void setCoordinates(Object[] coordinates) {
+    public void setCoordinates(final Object[] coordinates) {
         this.coordinates = coordinates;
     }
 }

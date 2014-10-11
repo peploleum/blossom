@@ -8,7 +8,7 @@ public class BusinessLayerEndpointConfiguration extends Configurator {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
+    public <T> T getEndpointInstance(final Class<T> endpointClass) throws InstantiationException {
         return (T) businessLayerServer;
     }
 

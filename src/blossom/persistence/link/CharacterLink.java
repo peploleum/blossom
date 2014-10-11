@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "link", schema = "blossom")
 @NamedQueries({ @NamedQuery(name = "CharacterLink.findAll", query = "SELECT cl FROM CharacterLink cl"),
-        @NamedQuery(name = "CharacterLink.findById", query = "SELECT cl FROM CharacterLink cl WHERE (cl.source = :idsource OR cl.dest = :iddest)") })
+    @NamedQuery(name = "CharacterLink.findById", query = "SELECT cl FROM CharacterLink cl WHERE (cl.source = :idsource OR cl.dest = :iddest)") })
 public class CharacterLink {
     @Id
     @Column(name = "source")
@@ -21,26 +21,26 @@ public class CharacterLink {
     private String name;
 
     public String getSource() {
-        return source;
+        return this.source;
     }
 
-    public void setSource(String source) {
+    public void setSource(final String source) {
         this.source = source;
     }
 
     public String getDest() {
-        return dest;
+        return this.dest;
     }
 
-    public void setDest(String dest) {
+    public void setDest(final String dest) {
         this.dest = dest;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 

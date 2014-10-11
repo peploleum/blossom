@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.Index;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
-import blossom.restful.service.graph.bean.Graph;
-import blossom.restful.service.graph.bean.LinkItem;
-import blossom.restful.service.graph.bean.NodeItem;
+import blossom.restful.service.graph.dto.Graph;
+import blossom.restful.service.graph.dto.LinkItem;
+import blossom.restful.service.graph.dto.NodeItem;
 import blossom.test.GraphTest;
 
 public class GraphSingleton {
@@ -24,6 +25,9 @@ public class GraphSingleton {
 
     private Graph graph;
 
+    /**
+     * Initialize model singleton
+     */
     private GraphSingleton() {
         this.graph = initGraph();
         if (this.graph == null) {
@@ -31,6 +35,11 @@ public class GraphSingleton {
         }
     }
 
+    /**
+     * The graph model singleton
+     *
+     * @return {@link GraphSingleton}
+     */
     public static GraphSingleton getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new GraphSingleton();
@@ -38,22 +47,50 @@ public class GraphSingleton {
         return INSTANCE;
     }
 
+    /**
+     * The graph model
+     *
+     * @return {@link Graph}
+     */
     public Graph getGraph() {
         return this.graph;
     }
 
+    /**
+     * Add a node to the graph model
+     *
+     * @param node
+     *            {@link NodeItem} to add
+     */
     public void addNode(final NodeItem node) {
         getGraph().getNodes().add(node);
     }
 
+    /**
+     * Remove a node from graph model
+     *
+     * @param nodeItem
+     *            {@link NodeItem} to remove
+     */
     public void removeNode(final NodeItem nodeItem) {
         getGraph().getNodes().remove(nodeItem);
     }
 
+    /**
+     * Add a link to the graph model
+     *
+     * @param link
+     *            the {@link LinkItem} to add
+     */
     public void addLink(final LinkItem link) {
         getGraph().getLinks().add(link);
     }
 
+    /**
+     * Initialize graph model using persistence layer
+     *
+     * @return {@link Graph}
+     */
     private Graph initGraph() {
         if (debugMode) {
             JAXBContext jc;
@@ -77,6 +114,14 @@ public class GraphSingleton {
         }
     }
 
+    /**
+     * Convienience method to retrieve a {@link Graph} {@link NodeItem} index from its unique
+     * identifier
+     *
+     * @param id
+     *            {@link String} the unique identifier
+     * @return the {@link NodeItem} {@link Index} as an int
+     */
     public int getNodeIndexByNodeId(final String id) {
         final List<NodeItem> nodes = getGraph().getNodes();
         for (final NodeItem nodeItem : nodes) {
@@ -87,6 +132,12 @@ public class GraphSingleton {
         return -1;
     }
 
+    /**
+     * Convenience method to remove a {@link NodeItem} from the model using its unique identifier
+     *
+     * @param nodeId
+     *            {@link String} the unique identifier
+     */
     public void removeNodeById(final String nodeId) {
         final List<NodeItem> nodes = getGraph().getNodes();
         int indexToRemove = 0;
@@ -114,6 +165,12 @@ public class GraphSingleton {
         }
     }
 
+    /**
+     * Convienience method to remove all links from or to a {@link NodeItem} based on its unique id
+     *
+     * @param nodeId
+     *            {@link String} the unique node id
+     */
     public void removeLinkById(final String nodeId) {
         final List<LinkItem> linksToRemove = new ArrayList<LinkItem>();
         final List<LinkItem> links = getGraph().getLinks();

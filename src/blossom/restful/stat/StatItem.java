@@ -8,18 +8,18 @@ public class StatItem {
     private int value;
 
     public String getValued() {
-        return valued;
+        return this.valued;
     }
 
-    public void setValued(String valued) {
+    public void setValued(final String valued) {
         this.valued = valued;
     }
 
     public int getValue() {
-        return value;
+        return this.value;
     }
 
-    public void setValue(int value) {
+    public void setValue(final int value) {
         this.value = value;
     }
 

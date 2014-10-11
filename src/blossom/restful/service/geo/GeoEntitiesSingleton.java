@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import blossom.restful.service.geo.bean.CRS;
-import blossom.restful.service.geo.bean.Feature;
-import blossom.restful.service.geo.bean.GeoEntity;
-import blossom.restful.service.geo.bean.Property;
+import blossom.restful.service.geo.dto.CRS;
+import blossom.restful.service.geo.dto.Feature;
+import blossom.restful.service.geo.dto.GeoEntity;
+import blossom.restful.service.geo.dto.Property;
 
+/**
+ * Singleton model for geolocalized business objects
+ *
+ * @author peploleum
+ *
+ */
 public class GeoEntitiesSingleton {
 
     private static GeoEntitiesSingleton INSTANCE = null;
@@ -17,6 +23,9 @@ public class GeoEntitiesSingleton {
 
     private GeoEntity entity;
 
+    /**
+     * Builds a model for geolocalized business objects
+     */
     private GeoEntitiesSingleton() {
         if (this.entity == null) {
             this.entity = new GeoEntity();
@@ -31,6 +40,11 @@ public class GeoEntitiesSingleton {
         }
     }
 
+    /**
+     * the geo entities model singleton
+     *
+     * @return {@link GeoEntitiesSingleton}
+     */
     public static GeoEntitiesSingleton getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new GeoEntitiesSingleton();
@@ -38,14 +52,31 @@ public class GeoEntitiesSingleton {
         return INSTANCE;
     }
 
+    /**
+     * gets the serializable model
+     *
+     * @return
+     */
     public GeoEntity getEntity() {
         return this.entity;
     }
 
+    /**
+     * set the serializable model
+     *
+     * @param entity
+     *            a not <code>null</code> {@link GeoEntity}
+     */
     public void setEntity(final GeoEntity entity) {
         this.entity = entity;
     }
 
+    /**
+     * Add a feature to the entity model
+     *
+     * @param feature
+     *            the {@link Feature} to add
+     */
     public void addFeature(final Feature feature) {
         LOGGER.log(Level.INFO, "adding entity " + this.entity.toString());
         if (this.entity.getFeatures() == null) {

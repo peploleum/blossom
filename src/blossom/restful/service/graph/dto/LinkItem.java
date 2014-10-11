@@ -1,4 +1,4 @@
-package blossom.restful.service.graph.bean;
+package blossom.restful.service.graph.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

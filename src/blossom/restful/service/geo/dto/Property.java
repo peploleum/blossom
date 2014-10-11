@@ -1,4 +1,4 @@
-package blossom.restful.service.geo.bean;
+package blossom.restful.service.geo.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -7,10 +7,10 @@ public class Property {
     private String name;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 }

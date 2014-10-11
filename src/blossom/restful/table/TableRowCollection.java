@@ -9,10 +9,10 @@ public class TableRowCollection {
     private List<TableRow> rows;
 
     public List<TableRow> getRows() {
-        return rows;
+        return this.rows;
     }
 
-    public void setRows(List<TableRow> rows) {
+    public void setRows(final List<TableRow> rows) {
         this.rows = rows;
     }
 
