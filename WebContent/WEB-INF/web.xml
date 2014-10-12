@@ -44,6 +44,6 @@
 	</servlet-mapping>
 	<persistence-context-ref>
         <persistence-context-ref-name>persistence/em</persistence-context-ref-name>
-        <persistence-unit-name>Blossom</persistence-unit-name>
+        <persistence-unit-name>BlossomLocal</persistence-unit-name>
     </persistence-context-ref>
 </web-app>
