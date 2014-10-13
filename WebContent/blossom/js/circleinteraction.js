@@ -6,7 +6,7 @@ ci.CircleInteraction = function() {
 };
 // ci.CircleInteraction.prototype = new Object();
 // ci.CircleInteraction.prototype = new Object();
-//ol.inherits(ci.CircleInteraction, ol.interaction.Pointer);
+ol.inherits(ci.CircleInteraction, ol.interaction.Pointer);
 // ci.CircleInteraction.prototype.handleMapBrowserEvent = function(event) {
 // var map = event.map;
 // console.log("there was a map browser event");
