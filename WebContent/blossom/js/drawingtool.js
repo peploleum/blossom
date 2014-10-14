@@ -43,6 +43,7 @@ dt.initDrawingOverlay = function(map, geometryType) {
 
 	if (geometryType == 'Circle') {
 		console.log("drawing circle")
+		map.addInteraction(new ci.CircleInteraction());
 	} else {
 		var modify = new ol.interaction.Modify({
 			features : dt.featureOverlay.getFeatures(),
@@ -65,7 +66,6 @@ dt.initDrawingOverlay = function(map, geometryType) {
 		addInteraction();
 	}
 
-	// map.addInteraction(ci.CircleInteraction);
 }
 
 dt.removeDrawingOverlay = function(map) {
