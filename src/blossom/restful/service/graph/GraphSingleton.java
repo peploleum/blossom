@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.persistence.Index;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.eclipse.persistence.annotations.Index;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import blossom.restful.service.graph.dto.Graph;

@@ -19,18 +19,18 @@
 		</properties>
 	</persistence-unit>
 	<persistence-unit name="BlossomLocal">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>blossom.persistence.entity.CharacterEntity</class>
 		<class>blossom.persistence.link.CharacterLink</class>
-		<!-- <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> -->
 		<properties>
-			<property name="eclipselink.target-database" value="PostgreSQL" />
-			<property name="eclipselink.jdbc.native-sql" value="true" />
+<!-- 			<property name="eclipselink.target-database" value="PostgreSQL" /> -->
+<!-- 			<property name="eclipselink.jdbc.native-sql" value="true" /> -->
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/postgres" />
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 			<property name="javax.persistence.jdbc.user" value="postgres" />
 <!-- 			<property name="javax.persistence.jdbc.password" value="admin" /> -->
 			<property name="javax.persistence.jdbc.password" value="admin" />
-			<property name="eclipselink.logging.level" value="ALL" />
+<!-- 			<property name="eclipselink.logging.level" value="ALL" /> -->
 		</properties>
 	</persistence-unit>
 </persistence>
