@@ -19,7 +19,7 @@
 		</properties>
 	</persistence-unit>
 	<persistence-unit name="BlossomLocal">
-		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>blossom.persistence.entity.CharacterEntity</class>
 		<class>blossom.persistence.link.CharacterLink</class>
 		<properties>
