@@ -1,4 +1,4 @@
-var module = angular.module('blossom.network', [ 'ngRoute', 'ngResource', 'blossom.table' ]);
+var module = angular.module('blossom.network', [ 'ngRoute', 'ngResource', 'blossom.table', 'blossom.form' ]);
 
 module.factory('StatFactory', function($resource) {
 	return $resource('./rest/graph/stat', {}, {
@@ -20,7 +20,7 @@ module.factory('GraphFactory', function($resource) {
 	})
 });
 
-module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory, TableGetFactory) {
+module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory, TableGetFactory, PopFormFactory) {
 	var symbo = true;
 
 	var navbarul = d3.selectAll('ul#navbarul>li');
@@ -32,6 +32,17 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 	$scope.serviceSuccess = true;
 	$scope.serviceErrorDetails = false;
 
+	$scope.isOn = function() {
+		return PopFormFactory.isOn();
+	}
+
+	$scope.onRefClicked = function($event) {
+		console.log("ref clicked " + $event);
+		PopFormFactory.toggle(true);
+	}
+	$scope.discardForm = function() {
+		PopFormFactory.toggle(false);
+	}
 	var selectionClicked = null; // id the clicked button in a group
 	selection = []; // selection model : stores ids of selected nodes
 	pinnedNodes = []; // pin model : stores ids of pinned nodes
@@ -382,12 +393,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		$scope.errorMessage = '';
 
 		// d3.select('#table').html('<p>salut<p>');
-		$scope.tablerows = TableGetFactory.getData().success(function(data, status, headers, config) {
-			console.log("ok: " + data + " rows " + data.rows);
-			$scope.tablerows = data.rows;
-		}).error(function(data, status, headers, config) {
-			console.log("ko");
-		});
+		loadTable();
 	}
 
 	onError = function(data, status, headers, config, message) {
@@ -397,6 +403,14 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		$scope.serviceSuccess = false;
 	}
 
+	loadTable = function() {
+		$scope.tablerows = TableGetFactory.getData().success(function(data, status, headers, config) {
+			console.log("ok: " + data + " rows " + data.rows);
+			$scope.tablerows = data.rows;
+		}).error(function(data, status, headers, config) {
+			console.log("ko");
+		});
+	}
 	// removing bulk nodes
 	removeNodes = function() {
 		console.log("removing selected nodes ...");
@@ -595,4 +609,5 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			return v.toString(16);
 		}));
 	}
+	loadTable();
 })

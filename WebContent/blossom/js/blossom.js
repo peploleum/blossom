@@ -22,6 +22,9 @@ blossomModule.config(function($routeProvider, $locationProvider) {
 	}).when('/stat', {
 		controller : 'StatCtrl',
 		templateUrl : 'stats.html'
+	}).when('/popform/:formId', {
+		controller : 'PopFormCtrl',
+		templateUrl : 'popform.html'
 	}).otherwise({
 		redirectTo : '/home'
 	});
