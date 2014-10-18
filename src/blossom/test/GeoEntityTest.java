@@ -34,8 +34,7 @@ public class GeoEntityTest {
 
         final Geometry geometry = new Geometry();
         geometry.setType("Point");
-        geometry.setCoordinates(new Object[] { -75.849253579389796, 47.6434349837781 });
-        // geometry.setArguments(new Object[] { "a", "b" });
+        geometry.setCoordinates(new Double[] { -75.849253579389796, 47.6434349837781 });
         final Property featureProperty = new Property();
         featureProperty.setName("Saguenay (Arrondissement Latterière)");
 

@@ -1,9 +1,11 @@
 package blossom.restful.service.geo.transfer;
 
 import java.io.StringWriter;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -11,10 +13,17 @@ import javax.xml.bind.Marshaller;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import blossom.exception.TopLevelBlossomException;
+import blossom.persistence.EntityManagerFactorySingleton;
+import blossom.persistence.location.Location;
 import blossom.restful.service.geo.GeoEntitiesSingleton;
 import blossom.restful.service.geo.dto.Feature;
 import blossom.restful.service.geo.dto.GeoEntity;
 import blossom.websocket.BusinessLayerEndpointConfiguration;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * Build GeoEntities from business to persistence and the other way around, to ensure database
@@ -85,5 +94,47 @@ public class GeoEntitiesTransfer {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             throw new TopLevelBlossomException(e, "failed to add feature to geo entites");
         }
+    }
+
+    public void saveFeatures() throws TopLevelBlossomException {
+        final GeoEntitiesSingleton geos = GeoEntitiesSingleton.getInstance();
+        final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            for (final Feature feature : geos.getEntity().getFeatures()) {
+                // feature.
+                final Location location = new Location();
+                location.setId(UUID.randomUUID().toString());
+                final Geometry geom = wktToGeometry("POINT(" + feature.getGeometry().getCoordinates()[0] + " " + feature.getGeometry().getCoordinates()[1]
+                        + ")");
+                geom.setSRID(Integer.valueOf(geos.getEntity().getCrs().getProperties().getName().split(":")[1]).intValue());
+                if (!geom.getGeometryType().equals("Point")) {
+                    throw new TopLevelBlossomException("Geometry must be a point. Got a " + geom.getGeometryType());
+                }
+                location.setLocation((Point) geom);
+                entityManager.persist(location);
+            }
+            entityManager.getTransaction().commit();
+            LOGGER.log(Level.INFO, "Features persisted");
+        } catch (final Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            throw new TopLevelBlossomException(e, "Failed to remove Nodes from database.");
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    private Geometry wktToGeometry(final String wktPoint) {
+        final WKTReader fromText = new WKTReader();
+        Geometry geom = null;
+        try {
+            geom = fromText.read(wktPoint);
+        } catch (final ParseException e) {
+            throw new RuntimeException("Not a WKT string:" + wktPoint);
+        }
+        return geom;
     }
 }

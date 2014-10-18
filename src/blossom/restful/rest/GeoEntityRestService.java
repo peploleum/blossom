@@ -36,4 +36,15 @@ public class GeoEntityRestService {
         geoEntitiesTransfer.addFeature(feature);
 
     }
+
+    @PUT
+//    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/savefeatures")
+    public void saveFeatures() throws TopLevelBlossomException {
+        LOGGER.info("saving Features ");
+        final GeoEntitiesTransfer geoEntitiesTransfer = new GeoEntitiesTransfer();
+//        if (features == null || features.length == 0)
+            geoEntitiesTransfer.saveFeatures();
+
+    }
 }

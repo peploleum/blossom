@@ -31,7 +31,8 @@ public class GeoEntitiesSingleton {
             this.entity = new GeoEntity();
             this.entity.setType("FeatureCollection");
             final Property property = new Property();
-            property.setName("EPSG:3857");
+//            property.setName("EPSG:3857");
+            property.setName("EPSG:4326");
             final CRS crs = new CRS();
             crs.setType("name");
             crs.setProperties(property);

@@ -21,6 +21,7 @@ OIDS=FALSE
 ALTER TABLE blossom."character"
 OWNER TO postgres;
 
+DROP TABLE blossom."link";
 CREATE TABLE blossom."link"
 (
    source varchar(36),
@@ -29,3 +30,17 @@ CREATE TABLE blossom."link"
 );
 ALTER TABLE blossom."link"
 OWNER TO postgres;
+
+DROP TABLE blossom."location";
+CREATE TABLE blossom."location" ( 
+  id varchar(36) PRIMARY KEY,
+  geom GEOMETRY(Point, 4326)
+); 
+ ALTER TABLE blossom."location"
+OWNER TO postgres;
+
+DROP INDEX location_gix;
+CREATE INDEX location_gix
+  ON blossom."location" 
+  USING GIST (geom); 
+  

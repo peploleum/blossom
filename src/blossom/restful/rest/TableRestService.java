@@ -12,9 +12,9 @@ import blossom.restful.service.table.dto.TableRowCollection;
 import blossom.restful.service.table.transfer.TableTransfer;
 
 @Path("/table")
-public class TableService {
+public class TableRestService {
 
-    private static final Logger LOGGER = Logger.getLogger(TableService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TableRestService.class.getName());
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

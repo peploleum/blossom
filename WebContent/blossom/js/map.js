@@ -1,22 +1,5 @@
 var module = angular.module('blossom.map', [ 'blossom.maps.businesslayer', 'ngRoute' ]);
 
-// access WebService to CRUD geolocalized business objects
-module.factory('geoFactory', [ '$http', function($http) {
-
-	var urlBase = './rest/geo';
-	var geoFactory = {};
-
-	geoFactory.getGeoEntity = function() {
-		return $http.get(urlBase + '/' + 'getgeoentity');
-	};
-
-	geoFactory.addFeature = function(feature) {
-		return $http.put(urlBase + '/' + 'addfeature', feature);
-	};
-
-	return geoFactory;
-} ]);
-
 module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 	$scope.currentCoordinates;
 	$scope.names = [ 'amy', 'bender', 'farnsworth', 'fry', 'zoidberg', 'scruffy', 'nibbler', 'leela', 'hermes' ];
@@ -274,7 +257,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 	// server to handle
 	// business objects
 	var source = new ol.source.GeoJSON({
-		projection : 'EPSG:3857'
+		projection : 'EPSG:4326'
 	});
 	var businessObjectsLayer = new ol.layer.Vector({
 		source : source,
@@ -284,6 +267,11 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 	visualizeBOCallback = function() {
 		geoFactory.getGeoEntity().success(function(geoEntity) {
 			var parser = new ol.format.GeoJSON();
+			// this is very uneffective, but I cannot get it working unless
+			// sending 3857 from the server, which I refuse to do.
+			geoEntity.features.forEach(function(feature) {
+				feature.geometry.coordinates = ol.proj.transform(feature.geometry.coordinates, 'EPSG:4326', 'EPSG:3857')
+			})
 			feats = parser.readFeatures(geoEntity);
 			source.clear();
 			source.addFeatures(feats);
@@ -329,6 +317,17 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 	toggleShowPopupCallback = function() {
 		isShowPopUpOnMapClick = !isShowPopUpOnMapClick;
 	}
+	saveBusinessLayerCallback = function() {
+		var features = source.getFeatures();
+		console.log("features " + features);
+		var parser = new ol.format.GeoJSON();
+		feats = parser.writeFeatures(features);
+		geoFactory.saveFeatures(feats).success(function(data) {
+			console.log("saved business layer")
+		}).error(function(data) {
+			console.log("failed to persist business layer")
+		});
+	}
 	// creating a control
 	customControl = function() {
 		var toolbar = document.getElementById("toolbar");
@@ -339,6 +338,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 		var fitExtent = document.getElementById("fitExtent");
 		var toggleDrawingTool = document.getElementById("toggleDrawingTool");
 		var toggleShowPopUpOnClick = document.getElementById("toggleShowPopUpOnClick");
+		var saveBusinessLayer = document.getElementById("saveBusinessLayer");
 		toggleStyle.addEventListener('click', toggleIconStyle, false);
 		visualizeBusinessObjects.addEventListener('click', visualizeBOCallback, false);
 		showForm.addEventListener('click', showFormCallback, false);
@@ -346,6 +346,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 		fitExtent.addEventListener('click', fitExtentCallBack, false);
 		toggleDrawingTool.addEventListener('click', toggleDrawingToolCallback, false);
 		toggleShowPopUpOnClick.addEventListener('click', toggleShowPopupCallback, false);
+		saveBusinessLayer.addEventListener('click', saveBusinessLayerCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : toolbar,
@@ -416,7 +417,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 		console.log("submitting " + $scope.formhelper.name + " @ " + $scope.currentCoordinates);
 		var feature = {};
 		// ol.coordinate.
-		// coordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+		coordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
 		console.log("  " + coordinate);
 
 		feature.geometry = {
@@ -450,9 +451,15 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 	refresherFactory.webSocket.onmessage = function(event) {
 		try {
 			var receivedFeature = JSON.parse(event.data);
-			console.log("received JSON: " + receivedFeature.type);
+			console.log("received JSON: " + receivedFeature.type + " geom: " + receivedFeature.geometry);
 			var parser = new ol.format.GeoJSON();
-			feats = parser.readFeatures(receivedFeature);
+			// I still have to convert on the fly when I receive coords, because
+			// source & view need to be in the same projection
+			receivedFeature.geometry.coordinates = ol.proj.transform(receivedFeature.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
+			console.log("geom: " + receivedFeature.geometry.coordinates);
+			feats = parser.readFeatures(receivedFeature, {
+				projection : 'EPSG:4326'
+			});
 			source.addFeatures(feats);
 		} catch (e) {
 			console.log("we failed to parse JSON websocket payload " + e);
