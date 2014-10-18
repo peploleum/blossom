@@ -18,12 +18,11 @@ import blossom.persistence.location.Location;
 import blossom.restful.service.geo.GeoEntitiesSingleton;
 import blossom.restful.service.geo.dto.Feature;
 import blossom.restful.service.geo.dto.GeoEntity;
+import blossom.util.geo.GeoUtils;
 import blossom.websocket.BusinessLayerEndpointConfiguration;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * Build GeoEntities from business to persistence and the other way around, to ensure database
@@ -105,8 +104,7 @@ public class GeoEntitiesTransfer {
                 // feature.
                 final Location location = new Location();
                 location.setId(UUID.randomUUID().toString());
-                final Geometry geom = wktToGeometry("POINT(" + feature.getGeometry().getCoordinates()[0] + " " + feature.getGeometry().getCoordinates()[1]
-                        + ")");
+                final Geometry geom = GeoUtils.wktToGeometry(GeoUtils.fromFeature(feature));
                 geom.setSRID(Integer.valueOf(geos.getEntity().getCrs().getProperties().getName().split(":")[1]).intValue());
                 if (!geom.getGeometryType().equals("Point")) {
                     throw new TopLevelBlossomException("Geometry must be a point. Got a " + geom.getGeometryType());
@@ -127,14 +125,4 @@ public class GeoEntitiesTransfer {
         }
     }
 
-    private Geometry wktToGeometry(final String wktPoint) {
-        final WKTReader fromText = new WKTReader();
-        Geometry geom = null;
-        try {
-            geom = fromText.read(wktPoint);
-        } catch (final ParseException e) {
-            throw new RuntimeException("Not a WKT string:" + wktPoint);
-        }
-        return geom;
-    }
 }

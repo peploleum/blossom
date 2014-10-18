@@ -94,7 +94,7 @@ body {
 				<div class="form-group has-feedback"
 					ng-class="{'has-error': formControl.name.$invalid, 'has-success': !formControl.name.$invalid}">
 					<label>Name</label> <input class="form-control" type="text"
-						name="name" ng-model="formhelper.name" required> <span
+						name="name" ng-model="formhelper.name"  ng-minlength="1" ng-required=true> <span
 						ng-show="!formControl.name.$invalid"
 						class="glyphicon glyphicon-ok form-control-feedback"></span> <span
 						ng-show="formControl.name.$error.required" class="help-inline">
@@ -105,7 +105,16 @@ body {
 					<label>Name Select</label> <select class="form-control"
 						ng-model="formhelper.name"
 						ng-options="name for name in names | orderBy:'toString()'">
-					</select><br />
+					</select>
+				</div>
+				<div class="form-group has-feedback"
+					ng-class="{'has-error': formControl.catchphrase.$invalid, 'has-success': !formControl.catchphrase.$invalid}">
+					<label>Catchphrase</label> <input class="form-control" type="text"
+						name="catchphrase" ng-model="formhelper.catchphrase" required>
+					<span ng-show="!formControl.catchphrase.$invalid"
+						class="glyphicon glyphicon-ok form-control-feedback"></span> <span
+						ng-show="formControl.catchphrase.$error.required"
+						class="help-inline"> Required</span>
 				</div>
 				<div class="form-group has-feedback"
 					ng-class="{'has-error': formControl.coord.$invalid, 'has-success': !formControl.coord.$invalid}">
@@ -119,7 +128,7 @@ body {
 				<button ng-click="submitFormItem()"
 					ng-disabled="formControl.$invalid" class="btn btn-primary">Submit</button>
 			</form>
-			<form id="drawingToolForm" class="drawingTool" name="formControl">
+			<form id="drawingToolForm" class="drawingTool" name="drawingToolForm">
 				<p>
 					<button id="startPolygon" type="button"
 						class="btn btn-primary btn-lg">

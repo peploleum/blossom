@@ -1,6 +1,6 @@
-var module = angular.module('blossom.map', [ 'blossom.maps.businesslayer', 'ngRoute' ]);
+var module = angular.module('blossom.map', [ 'blossom.maps.businesslayer', 'blossom.bomanager', 'blossom.misc', 'ngRoute' ]);
 
-module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
+module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boManagerFactory, uuidFactory) {
 	$scope.currentCoordinates;
 	$scope.names = [ 'amy', 'bender', 'farnsworth', 'fry', 'zoidberg', 'scruffy', 'nibbler', 'leela', 'hermes' ];
 	var coordinate;
@@ -415,8 +415,12 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 
 	$scope.submitFormItem = function() {
 		console.log("submitting " + $scope.formhelper.name + " @ " + $scope.currentCoordinates);
+		var characterEntity = {};
+		characterEntity.id = uuidFactory.generateUUID();
+		characterEntity.name = $scope.formhelper.name;
+		characterEntity.catchphrase = $scope.formhelper.catchphrase;
+
 		var feature = {};
-		// ol.coordinate.
 		coordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
 		console.log("  " + coordinate);
 
@@ -428,7 +432,11 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory) {
 			"name" : $scope.formhelper.name
 		}
 		feature.type = "Feature";
-		geoFactory.addFeature(feature);
+
+		characterEntity.geom = feature;
+		boManagerFactory.createCharacter(characterEntity);
+		// geoFactory.addFeature(feature);
+
 	}
 
 	console.log("creating controls");

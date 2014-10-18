@@ -1,4 +1,4 @@
-var module = angular.module('blossom.network', [ 'ngRoute', 'ngResource', 'blossom.table', 'blossom.form' ]);
+var module = angular.module('blossom.network', [ 'ngRoute', 'ngResource', 'blossom.table', 'blossom.form', 'blossom.misc' ]);
 
 module.factory('StatFactory', function($resource) {
 	return $resource('./rest/graph/stat', {}, {
@@ -20,7 +20,7 @@ module.factory('GraphFactory', function($resource) {
 	})
 });
 
-module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory, TableGetFactory, PopFormFactory) {
+module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory, TableGetFactory, PopFormFactory, uuidFactory) {
 	var symbo = true;
 
 	var navbarul = d3.selectAll('ul#navbarul>li');
@@ -329,7 +329,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			size = $scope.nodehelper.size;
 		console.log("size from scope:" + $scope.nodehelper.size + " var: " + size);
 		newNode = {
-			"id" : generateUUID(),
+			"id" : uuidFactory.generateUUID(),
 			"name" : $scope.nodehelper.name,
 			"size" : size,
 			"catchphrase" : $scope.nodehelper.catchphrase
@@ -447,7 +447,7 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 			size = $scope.nodehelper.size;
 		console.log("size from scope:" + $scope.nodehelper.size + " var: " + size);
 		force.nodes().push({
-			"id" : generateUUID(),
+			"id" : uuidFactory.generateUUID(),
 			"name" : $scope.nodehelper.name,
 			"size" : size,
 			"catchphrase" : $scope.nodehelper.catchphrase
@@ -603,11 +603,6 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 		}).attr("id", "chartbar");
 	}
 
-	generateUUID = function() {
-		return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-			return v.toString(16);
-		}));
-	}
+	
 	loadTable();
 })
