@@ -10,9 +10,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
-import blossom.restful.service.geo.dto.Feature;
-import blossom.restful.service.geo.dto.GeoEntity;
-import blossom.restful.service.geo.transfer.GeoEntitiesTransfer;
+import blossom.restful.service.business.geo.dto.Feature;
+import blossom.restful.service.business.geo.dto.GeoEntity;
+import blossom.restful.service.business.geo.transfer.GeoEntitiesTransfer;
 
 @Path("/geo")
 public class GeoEntityRestService {

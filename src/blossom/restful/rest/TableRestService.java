@@ -8,8 +8,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
-import blossom.restful.service.table.dto.TableRowCollection;
-import blossom.restful.service.table.transfer.TableTransfer;
+import blossom.restful.service.tech.table.dto.TableRowCollection;
+import blossom.restful.service.tech.table.transfer.TableTransfer;
 
 @Path("/table")
 public class TableRestService {

@@ -13,14 +13,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
-import blossom.restful.service.graph.GraphSingleton;
-import blossom.restful.service.graph.dto.Graph;
-import blossom.restful.service.graph.dto.GraphNodeIdCollection;
-import blossom.restful.service.graph.dto.LinkItem;
-import blossom.restful.service.graph.dto.NodeItem;
-import blossom.restful.service.graph.transfer.GraphTransfer;
-import blossom.restful.service.stat.GraphStat;
-import blossom.restful.service.stat.GraphStatItem;
+import blossom.restful.service.business.graph.GraphSingleton;
+import blossom.restful.service.business.graph.dto.Graph;
+import blossom.restful.service.business.graph.dto.GraphNodeIdCollection;
+import blossom.restful.service.business.graph.dto.LinkItem;
+import blossom.restful.service.business.graph.dto.NodeItem;
+import blossom.restful.service.business.graph.transfer.GraphTransfer;
+import blossom.restful.service.business.stat.GraphStat;
+import blossom.restful.service.business.stat.GraphStatItem;
 
 @Path("/graph")
 public class GraphRestService {

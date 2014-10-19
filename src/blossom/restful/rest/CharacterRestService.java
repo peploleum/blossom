@@ -9,8 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
-import blossom.restful.service.business.entity.dto.CharacterBean;
-import blossom.restful.service.business.entity.transfer.CharacterTransfer;
+import blossom.restful.service.tech.entity.dto.CharacterBean;
+import blossom.restful.service.tech.entity.transfer.CharacterTransfer;
 
 @Path("/character")
 public class CharacterRestService {
@@ -31,14 +31,14 @@ public class CharacterRestService {
 
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
-    public void removeCharacter(String id) throws TopLevelBlossomException {
+    public void removeCharacter(final String id) throws TopLevelBlossomException {
         final CharacterTransfer characterTransfer = new CharacterTransfer();
         characterTransfer.deleteCharacter(id);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public CharacterBean updateCharacter(CharacterBean characterBean) {
+    public CharacterBean updateCharacter(final CharacterBean characterBean) {
         final CharacterTransfer characterTransfer = new CharacterTransfer();
         return characterTransfer.updateCharacter(characterBean);
     }

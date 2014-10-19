@@ -11,8 +11,8 @@ import javax.xml.bind.Marshaller;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
-import blossom.restful.service.stat.Stat;
-import blossom.restful.service.stat.StatItem;
+import blossom.restful.service.business.stat.Stat;
+import blossom.restful.service.business.stat.StatItem;
 
 public class StatTest {
 

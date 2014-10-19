@@ -1,6 +1,6 @@
 package blossom.util.geo;
 
-import blossom.restful.service.geo.dto.Feature;
+import blossom.restful.service.business.geo.dto.Feature;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
