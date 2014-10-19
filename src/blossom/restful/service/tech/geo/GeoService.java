@@ -14,6 +14,7 @@ import blossom.persistence.location.Location;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.restful.service.business.geo.dto.GeoEntity;
 import blossom.restful.service.business.geo.dto.Geometry;
+import blossom.restful.service.business.geo.dto.PolygonGeometry;
 import blossom.restful.service.business.geo.dto.Property;
 
 public class GeoService implements BlossomProducer<Feature> {
@@ -21,7 +22,17 @@ public class GeoService implements BlossomProducer<Feature> {
 
     private final ConcurrentLinkedQueue<Feature> featureQueue = new ConcurrentLinkedQueue<Feature>();
 
+    private final PolygonGeometry extent;
+
+    public GeoService(final PolygonGeometry extent) {
+        this.extent = extent;
+    }
+
     public long getHitCount() {
+        if (this.extent != null) {
+            LOGGER.info("extent is " + this.extent.toString());
+            return 0;
+        }
         final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
         try {
             final Query queryTotal = entityManager.createQuery("Select count(l.id) from Location l");
@@ -48,7 +59,8 @@ public class GeoService implements BlossomProducer<Feature> {
             properties.setName(location.getId());
             final Geometry geometry = new Geometry();
             geometry.setType("Point");
-            geometry.setCoordinates(new Double[] { location.getLocation().getX(), location.getLocation().getY() });
+            Double[] coo = new Double[] { location.getLocation().getX(), location.getLocation().getY() };
+            geometry.setCoordinates(coo);
             feature.setProperties(properties);
             feature.setGeometry(geometry);
             feature.setType("Feature");

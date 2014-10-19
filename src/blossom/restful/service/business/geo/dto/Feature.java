@@ -40,7 +40,7 @@ public class Feature {
         sb.append("Feature [name:");
         sb.append(getProperties().getName());
         sb.append("][coords:");
-        final Double[] coordinates = getGeometry().getCoordinates();
+        final Double[] coordinates = (Double[]) getGeometry().getCoordinates();
         for (final Double d : coordinates) {
             sb.append(d);
             sb.append(" ");
@@ -48,5 +48,4 @@ public class Feature {
         sb.append("]");
         return sb.toString();
     }
-
 }

@@ -336,11 +336,44 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 			console.log("failed to persist business layer")
 		});
 	}
-	queryExtentCallback = function() {
-		geoFactory.query("").success(function(data) {
+	queryAllCallback = function() {
+		geoFactory.query([]).success(function(data) {
 			console.log("querying extent")
 		});
 	}
+	queryExtentCallback = function() {
+		console.log("installing drag box interaction for querying extent");
+		map.addInteraction(dt.dragboxinteration);
+	}
+	dt.dragboxinteration.on('boxend', function() {
+		console.log("received " + this.getGeometry())
+		console.log("extent: " + this.getGeometry().getExtent());
+		var featureCollection = [];
+		var extent = this.getGeometry().getExtent();
+
+		var parser = new ol.format.GeoJSON({
+			projection : 'EPSG:3857'
+		});
+
+		var geom = parser.writeGeometry(this.getGeometry(), {
+			dataProjection : 'EPSG:4326',
+			featureProjection : 'EPSG:3857'
+		});
+		console.log("features: " + geom.coordinates);
+		var newgeometry = {};
+		newgeometry.coordinates = [];
+		for (i = 0; i < geom.coordinates[0].length; i++) {
+			console.log("pushing " + geom.coordinates[0][i]);
+			newgeometry.coordinates.push(geom.coordinates[0][i]);
+		}
+		newgeometry.type = geom.type;
+		console.log("newgeometry: " + newgeometry);
+		geoFactory.query(geom).success(function(data) {
+			console.log("querying extent")
+		});
+		console.log("uninstalling drag box interaction for querying extent");
+		map.removeInteraction(dt.dragboxinteration);
+	})
 	// creating a control
 	customControl = function() {
 		var toolbar = document.getElementById("toolbar");
@@ -352,6 +385,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 		var toggleDrawingTool = document.getElementById("toggleDrawingTool");
 		var toggleShowPopUpOnClick = document.getElementById("toggleShowPopUpOnClick");
 		var saveBusinessLayer = document.getElementById("saveBusinessLayer");
+		var queryAll = document.getElementById("queryAll");
 		var queryExtent = document.getElementById("queryExtent");
 		toggleStyle.addEventListener('click', toggleIconStyle, false);
 		visualizeBusinessObjects.addEventListener('click', visualizeBOCallback, false);
@@ -361,6 +395,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 		toggleDrawingTool.addEventListener('click', toggleDrawingToolCallback, false);
 		toggleShowPopUpOnClick.addEventListener('click', toggleShowPopupCallback, false);
 		saveBusinessLayer.addEventListener('click', saveBusinessLayerCallback, false);
+		queryAll.addEventListener('click', queryAllCallback, false);
 		queryExtent.addEventListener('click', queryExtentCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
@@ -474,17 +509,19 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 	refresherFactory.webSocket.onmessage = function(event) {
 		try {
 			var receivedFeature = JSON.parse(event.data);
-//			console.log("received JSON: " + receivedFeature.type + " geom: " + receivedFeature.geometry);
+			// console.log("received JSON: " + receivedFeature.type + " geom: "
+			// +
+			// receivedFeature.geometry);
 			var parser = new ol.format.GeoJSON();
 			// I still have to convert on the fly when I receive coords, because
 			// source & view need to be in the same projection
 			receivedFeature.geometry.coordinates = ol.proj.transform(receivedFeature.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
-//			console.log("geom: " + receivedFeature.geometry.coordinates);
+			// console.log("geom: " + receivedFeature.geometry.coordinates);
 			feats = parser.readFeatures(receivedFeature, {
 				projection : 'EPSG:4326'
 			});
 			businessObjectsSource.addFeatures(feats);
-			if (businessObjectsSource.getFeatures().length % 100 == 1 ) {
+			if (businessObjectsSource.getFeatures().length % 100 == 1) {
 				console.log("updating " + businessObjectsSource.getFeatures().length % 100);
 				$scope.$apply(function() {
 					$scope.monitormodel.count = businessObjectsSource.getFeatures().length;

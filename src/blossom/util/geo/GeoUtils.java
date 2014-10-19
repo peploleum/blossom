@@ -39,7 +39,8 @@ public class GeoUtils {
         final Random r = new Random();
         final double randomLat = rangeMinLat + (rangeMaxLat - rangeMinLat) * r.nextDouble();
         final double randomLon = rangeMinLon + (rangeMaxLon - rangeMinLon) * r.nextDouble();
-        geometry.setCoordinates(new Double[] { randomLon, randomLat });
+        final Double[] doubles = new Double[] { randomLon, randomLat };
+        geometry.setCoordinates(doubles);
         feature.setProperties(properties);
         feature.setGeometry(geometry);
         feature.setType("Feature");

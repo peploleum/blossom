@@ -41,7 +41,7 @@ module.factory('geoFactory', [ '$http', function($http) {
 	}
 	
 	geoFactory.query = function(extent) {
-		return $http.post(rootUrl + '/geoquery');
+		return $http.post(rootUrl + '/geoquery', extent);
 	}
 	return geoFactory;
 } ]);

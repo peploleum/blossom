@@ -50,7 +50,7 @@ public class GeoServiceTest {
                     throw new TopLevelBlossomException(e, "Failed to create Character in database.");
                 }
 
-            } while (getHitCount(em) < 1000);
+            } while (getHitCount(em) < 10000);
         } finally {
             em.close();
         }

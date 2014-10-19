@@ -17,6 +17,17 @@ dt.createControls = function(map, linkedElement, button, geomType) {
 
 dt.draw = new Object();
 
+dt.dragboxinteration = new ol.interaction.DragBox({
+	style : new ol.style.Style({
+		stroke : new ol.style.Stroke({
+			color : [ 0, 255, 0, 1 ]
+		})
+	}),
+	condition : ol.events.condition.altKeyOnly
+})
+
+//ol.inherits(dt.dragboxinteraction, ol.interaction.DragBox);
+
 dt.featureOverlay = new ol.FeatureOverlay({
 	style : new ol.style.Style({
 		fill : new ol.style.Fill({

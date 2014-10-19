@@ -5,6 +5,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
+import blossom.restful.service.business.geo.dto.PolygonGeometry;
 import blossom.restful.service.tech.geo.GeoConsumerService;
 import blossom.restful.service.tech.geo.GeoService;
 
@@ -17,9 +18,10 @@ import blossom.restful.service.tech.geo.GeoService;
 @Path("geoquery")
 public class GeoQueryRestService {
     @POST
-    @Consumes(MediaType.TEXT_PLAIN)
-    public void submitExtentQuery(final String extent) {
-        final GeoService geoService = new GeoService();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void submitExtentQuery(final PolygonGeometry extent) {
+        final GeoService geoService = new GeoService(extent);
+
         final GeoConsumerService consumerService = new GeoConsumerService(geoService.getFeatureQueue());
         geoService.produceGeoEntities();
         consumerService.startConsuming();
