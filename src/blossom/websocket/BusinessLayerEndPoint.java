@@ -1,5 +1,6 @@
 package blossom.websocket;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,18 +35,15 @@ public class BusinessLayerEndPoint {
     public void onMessage(final String message, final Session userSession) {
 
         LOGGER.info("message Received: from[" + (userSession != null ? userSession.getId() : "no user session") + "] content: [" + message + "].");
-        for (final Session session : this.userSessions) {
-            System.out.println("Sending to " + session.getId());
-            session.getAsyncRemote().sendText(message);
-        }
-    }
-
-    @OnMessage
-    public void onServerGeneratedMessage(final byte[] message) {
-        LOGGER.info("message sent from server [ content: [" + message.toString() + "].");
-        for (final Session session : this.userSessions) {
-            System.out.println("Sending to " + session.getId());
-            session.getAsyncRemote().sendObject(message);
+        synchronized (this.userSessions) {
+            for (final Session session : this.userSessions) {
+                LOGGER.log(Level.INFO, "Sending to " + session.getId());
+                try {
+                    session.getBasicRemote().sendText(message);
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Failed to send text from websocket ", e);
+                }
+            }
         }
     }
 

@@ -34,4 +34,19 @@ public class Feature {
         return this.geometry;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Feature [name:");
+        sb.append(getProperties().getName());
+        sb.append("][coords:");
+        final Double[] coordinates = getGeometry().getCoordinates();
+        for (final Double d : coordinates) {
+            sb.append(d);
+            sb.append(" ");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

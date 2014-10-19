@@ -24,6 +24,7 @@ module.factory('refresherFactory', [ '$http', '$location', function($http, $loca
 // access WebService to CRUD geolocalized business objects
 module.factory('geoFactory', [ '$http', function($http) {
 
+	var rootUrl = './rest'
 	var urlBase = './rest/geo';
 	var geoFactory = {};
 
@@ -37,6 +38,10 @@ module.factory('geoFactory', [ '$http', function($http) {
 
 	geoFactory.saveFeatures = function(features) {
 		return $http.put(urlBase + '/' + "savefeatures");
+	}
+	
+	geoFactory.query = function(extent) {
+		return $http.post(rootUrl + '/geoquery');
 	}
 	return geoFactory;
 } ]);

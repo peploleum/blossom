@@ -37,6 +37,22 @@ body {
 	list-style-type: none;
 }
 
+#perfmonitor {
+	position: absolute;
+	top: 250px;
+	right: 8px;
+	z-index: 100;
+}
+
+#perfmonitorul {
+	margin: 0;
+	padding: 10px;
+	color: #fff;
+	border-radius: 4px;
+	background: rgba(0, 60, 136, 0.5);
+	list-style-type: none;
+}
+
 .popover {
 	z-index: auto;
 }
@@ -94,7 +110,8 @@ body {
 				<div class="form-group has-feedback"
 					ng-class="{'has-error': formControl.name.$invalid, 'has-success': !formControl.name.$invalid}">
 					<label>Name</label> <input class="form-control" type="text"
-						name="name" ng-model="formhelper.name"  ng-minlength="1" ng-required=true> <span
+						name="name" ng-model="formhelper.name" ng-minlength="1"
+						ng-required=true> <span
 						ng-show="!formControl.name.$invalid"
 						class="glyphicon glyphicon-ok form-control-feedback"></span> <span
 						ng-show="formControl.name.$error.required" class="help-inline">
@@ -177,6 +194,12 @@ body {
 						OSM</label></li>
 			</ul>
 		</div>
+		<div id="perfmonitor">
+			<ul id="perfmonitorul">
+				<li><label> BOs: {{monitormodel.count}}</label></li>
+				<li><label>Toggle popover: {{monitormodel.ispopover}}</label></li>
+			</ul>
+		</div>
 		<div id="toolbar" class="toolbar">
 			<div class="btn-toolbar" role="toolbar">
 				<div class="btn-group">
@@ -222,6 +245,12 @@ body {
 					<button id="toggleShowPopUpOnClick" type="button"
 						class="btn btn-default btn-lg">
 						<span class="glyphicon glyphicon-comment"></span>
+					</button>
+				</div>
+				<div class="btn-group">
+					<button id="queryExtent" type="button"
+						class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon-search"></span>
 					</button>
 				</div>
 			</div>

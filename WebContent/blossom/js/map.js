@@ -10,6 +10,9 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 	navbarul.attr("class", null);
 	d3.select('#mapNavItem').attr("class", "active");
 	$scope.layerName = "0";
+	$scope.monitormodel = {};
+	$scope.monitormodel.count = 0;
+	$scope.monitormodel.ispopover = isShowPopUpOnMapClick;
 
 	// styles
 	var defaultStyle = {
@@ -256,13 +259,18 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 	// using the restful client factory to interact with the
 	// server to handle
 	// business objects
-	var source = new ol.source.GeoJSON({
+	var businessObjectsSource = new ol.source.GeoJSON({
 		projection : 'EPSG:4326'
 	});
 	var businessObjectsLayer = new ol.layer.Vector({
-		source : source,
+		source : businessObjectsSource,
 		style : createPointStyle()
 	});
+
+	// businessObjectsSource.on("change", function() {
+	// console.log("changed");
+	// $scope.monitormodel.count = businessObjectsSource.getFeatures().size();
+	// });
 	map.getLayers().push(businessObjectsLayer);
 	visualizeBOCallback = function() {
 		geoFactory.getGeoEntity().success(function(geoEntity) {
@@ -273,8 +281,8 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 				feature.geometry.coordinates = ol.proj.transform(feature.geometry.coordinates, 'EPSG:4326', 'EPSG:3857')
 			})
 			feats = parser.readFeatures(geoEntity);
-			source.clear();
-			source.addFeatures(feats);
+			businessObjectsSource.clear();
+			businessObjectsSource.addFeatures(feats);
 			// object : is another way to populate JSON source
 			// source = new ol.source.GeoJSON({
 			// projection : 'EPSG:3857',
@@ -305,9 +313,9 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 	}
 	fitExtentCallBack = function() {
 		console.log("fit extent current map extent is " + map.getView().calculateExtent(map.getSize()));
-		console.log("extent " + source.getExtent() + " size " + map.getSize());
-		map.getView().fitExtent(source.getExtent(), map.getSize());
-		console.log("extent " + source.getExtent(), map.getView().calculateExtent(map.getSize()));
+		console.log("extent " + businessObjectsSource.getExtent() + " size " + map.getSize());
+		map.getView().fitExtent(businessObjectsSource.getExtent(), map.getSize());
+		console.log("extent " + businessObjectsSource.getExtent(), map.getView().calculateExtent(map.getSize()));
 	}
 
 	toggleDrawingToolCallback = function() {
@@ -328,6 +336,11 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 			console.log("failed to persist business layer")
 		});
 	}
+	queryExtentCallback = function() {
+		geoFactory.query("").success(function(data) {
+			console.log("querying extent")
+		});
+	}
 	// creating a control
 	customControl = function() {
 		var toolbar = document.getElementById("toolbar");
@@ -339,6 +352,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 		var toggleDrawingTool = document.getElementById("toggleDrawingTool");
 		var toggleShowPopUpOnClick = document.getElementById("toggleShowPopUpOnClick");
 		var saveBusinessLayer = document.getElementById("saveBusinessLayer");
+		var queryExtent = document.getElementById("queryExtent");
 		toggleStyle.addEventListener('click', toggleIconStyle, false);
 		visualizeBusinessObjects.addEventListener('click', visualizeBOCallback, false);
 		showForm.addEventListener('click', showFormCallback, false);
@@ -347,6 +361,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 		toggleDrawingTool.addEventListener('click', toggleDrawingToolCallback, false);
 		toggleShowPopUpOnClick.addEventListener('click', toggleShowPopupCallback, false);
 		saveBusinessLayer.addEventListener('click', saveBusinessLayerCallback, false);
+		queryExtent.addEventListener('click', queryExtentCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : toolbar,
@@ -459,18 +474,25 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 	refresherFactory.webSocket.onmessage = function(event) {
 		try {
 			var receivedFeature = JSON.parse(event.data);
-			console.log("received JSON: " + receivedFeature.type + " geom: " + receivedFeature.geometry);
+//			console.log("received JSON: " + receivedFeature.type + " geom: " + receivedFeature.geometry);
 			var parser = new ol.format.GeoJSON();
 			// I still have to convert on the fly when I receive coords, because
 			// source & view need to be in the same projection
 			receivedFeature.geometry.coordinates = ol.proj.transform(receivedFeature.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
-			console.log("geom: " + receivedFeature.geometry.coordinates);
+//			console.log("geom: " + receivedFeature.geometry.coordinates);
 			feats = parser.readFeatures(receivedFeature, {
 				projection : 'EPSG:4326'
 			});
-			source.addFeatures(feats);
+			businessObjectsSource.addFeatures(feats);
+			if (businessObjectsSource.getFeatures().length % 100 == 1 ) {
+				console.log("updating " + businessObjectsSource.getFeatures().length % 100);
+				$scope.$apply(function() {
+					$scope.monitormodel.count = businessObjectsSource.getFeatures().length;
+				})
+			}
+
 		} catch (e) {
-			console.log("we failed to parse JSON websocket payload " + e);
+			console.log("Failed to parse JSON websocket payload " + e);
 		}
 	};
 
