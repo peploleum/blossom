@@ -5,17 +5,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-
-import org.eclipse.persistence.annotations.Index;
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-
 import blossom.restful.service.business.graph.dto.Graph;
 import blossom.restful.service.business.graph.dto.LinkItem;
 import blossom.restful.service.business.graph.dto.NodeItem;
-import blossom.test.GraphTest;
 
 public class GraphSingleton {
 
@@ -92,26 +84,8 @@ public class GraphSingleton {
      * @return {@link Graph}
      */
     private Graph initGraph() {
-        if (debugMode) {
-            JAXBContext jc;
-            Graph g = null;
-            try {
-                jc = JAXBContext.newInstance(Graph.class);
-                final Unmarshaller unmarshaller = jc.createUnmarshaller();
-                unmarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-                unmarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-                // this is so intuitive ... or not
-                g = unmarshaller.unmarshal(new StreamSource(GraphTest.class.getResourceAsStream("data.json")), Graph.class).getValue();
-                // anyway it works...
-            } catch (final Exception e) {
-                LOGGER.log(Level.SEVERE, "Failed to load sample data. Will provide empty Graph. " + e.getMessage(), e);
-                g = new Graph();
-            }
-            return g;
-        } else {
-            final Graph g = new Graph();
-            return g;
-        }
+        final Graph g = new Graph();
+        return g;
     }
 
     /**

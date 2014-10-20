@@ -11,13 +11,13 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 public class GeoUtils {
-    public static Geometry wktToGeometry(final String wktPoint) {
+    public static Geometry wktToGeometry(final String wktString) {
         final WKTReader fromText = new WKTReader();
         Geometry geom = null;
         try {
-            geom = fromText.read(wktPoint);
+            geom = fromText.read(wktString);
         } catch (final ParseException e) {
-            throw new RuntimeException("Not a WKT string:" + wktPoint);
+            throw new RuntimeException("Not a WKT string:" + wktString);
         }
         return geom;
     }

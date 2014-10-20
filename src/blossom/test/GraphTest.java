@@ -1,20 +1,15 @@
 package blossom.test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-
 import blossom.restful.service.business.graph.dto.Graph;
 import blossom.restful.service.business.graph.dto.LinkItem;
 import blossom.restful.service.business.graph.dto.NodeItem;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GraphTest {
 
@@ -64,33 +59,22 @@ public class GraphTest {
         g.setNodes(Arrays.asList(new NodeItem[] { gi1, gi2, gi3 }));
         g.setLinks(Arrays.asList(new LinkItem[] { li1, li2, li3 }));
 
-        JAXBContext jc;
+        final ObjectMapper mapper = new ObjectMapper();
         try {
-            jc = JAXBContext.newInstance(Graph.class);
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(g, System.out);
-        } catch (final JAXBException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            mapper.writeValue(System.out, g);
+        } catch (final Exception e) {
+            LOGGER.log(Level.SEVERE, "failed to write json", e);
         }
     }
 
     private static void readGraph() {
-
-        JAXBContext jc;
+        final ObjectMapper om = new ObjectMapper();
+        Graph readValue;
         try {
-            jc = JAXBContext.newInstance(Graph.class);
-            final Unmarshaller unmarshaller = jc.createUnmarshaller();
-            unmarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            unmarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            // this is so intuitive ... or not
-            final Graph g = unmarshaller.unmarshal(new StreamSource(GraphTest.class.getResourceAsStream("data.json")), Graph.class).getValue();
-            // anyway it works...
-            g.getNodes();
-        } catch (final JAXBException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            readValue = om.readValue(GraphTest.class.getResourceAsStream("data.json"), Graph.class);
+            System.out.println(readValue.getNodes());
+        } catch (final IOException e) {
+            LOGGER.log(Level.SEVERE, "failed to read geometry", e);
         }
     }
 }

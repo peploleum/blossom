@@ -39,9 +39,16 @@ module.factory('geoFactory', [ '$http', function($http) {
 	geoFactory.saveFeatures = function(features) {
 		return $http.put(urlBase + '/' + "savefeatures");
 	}
-	
+
 	geoFactory.query = function(extent) {
-		return $http.post(rootUrl + '/geoquery', extent);
+		if (extent) {
+			console.log("extent is defined")
+			return $http.post(rootUrl + '/geoquery', extent);
+		} else {
+			console.log("extent undefined");
+			return $http.post(rootUrl + '/geoquery');
+
+		}
 	}
 	return geoFactory;
 } ]);

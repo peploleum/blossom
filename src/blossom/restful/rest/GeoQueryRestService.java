@@ -21,7 +21,6 @@ public class GeoQueryRestService {
     @Consumes(MediaType.APPLICATION_JSON)
     public void submitExtentQuery(final PolygonGeometry extent) {
         final GeoService geoService = new GeoService(extent);
-
         final GeoConsumerService consumerService = new GeoConsumerService(geoService.getFeatureQueue());
         geoService.produceGeoEntities();
         consumerService.startConsuming();

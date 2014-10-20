@@ -102,13 +102,13 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 					fill : new ol.style.Fill({
 						color : 'rgba(255,0,0,0.5)'
 					}),
-					radius : 10,
+					radius : 2,
 					stroke : new ol.style.Stroke({
 						color : '#ff0',
 						width : 1
 					})
 				}),
-				text : createTextStyle(feature, offset)
+			// text : createTextStyle(feature, offset)
 			})
 			return [ pointStyle ];
 		}
@@ -337,13 +337,17 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 		});
 	}
 	queryAllCallback = function() {
-		geoFactory.query([]).success(function(data) {
+		geoFactory.query().success(function(data) {
 			console.log("querying extent")
 		});
 	}
 	queryExtentCallback = function() {
 		console.log("installing drag box interaction for querying extent");
 		map.addInteraction(dt.dragboxinteration);
+	}
+	clearFeaturesCallback = function() {
+		console.log("clearing all features");
+		businessObjectsSource.clear();
 	}
 	dt.dragboxinteration.on('boxend', function() {
 		console.log("received " + this.getGeometry())
@@ -387,6 +391,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 		var saveBusinessLayer = document.getElementById("saveBusinessLayer");
 		var queryAll = document.getElementById("queryAll");
 		var queryExtent = document.getElementById("queryExtent");
+		var clearFeatures = document.getElementById("clearFeatures");
 		toggleStyle.addEventListener('click', toggleIconStyle, false);
 		visualizeBusinessObjects.addEventListener('click', visualizeBOCallback, false);
 		showForm.addEventListener('click', showFormCallback, false);
@@ -397,6 +402,7 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 		saveBusinessLayer.addEventListener('click', saveBusinessLayerCallback, false);
 		queryAll.addEventListener('click', queryAllCallback, false);
 		queryExtent.addEventListener('click', queryExtentCallback, false);
+		clearFeatures.addEventListener('click', clearFeaturesCallback, false);
 		// binding the control with something in the html
 		ol.control.Control.call(this, {
 			element : toolbar,
@@ -522,10 +528,11 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 			});
 			businessObjectsSource.addFeatures(feats);
 			if (businessObjectsSource.getFeatures().length % 100 == 1) {
-				console.log("updating " + businessObjectsSource.getFeatures().length % 100);
-				$scope.$apply(function() {
-					$scope.monitormodel.count = businessObjectsSource.getFeatures().length;
-				})
+				console.log("features: " + businessObjectsSource.getFeatures().length);
+				// $scope.$apply(function() {
+				// $scope.monitormodel.count =
+				// businessObjectsSource.getFeatures().length;
+				// })
 			}
 
 		} catch (e) {

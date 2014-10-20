@@ -16,6 +16,7 @@ import blossom.restful.service.business.geo.dto.GeoEntity;
 import blossom.restful.service.business.geo.dto.Geometry;
 import blossom.restful.service.business.geo.dto.PolygonGeometry;
 import blossom.restful.service.business.geo.dto.Property;
+import blossom.util.geo.GeoUtils;
 
 public class GeoService implements BlossomProducer<Feature> {
     private static final Logger LOGGER = Logger.getLogger(GeoService.class.getName());
@@ -24,19 +25,29 @@ public class GeoService implements BlossomProducer<Feature> {
 
     private final PolygonGeometry extent;
 
+    private String qlCountString;
+
+    private String qlString;
+
     public GeoService(final PolygonGeometry extent) {
         this.extent = extent;
     }
 
     public long getHitCount() {
-        if (this.extent != null) {
-            LOGGER.info("extent is " + this.extent.toString());
-            return 0;
+        this.qlCountString = "Select count(l.id) from Location l";
+        this.qlString = "Select l from Location l";
+        com.vividsolutions.jts.geom.Geometry extractWkt = extractWkt();
+        if (extractWkt != null) {
+            this.qlCountString += " where within(l.location, :extractWkt) = true";
         }
         final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
         try {
-            final Query queryTotal = entityManager.createQuery("Select count(l.id) from Location l");
+            final Query queryTotal = entityManager.createQuery(this.qlCountString);
+            if (extractWkt != null)
+                queryTotal.setParameter("extractWkt", extractWkt);
+
             final long countResult = (long) queryTotal.getSingleResult();
+            LOGGER.info("Found " + countResult + " results");
             return countResult;
         } catch (final Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to count results", e);
@@ -44,6 +55,18 @@ public class GeoService implements BlossomProducer<Feature> {
             entityManager.close();
         }
         return 0;
+    }
+
+    private com.vividsolutions.jts.geom.Geometry extractWkt() {
+        if (this.extent != null) {
+            LOGGER.info("extent is " + this.extent.toString());
+            LOGGER.info("extent wkt is " + this.extent.toWkt());
+            com.vividsolutions.jts.geom.Geometry wktToGeometry = GeoUtils.wktToGeometry(this.extent.toWkt());
+            assert (wktToGeometry.getCoordinates().length != 0);
+            wktToGeometry.setSRID(4326);
+            return wktToGeometry;
+        }
+        return null;
     }
 
     private GeoEntity getGeoentity(final Query pagedQuery, final int from, final int howmany) {
@@ -59,7 +82,7 @@ public class GeoService implements BlossomProducer<Feature> {
             properties.setName(location.getId());
             final Geometry geometry = new Geometry();
             geometry.setType("Point");
-            Double[] coo = new Double[] { location.getLocation().getX(), location.getLocation().getY() };
+            final Double[] coo = new Double[] { location.getLocation().getX(), location.getLocation().getY() };
             geometry.setCoordinates(coo);
             feature.setProperties(properties);
             feature.setGeometry(geometry);
@@ -80,7 +103,14 @@ public class GeoService implements BlossomProducer<Feature> {
 
         final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
         try {
-            final Query pageQuery = entityManager.createQuery("Select l from Location l", Location.class);
+            com.vividsolutions.jts.geom.Geometry extractWkt = extractWkt();
+            if (extractWkt != null) {
+                this.qlString += " where within(l.location, :extractWkt) = true";
+            }
+            final Query pageQuery = entityManager.createQuery(this.qlString, Location.class);
+            if (extractWkt != null)
+                pageQuery.setParameter("extractWkt", extractWkt);
+
             for (int i = 0; i < pageCount; i++) {
                 LOGGER.info("producing page " + i + " out of " + (pageCount - 1));
                 getGeoentity(pageQuery, i * pageSize, (i == pageCount - 1) ? (leftOver) : pageSize);

@@ -7,11 +7,6 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
@@ -63,18 +58,6 @@ public class TableTransfer {
             }
         } finally {
             entityManager.close();
-        }
-        JAXBContext jc;
-        try {
-            jc = JAXBContext.newInstance(TableRowCollection.class);
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "coordinates");
-            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(tableRowCollection, System.out);
-        } catch (final JAXBException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return tableRowCollection;
     }

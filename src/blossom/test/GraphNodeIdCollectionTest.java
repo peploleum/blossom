@@ -3,13 +3,9 @@ package blossom.test;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-
 import blossom.restful.service.business.graph.dto.GraphNodeIdCollection;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GraphNodeIdCollectionTest {
     private static final Logger LOGGER = Logger.getLogger(GraphNodeIdCollectionTest.class.getName());
@@ -17,16 +13,11 @@ public class GraphNodeIdCollectionTest {
     public static void main(String[] args) {
         GraphNodeIdCollection coll = new GraphNodeIdCollection();
         coll.setIds(new String[] { "aaaa", "bbbb" });
-        JAXBContext jc;
+        final ObjectMapper mapper = new ObjectMapper();
         try {
-            jc = JAXBContext.newInstance(GraphNodeIdCollection.class);
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(coll, System.out);
-        } catch (final JAXBException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            mapper.writeValue(System.out, coll);
+        } catch (final Exception e) {
+            LOGGER.log(Level.SEVERE, "failed to read json", e);
         }
     }
 }

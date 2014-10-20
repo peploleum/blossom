@@ -1,20 +1,17 @@
 package blossom.restful.service.tech.geo;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-
 import blossom.exception.TopLevelBlossomException;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.websocket.BusinessLayerEndpointConfiguration;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GeoConsumerService {
 
@@ -63,20 +60,13 @@ public class GeoConsumerService {
 
     private void consume(final Feature feature) throws TopLevelBlossomException {
 
-        JAXBContext jc;
         // we need to marshall it to send it through the websocket pipe
         try {
             final StringWriter writer = new StringWriter();
-            jc = JAXBContext.newInstance(Feature.class);
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "coordinates");
-            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(feature, writer);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(writer, feature);
             BusinessLayerEndpointConfiguration.getEndPointSingleton().onMessage(writer.getBuffer().toString(), null);
-            // final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
-        } catch (final JAXBException e) {
+        } catch (final IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             throw new TopLevelBlossomException(e, "failed to add feature to geo entites");
         }

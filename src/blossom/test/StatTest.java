@@ -5,14 +5,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-
 import blossom.restful.service.business.stat.Stat;
 import blossom.restful.service.business.stat.StatItem;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class StatTest {
 
@@ -44,16 +40,11 @@ public class StatTest {
         statItems.add(statitem3);
         stat.setDataset(statItems);
 
-        JAXBContext jc;
+        final ObjectMapper mapper = new ObjectMapper();
         try {
-            jc = JAXBContext.newInstance(Stat.class);
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(stat, System.out);
-        } catch (final JAXBException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            mapper.writeValue(System.out, stat);
+        } catch (final Exception e) {
+            LOGGER.log(Level.SEVERE, "failed to write json", e);
         }
     }
 }

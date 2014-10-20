@@ -1,16 +1,12 @@
 package blossom.restful.service.business.geo.transfer;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
@@ -21,6 +17,7 @@ import blossom.restful.service.business.geo.dto.GeoEntity;
 import blossom.util.geo.GeoUtils;
 import blossom.websocket.BusinessLayerEndpointConfiguration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
@@ -47,22 +44,6 @@ public class GeoEntitiesTransfer {
      */
     public GeoEntity getGeoEntity() throws TopLevelBlossomException {
         final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
-
-        // for now, for debug, we marshall it this way to check what's coming
-        // out against what's coming in on clien-side.
-        JAXBContext jc;
-        try {
-            jc = JAXBContext.newInstance(GeoEntity.class);
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "coordinates");
-            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(ges.getEntity(), System.out);
-        } catch (final JAXBException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            throw new TopLevelBlossomException(e, "failed to get GeoEntities");
-        }
         return ges.getEntity();
     }
 
@@ -75,21 +56,15 @@ public class GeoEntitiesTransfer {
      *             if persistence layer fails
      */
     public void addFeature(final Feature feature) throws TopLevelBlossomException {
-        JAXBContext jc;
         // we need to marshall it to send it through the websocket pipe
         try {
             final StringWriter writer = new StringWriter();
-            jc = JAXBContext.newInstance(Feature.class);
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "coordinates");
-            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(feature, writer);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(writer, feature);
             BusinessLayerEndpointConfiguration.getEndPointSingleton().onMessage(writer.getBuffer().toString(), null);
             final GeoEntitiesSingleton ges = GeoEntitiesSingleton.getInstance();
             ges.addFeature(feature);
-        } catch (final JAXBException e) {
+        } catch (final IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             throw new TopLevelBlossomException(e, "failed to add feature to geo entites");
         }

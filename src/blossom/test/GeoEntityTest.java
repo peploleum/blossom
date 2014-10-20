@@ -4,18 +4,14 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-
 import blossom.restful.service.business.geo.dto.CRS;
 import blossom.restful.service.business.geo.dto.Coordinate;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.restful.service.business.geo.dto.GeoEntity;
 import blossom.restful.service.business.geo.dto.Geometry;
 import blossom.restful.service.business.geo.dto.Property;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GeoEntityTest {
     private static final Logger LOGGER = Logger.getLogger(GeoEntityTest.class.getName());
@@ -48,17 +44,12 @@ public class GeoEntityTest {
         geoEntity.setCrs(crs);
         geoEntity.setFeatures(Arrays.asList(new Feature[] { feature }));
 
-        JAXBContext jc;
+        final ObjectMapper mapper = new ObjectMapper();
         try {
-            jc = JAXBContext.newInstance(GeoEntity.class);
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(MarshallerProperties.JSON_VALUE_WRAPPER, "coordinates");
-            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-            marshaller.marshal(geoEntity, System.out);
-        } catch (final JAXBException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            mapper.writeValue(System.out, geoEntity);
+            // {"type":"FeatureCollection","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"name":"Saguenay (Arrondissement Latterière)"},"geometry":{"type":"Point","coordinates":[-75.8492535793898,47.6434349837781]}}]}
+        } catch (final Exception e) {
+            LOGGER.log(Level.SEVERE, "failed to read json", e);
         }
 
     }
