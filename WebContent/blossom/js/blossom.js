@@ -1,4 +1,4 @@
-var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.map', 'blossom.stats', 'blossom.misc' ]);
+var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.map', 'blossom.stats', 'blossom.analyzer', 'blossom.misc' ]);
 
 blossomModule.config(function($routeProvider, $locationProvider) {
 	$routeProvider.when('/about', {
@@ -22,11 +22,14 @@ blossomModule.config(function($routeProvider, $locationProvider) {
 	}).when('/stat', {
 		controller : 'StatCtrl',
 		templateUrl : 'stats.html'
+	}).when('/analyzer', {
+		controller : 'AnalyzerCtrl',
+		templateUrl : 'analyzer.html'
 	}).when('/popform/:formId', {
 		controller : 'PopFormCtrl',
 		templateUrl : 'popform.html'
 	}).otherwise({
 		redirectTo : '/home'
 	});
-//	$locationProvider.html5Mode(true);
+	// $locationProvider.html5Mode(true);
 })
