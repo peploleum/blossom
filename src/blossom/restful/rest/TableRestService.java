@@ -8,8 +8,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
+import blossom.restful.service.tech.table.TableService;
 import blossom.restful.service.tech.table.dto.TableRowCollection;
-import blossom.restful.service.tech.table.transfer.TableTransfer;
 
 @Path("/table")
 public class TableRestService {
@@ -21,7 +21,7 @@ public class TableRestService {
     @Path("/getdata")
     public TableRowCollection getRows() throws TopLevelBlossomException {
         LOGGER.info("Getting all rows");
-        TableTransfer tableTransfer = new TableTransfer();
+        TableService tableTransfer = new TableService();
         return tableTransfer.getTableRows();
     }
 }

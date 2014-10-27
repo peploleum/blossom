@@ -1,4 +1,4 @@
-package blossom.restful.service.business.geo.transfer;
+package blossom.restful.service.business.geo;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -11,9 +11,9 @@ import javax.persistence.EntityManager;
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.location.Location;
-import blossom.restful.service.business.geo.GeoEntitiesSingleton;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.restful.service.business.geo.dto.GeoEntity;
+import blossom.restful.service.business.geo.model.GeoEntitiesSingleton;
 import blossom.util.geo.GeoUtils;
 import blossom.websocket.BusinessLayerEndpointConfiguration;
 
@@ -28,10 +28,10 @@ import com.vividsolutions.jts.geom.Point;
  * @author peploleum
  *
  */
-public class GeoEntitiesTransfer {
-    private static final Logger LOGGER = Logger.getLogger(GeoEntitiesTransfer.class.getName());
+public class GeoEntitiesService {
+    private static final Logger LOGGER = Logger.getLogger(GeoEntitiesService.class.getName());
 
-    public GeoEntitiesTransfer() {
+    public GeoEntitiesService() {
 
     }
 

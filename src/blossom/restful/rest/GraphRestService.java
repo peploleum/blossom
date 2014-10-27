@@ -13,12 +13,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
-import blossom.restful.service.business.graph.GraphSingleton;
+import blossom.restful.service.business.graph.GraphService;
 import blossom.restful.service.business.graph.dto.Graph;
 import blossom.restful.service.business.graph.dto.GraphNodeIdCollection;
 import blossom.restful.service.business.graph.dto.LinkItem;
 import blossom.restful.service.business.graph.dto.NodeItem;
-import blossom.restful.service.business.graph.transfer.GraphTransfer;
+import blossom.restful.service.business.graph.model.GraphSingleton;
 import blossom.restful.service.business.stat.GraphStat;
 import blossom.restful.service.business.stat.GraphStatItem;
 
@@ -31,7 +31,7 @@ public class GraphRestService {
     @Produces(MediaType.APPLICATION_JSON)
     public Graph getGraph() throws TopLevelBlossomException {
         LOGGER.info("getting graph model");
-        final GraphTransfer graphTransfer = new GraphTransfer();
+        final GraphService graphTransfer = new GraphService();
         return graphTransfer.getGraph();
     }
 
@@ -72,7 +72,7 @@ public class GraphRestService {
     @Path("/addNode")
     public void addNode(final NodeItem node) throws TopLevelBlossomException {
         LOGGER.info("adding node");
-        final GraphTransfer graphTransfer = new GraphTransfer();
+        final GraphService graphTransfer = new GraphService();
         graphTransfer.addNode(node);
     }
 
@@ -81,7 +81,7 @@ public class GraphRestService {
     @Path("/addLink")
     public void addLink(final List<LinkItem> links) throws TopLevelBlossomException {
         LOGGER.info("adding link");
-        final GraphTransfer graphTransfer = new GraphTransfer();
+        final GraphService graphTransfer = new GraphService();
         graphTransfer.addLink(links);
     }
 
@@ -94,7 +94,7 @@ public class GraphRestService {
     @Path("/removeNode")
     public void removeNode(final String nodeId) throws TopLevelBlossomException {
         LOGGER.info("removing node");
-        final GraphTransfer graphTransfer = new GraphTransfer();
+        final GraphService graphTransfer = new GraphService();
         graphTransfer.removeSingleNode(nodeId);
     }
 
@@ -103,7 +103,7 @@ public class GraphRestService {
     @Path("/removeNodes")
     public void removeNodes(final GraphNodeIdCollection ids) throws TopLevelBlossomException {
         LOGGER.info("removing nodes");
-        final GraphTransfer graphTransfer = new GraphTransfer();
+        final GraphService graphTransfer = new GraphService();
         graphTransfer.removeNodes(ids);
     }
 

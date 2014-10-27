@@ -1,4 +1,4 @@
-package blossom.restful.service.business.geo;
+package blossom.restful.service.business.geo.model;
 
 import java.util.ArrayList;
 import java.util.logging.Level;

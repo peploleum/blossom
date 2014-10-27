@@ -1,4 +1,4 @@
-package blossom.restful.service.business.graph;
+package blossom.restful.service.business.graph.model;
 
 import java.util.ArrayList;
 import java.util.List;

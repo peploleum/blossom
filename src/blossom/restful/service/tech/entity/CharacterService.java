@@ -1,4 +1,4 @@
-package blossom.restful.service.tech.entity.transfer;
+package blossom.restful.service.tech.entity;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,11 +17,11 @@ import blossom.util.geo.GeoUtils;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-public class CharacterTransfer {
+public class CharacterService {
 
-    private static final Logger LOGGER = Logger.getLogger(CharacterTransfer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CharacterService.class.getName());
 
-    public CharacterTransfer() {
+    public CharacterService() {
 
     }
 

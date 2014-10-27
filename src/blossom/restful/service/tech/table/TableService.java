@@ -1,4 +1,4 @@
-package blossom.restful.service.tech.table.transfer;
+package blossom.restful.service.tech.table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ import blossom.restful.service.tech.table.dto.TableRowCollection;
  * @author peploleum
  *
  */
-public class TableTransfer {
-    private static final Logger LOGGER = Logger.getLogger(TableTransfer.class.getName());
+public class TableService {
+    private static final Logger LOGGER = Logger.getLogger(TableService.class.getName());
 
     /**
      * Access persistence. Read all rows. return serialized model

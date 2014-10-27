@@ -1,4 +1,4 @@
-package blossom.restful.service.business.graph.transfer;
+package blossom.restful.service.business.graph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,11 @@ import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
 import blossom.persistence.link.CharacterLink;
-import blossom.restful.service.business.graph.GraphSingleton;
 import blossom.restful.service.business.graph.dto.Graph;
 import blossom.restful.service.business.graph.dto.GraphNodeIdCollection;
 import blossom.restful.service.business.graph.dto.LinkItem;
 import blossom.restful.service.business.graph.dto.NodeItem;
+import blossom.restful.service.business.graph.model.GraphSingleton;
 
 /**
  * Handles Graph model interactions with persistence layer
@@ -24,14 +24,14 @@ import blossom.restful.service.business.graph.dto.NodeItem;
  * @author peploleum
  *
  */
-public class GraphTransfer {
+public class GraphService {
 
-    private static final Logger LOGGER = Logger.getLogger(GraphTransfer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GraphService.class.getName());
 
     /**
      * Handles Graph model interactions with persistence layer
      */
-    public GraphTransfer() {
+    public GraphService() {
 
     }
 

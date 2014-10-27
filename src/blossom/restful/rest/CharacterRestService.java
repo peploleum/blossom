@@ -9,8 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
+import blossom.restful.service.tech.entity.CharacterService;
 import blossom.restful.service.tech.entity.dto.CharacterBean;
-import blossom.restful.service.tech.entity.transfer.CharacterTransfer;
 
 @Path("/character")
 public class CharacterRestService {
@@ -18,28 +18,28 @@ public class CharacterRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void createCharcter(final CharacterBean characterBean) throws TopLevelBlossomException {
-        final CharacterTransfer characterTransfer = new CharacterTransfer();
+        final CharacterService characterTransfer = new CharacterService();
         characterTransfer.createCharacter(characterBean);
     }
 
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     public CharacterBean getCharcterById(final String id) {
-        final CharacterTransfer characterTransfer = new CharacterTransfer();
+        final CharacterService characterTransfer = new CharacterService();
         return characterTransfer.getCharcterById(id);
     }
 
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
     public void removeCharacter(final String id) throws TopLevelBlossomException {
-        final CharacterTransfer characterTransfer = new CharacterTransfer();
+        final CharacterService characterTransfer = new CharacterService();
         characterTransfer.deleteCharacter(id);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public CharacterBean updateCharacter(final CharacterBean characterBean) {
-        final CharacterTransfer characterTransfer = new CharacterTransfer();
+        final CharacterService characterTransfer = new CharacterService();
         return characterTransfer.updateCharacter(characterBean);
     }
 

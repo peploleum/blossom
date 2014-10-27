@@ -23,9 +23,7 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFact
 	AnnotationFactory.Document.get({
 		docid : 'test'
 	}, function(d) {
-		console.log('what is this callback for ?' + d.content);
 		$scope.doc.text = d.content;
 	});
-	// $scope.doc.text = blossomDocument.content;
 
 })
