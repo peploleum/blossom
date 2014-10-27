@@ -10,7 +10,7 @@ public class BlossomDocumentService {
 
     public BlossomDocument getBlossomDocumentById(final String id) {
         final BlossomDocument bd = new BlossomDocument();
-        bd.setContent("Hello new document");
+        bd.setContent("<p><b>Hello</b> new document<p>");
         bd.setTitle("Hello new document title");
         return bd;
     }
