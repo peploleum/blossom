@@ -20,6 +20,8 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFact
 	navbarul.attr("class", null);
 	d3.select('#analyzerNavItem').attr("class", "active");
 	$scope.doc = {};
+	$scope.isTagging = false;
+	$scope.analyzerselection = {};
 
 	var selection = "";
 
@@ -35,7 +37,11 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFact
 	$scope.submitFormNode = function() {
 		switch (selection) {
 		case "Edit":
-			console.log("Edit");
+			$scope.isTagging = !$scope.isTagging;
+			console.log("Tagging is now " + $scope.isTagging);
+			if (!$scope.isTagging) {
+				$scope.analyzerselection.text = '';
+			}
 			break;
 		case "todo":
 			break;
@@ -43,6 +49,11 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFact
 	}
 	$scope.onChange = function() {
 		console.log("change");
+	}
+
+	$scope.onDivClick = function($event) {
+		var selectedText = "" + document.getSelection();
+		$scope.analyzerselection.text = selectedText.trim();
 	}
 
 })
