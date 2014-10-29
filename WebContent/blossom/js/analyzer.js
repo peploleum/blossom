@@ -34,7 +34,7 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFact
 	$scope.setClick = function(option) {
 		selection = option;
 	}
-	$scope.submitFormNode = function() {
+	$scope.submitAnalyzerAction = function() {
 		switch (selection) {
 		case "Edit":
 			$scope.isTagging = !$scope.isTagging;
@@ -50,10 +50,15 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFact
 	$scope.onChange = function() {
 		console.log("change");
 	}
-
+	document.getElementById
 	$scope.onDivClick = function($event) {
 		var selectedText = "" + document.getSelection();
+		console.log(document.getSelection().getRangeAt(0));
+		console.log(document.getSelection());
 		$scope.analyzerselection.text = selectedText.trim();
+		$scope.analyzerselection.startOffset = document.getSelection().getRangeAt(0).startOffset;
+		console.log("end: " + document.getSelection().getRangeAt(0).endOffset);
+		$scope.analyzerselection.endOffset = document.getSelection().getRangeAt(0).endOffset;
 	}
 
 })
