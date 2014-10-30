@@ -15,7 +15,7 @@ analyzermodule.factory('AnnotationFactory', [ '$resource', function($resource) {
 	return annotationManager;
 } ]);
 
-analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFactory) {
+analyzermodule.controller('AnalyzerCtrl', function($scope, $sce, $http, AnnotationFactory) {
 	var navbarul = d3.selectAll('ul#navbarul>li');
 	navbarul.attr("class", null);
 	d3.select('#analyzerNavItem').attr("class", "active");
@@ -28,7 +28,10 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFact
 	AnnotationFactory.Document.get({
 		docid : 'test'
 	}, function(d) {
-		$scope.doc.text = d.content;
+
+//		$scope.doc.text = d.content;
+		console.log(d.content);
+		$scope.doc.text = $sce.trustAsHtml(d.content);
 	});
 
 	$scope.setClick = function(option) {
@@ -55,6 +58,7 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $http, AnnotationFact
 		var selectedText = "" + document.getSelection();
 		console.log(document.getSelection().getRangeAt(0));
 		console.log(document.getSelection());
+		console.log("$event target: " + $event.target);
 		$scope.analyzerselection.text = selectedText.trim();
 		$scope.analyzerselection.startOffset = document.getSelection().getRangeAt(0).startOffset;
 		console.log("end: " + document.getSelection().getRangeAt(0).endOffset);
