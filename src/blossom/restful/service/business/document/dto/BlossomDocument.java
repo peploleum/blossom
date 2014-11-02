@@ -1,5 +1,6 @@
 package blossom.restful.service.business.document.dto;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,6 +13,15 @@ public class BlossomDocument {
     private String title;
     private String content;
     private Map<String, String> metadataProperties;
+    private List<TaggedEntity> tags;
+
+    public List<TaggedEntity> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TaggedEntity> tags) {
+        this.tags = tags;
+    }
 
     public String getTitle() {
         return title;
