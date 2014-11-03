@@ -15,7 +15,7 @@ analyzermodule.factory('AnnotationFactory', [ '$resource', function($resource) {
 	return annotationManager;
 } ]);
 
-analyzermodule.controller('AnalyzerCtrl', function($scope, $sce, $http, AnnotationFactory) {
+analyzermodule.controller('AnalyzerCtrl', function($scope, $sce, $http, AnnotationFactory, uuidFactory) {
 	var navbarul = d3.selectAll('ul#navbarul>li');
 	navbarul.attr("class", null);
 	d3.select('#analyzerNavItem').attr("class", "active");
@@ -29,9 +29,8 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $sce, $http, Annotati
 		docid : 'test'
 	}, function(d) {
 
-//		$scope.doc.text = d.content;
-		console.log(d.content);
-		$scope.doc.text = $sce.trustAsHtml(d.content);
+		// $scope.doc.text = d.content;
+		$scope.doc.text = $sce.trustAsHtml(d.decoratedContent);
 	});
 
 	$scope.setClick = function(option) {
@@ -46,7 +45,15 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $sce, $http, Annotati
 				$scope.analyzerselection.text = '';
 			}
 			break;
-		case "todo":
+		case "Commit":
+			$scope.analyzerselection.id = uuidFactory.generateUUID();
+			console.log("Committing " + $scope.analyzerselection.text + " id " + $scope.analyzerselection.id);
+			AnnotationFactory.Document.save({
+				docid : 'test'
+			}, $scope.analyzerselection, function(d) {
+				console.log('received new content');
+				$scope.doc.text = $sce.trustAsHtml(d.decoratedContent)
+			});
 			break;
 		}
 	}

@@ -23,6 +23,7 @@ public class DocumentsSingleton {
         final String slurp = slurp(resourceAsStream, 1024);
         final BlossomDocument bd = new BlossomDocument();
         bd.setContent(slurp);
+        bd.setDecoratedContent(slurp);
         bd.setTitle("Hello new document title");
         this.documents.add(bd);
     }

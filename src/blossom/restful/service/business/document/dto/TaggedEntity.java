@@ -2,8 +2,10 @@ package blossom.restful.service.business.document.dto;
 
 public class TaggedEntity {
     private String id;
-    private int startIndex;
-    private int stopIndex;
+    private String text;
+
+    private int startOffset;
+    private int endOffset;
 
     public String getId() {
         return id;
@@ -13,20 +15,28 @@ public class TaggedEntity {
         this.id = id;
     }
 
-    public int getStartIndex() {
-        return startIndex;
+    public String getText() {
+        return text;
     }
 
-    public void setStartIndex(int startIndex) {
-        this.startIndex = startIndex;
+    public void setText(String value) {
+        this.text = value;
     }
 
-    public int getStopIndex() {
-        return stopIndex;
+    public int getStartOffset() {
+        return startOffset;
     }
 
-    public void setStopIndex(int stopIndex) {
-        this.stopIndex = stopIndex;
+    public void setStartOffset(int startIndex) {
+        this.startOffset = startIndex;
+    }
+
+    public int getEndOffset() {
+        return endOffset;
+    }
+
+    public void setEndOffset(int stopIndex) {
+        this.endOffset = stopIndex;
     }
 
 }

@@ -34,7 +34,7 @@ public class DocumentRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public BlossomDocument addTaggedEntity(final TaggedEntity taggedEntity) throws TopLevelBlossomException {
+    public BlossomDocument addTaggedEntity(@PathParam("docId") final String docId, final TaggedEntity taggedEntity) throws TopLevelBlossomException {
         LOGGER.log(Level.SEVERE, "adding tagged entity");
         try {
             final BlossomDocumentService bds = new BlossomDocumentService();
