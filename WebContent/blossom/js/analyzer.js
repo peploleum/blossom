@@ -64,12 +64,13 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $sce, $http, Annotati
 	$scope.onDivClick = function($event) {
 		var selectedText = "" + document.getSelection();
 		console.log(document.getSelection().getRangeAt(0));
-		console.log(document.getSelection());
+		var offsetValue = parseInt(document.getSelection().focusNode.parentElement.attributes.offset.value);
+		console.log("offset value: " + offsetValue);
 		console.log("$event target: " + $event.target);
-		$scope.analyzerselection.text = selectedText.trim();
-		$scope.analyzerselection.startOffset = document.getSelection().getRangeAt(0).startOffset;
+		$scope.analyzerselection.text = selectedText;
+		$scope.analyzerselection.startOffset = (document.getSelection().getRangeAt(0).startOffset + offsetValue);
 		console.log("end: " + document.getSelection().getRangeAt(0).endOffset);
-		$scope.analyzerselection.endOffset = document.getSelection().getRangeAt(0).endOffset;
+		$scope.analyzerselection.endOffset = (document.getSelection().getRangeAt(0).endOffset + offsetValue);
 	}
 
 })

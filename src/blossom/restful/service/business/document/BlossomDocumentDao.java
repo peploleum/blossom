@@ -2,6 +2,7 @@ package blossom.restful.service.business.document;
 
 import java.util.logging.Logger;
 
+import blossom.exception.TopLevelBlossomException;
 import blossom.restful.service.business.document.dto.BlossomDocument;
 import blossom.restful.service.business.document.dto.TaggedEntity;
 import blossom.restful.service.business.document.model.DocumentsSingleton;
@@ -25,8 +26,10 @@ public class BlossomDocumentDao {
 
     }
 
-    public BlossomDocument addTag(final TaggedEntity taggedEntity) {
+    public BlossomDocument addTag(final TaggedEntity taggedEntity) throws TopLevelBlossomException {
         LOGGER.info("adding tagged entity ");
+        if (taggedEntity.getText() == null || taggedEntity.getText().isEmpty())
+            throw new TopLevelBlossomException("tag must not be empty");
         final DocumentsSingleton documentModel = DocumentsSingleton.getINSTANCE();
         final BlossomDocument first = documentModel.getDocuments().iterator().next();
         first.getTags().add(taggedEntity);
@@ -41,22 +44,41 @@ public class BlossomDocumentDao {
         final char[] charArray = new char[content.length()];
         content.getChars(0, content.length(), charArray, 0);
         final StringBuilder decoratedContentBuilder = new StringBuilder();
-        int offsetCount = 0;
+        boolean isOpen = false;
         for (int i = 0; i < charArray.length; i++) {
 
             final TaggedEntity taggedEntityAtIndex = getTaggedEntityAtIndex(i, doc);
             if (taggedEntityAtIndex != null) {
-                offsetCount = i;
-                final String generateSpan = generateSpan(offsetCount, taggedEntityAtIndex);
+                if (isOpen) {
+                    isOpen = false;
+                    decoratedContentBuilder.append(closeSpan());
+                }
+                final String generateSpan = generateSpan(i, taggedEntityAtIndex);
                 decoratedContentBuilder.append(generateSpan);
                 // keeping track of where the last span is to perform selection easily on client
                 // side (without having to manipulate dom)
-                i += ((taggedEntityAtIndex.getEndOffset() - taggedEntityAtIndex.getStartOffset()) - 1);
+                i += ((taggedEntityAtIndex.getEndOffset() - taggedEntityAtIndex.getStartOffset()) -1);
+                decoratedContentBuilder.append(openSpan(i + 1));
+                isOpen = true;
             } else {
                 decoratedContentBuilder.append(charArray[i]);
             }
         }
         doc.setDecoratedContent(decoratedContentBuilder.toString());
+    }
+
+    private String openSpan(final int offset) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<span offset=");
+        sb.append(offset);
+        sb.append(">");
+        return sb.toString();
+    }
+
+    private String closeSpan() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("</span>");
+        return sb.toString();
     }
 
     private TaggedEntity getTaggedEntityAtIndex(final int index, final BlossomDocument doc) {

@@ -20,7 +20,8 @@ public class DocumentsSingleton {
 
     private DocumentsSingleton() {
         final InputStream resourceAsStream = BlossomDocumentDao.class.getResourceAsStream("sample.txt");
-        final String slurp = slurp(resourceAsStream, 1024);
+        String slurp = slurp(resourceAsStream, 1024);
+        slurp = slurp.replaceAll("\n", "").replaceAll("\r", "");
         final BlossomDocument bd = new BlossomDocument();
         bd.setContent(slurp);
         bd.setDecoratedContent(slurp);

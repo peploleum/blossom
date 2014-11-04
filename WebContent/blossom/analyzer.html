@@ -57,7 +57,7 @@ body {
 				<div
 					ng-class="{'docdiv unselectable': !isTagging, 'docdiv' : isTagging}"
 					ng-model='doc.text' ng-click="onDivClick($event)" id='docContent'>
-					<p ng-bind-html="doc.text"></p>
+					<p offset=0 ng-bind-html="doc.text"></p>
 				</div>
 			</div>
 		</div>

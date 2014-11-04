@@ -149,8 +149,13 @@ public class GraphSingleton {
         final List<LinkItem> linksToRemove = new ArrayList<LinkItem>();
         final List<LinkItem> links = getGraph().getLinks();
         for (final LinkItem linkItem : links) {
-            if (nodeId.equals(getGraph().getNodes().get(linkItem.getSource()).getId())
-                    || nodeId.equals(getGraph().getNodes().get(linkItem.getTarget()).getId())) {
+            NodeItem sourceNode = getGraph().getNodes().get(linkItem.getSource());
+            NodeItem targetNode = getGraph().getNodes().get(linkItem.getTarget());
+            if (sourceNode == null || targetNode == null) {
+                LOGGER.info("skipping node for " + linkItem);
+                continue;
+            }
+            if (nodeId.equals(sourceNode.getId()) || nodeId.equals(targetNode.getId())) {
                 linksToRemove.add(linkItem);
             }
         }
