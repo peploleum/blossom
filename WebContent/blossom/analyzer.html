@@ -1,119 +1,118 @@
 <style>
-    body {
-        padding-top: 70px;
-        padding-bottom: 70px;
-        padding-left: 70px;
-        padding-right: 70px;
-    }
+body {
+	padding-top: 70px;
+	padding-bottom: 70px;
+	padding-left: 70px;
+	padding-right: 70px;
+}
 
-    .docdiv {
-        padding-top: 30px;
-    }
+.docdiv {
+	padding-top: 30px;
+}
 
-    .unselectable {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -o-user-select: none;
-        user-select: none;
-        cursor: default;
-    }
+.unselectable {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
 </style>
 <div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">Document content</h3>
-            </div>
-            <div class="panel-body">
-                <div class="container">
-                    <form class="form-inline" role="form"
-                          ng-submit="submitAnalyzerAction()">
-                        <div class="form-group">
-                            <div class="btn-group">
-                                <button type="submit" class="btn btn-default"
-                                        ng-click="setClick('Edit')">
-                                    <span class="glyphicon glyphicon-pencil"></span> Manual tag
-                                </button>
-                                <button type="submit" class="btn btn-default"
-                                        ng-click="setClick('Auto')">
-                                    <span class="glyphicon glyphicon-play"></span> Auto tag
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button type="submit" class="btn btn-default"
-                                        ng-click="setClick('Save')">
-                                    <span class="glyphicon glyphicon-floppy-saved"></span> Save
-                                </button>
-                                <button type="submit" class="btn btn-default"
-                                        ng-click="setClick('Discard')">
-                                    <span class="glyphicon glyphicon-floppy-remove"></span> Discard
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="col-md-6"
-                         ng-class="{'col-md-8 docdiv unselectable': !isTagging, 'col-md-8 docdiv' : isTagging}"
-                         ng-model='doc.text' ng-click="onDivClick($event)" id='docContent'>
-                        <p ng-bind-html="doc.text"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">Manage entities</h3>
-            </div>
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <form class="form-inline" role="form"
-                              ng-submit="submitAnalyzerAction()">
-                            <div class="form-group">
-                                <div class="btn-group">
-                                    <button type="submit" class="btn btn-default"
-                                            ng-click="setClick('Commit')">
-                                        <span class="glyphicon glyphicon-upload"></span> Commit tag
-                                    </button>
-                                    <button type="submit" class="btn btn-default"
-                                            ng-click="setClick('Select')">
-                                        <span class="glyphicon glyphicon-th-list"></span> Select class
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="row">
-                        <div>
-                            <form class="form" role="form">
-                                <div class="form-group">
-                                    <label for="textLabel">Selection: </label>
+	<div class="col-md-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Document content</h3>
+			</div>
+			<div class="panel-body">
+				<form class="form-inline" role="form"
+					ng-submit="submitAnalyzerAction()">
+					<div class="form-group">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('Edit')">
+								<span class="glyphicon glyphicon-pencil"></span> Manual tag
+							</button>
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('Auto')">
+								<span class="glyphicon glyphicon-play"></span> Auto tag
+							</button>
+						</div>
+						<div class="btn-group">
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('Save')">
+								<span class="glyphicon glyphicon-floppy-saved"></span> Save
+							</button>
+							<button type="submit" class="btn btn-default"
+								ng-click="setClick('Discard')">
+								<span class="glyphicon glyphicon-floppy-remove"></span> Discard
+							</button>
+						</div>
+					</div>
+				</form>
+				<div
+					ng-class="{'docdiv unselectable': !isTagging, 'docdiv' : isTagging}"
+					ng-model='doc.text' ng-click="onDivClick($event)" id='docContent'>
+					<p ng-bind-html="doc.text"></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Manage entities</h3>
+			</div>
+			<div class="panel-body">
+				<div class="container">
+					<div class="row">
+						<form class="form-inline" role="form"
+							ng-submit="submitAnalyzerAction()">
+							<div class="form-group">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-default"
+										ng-click="setClick('Commit')">
+										<span class="glyphicon glyphicon-upload"></span> Commit tag
+									</button>
+									<button type="submit" class="btn btn-default"
+										ng-click="setClick('Select')">
+										<span class="glyphicon glyphicon-th-list"></span> Select class
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="row">
+						<div>
+							<form class="form" role="form">
+								<div class="form-group">
+									<label for="textLabel">Selection: </label>
 
-                                    <p id="textLabel" class="help-block">{{analyzerselection.text}}</p>
-                                </div>
-                            </form>
-                            <form class="form" role="form">
-                                <div class="form-group">
-                                    <label for="startLabel">Start: </label>
+									<p id="textLabel" class="help-block">{{analyzerselection.text}}</p>
+								</div>
+							</form>
+							<form class="form" role="form">
+								<div class="form-group">
+									<label for="startLabel">Start: </label>
 
-                                    <p id="startLabel" class="help-block">{{analyzerselection.startOffset}}</p>
-                                </div>
-                            </form>
-                            <form class="form" role="form">
-                                <div class="form-group">
-                                    <label for="endLabel">End: </label>
+									<p id="startLabel" class="help-block">{{analyzerselection.startOffset}}</p>
+								</div>
+							</form>
+							<form class="form" role="form">
+								<div class="form-group">
+									<label for="endLabel">End: </label>
 
-                                    <p id="endLabel" class="help-block">{{analyzerselection.endOffset}}</p>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+									<p id="endLabel" class="help-block">{{analyzerselection.endOffset}}</p>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
