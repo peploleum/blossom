@@ -1,4 +1,4 @@
-package blossom.persistence.link;
+package blossom.persistence.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

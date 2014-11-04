@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
-import blossom.restful.service.business.document.BlossomDocumentService;
+import blossom.restful.service.business.document.BlossomDocumentDao;
 import blossom.restful.service.business.document.dto.BlossomDocument;
 import blossom.restful.service.business.document.dto.TaggedEntity;
 
@@ -24,7 +24,7 @@ public class DocumentRestService {
     public BlossomDocument getDocumentById(@PathParam("docId") final String docId) throws TopLevelBlossomException {
         LOGGER.info("fetch doc by id: " + docId);
         try {
-            final BlossomDocumentService bds = new BlossomDocumentService();
+            final BlossomDocumentDao bds = new BlossomDocumentDao();
             return bds.getBlossomDocumentById(docId);
         } catch (final Exception e) {
             throw new TopLevelBlossomException(e, "unable to fetch doc for id: " + docId);
@@ -37,7 +37,7 @@ public class DocumentRestService {
     public BlossomDocument addTaggedEntity(@PathParam("docId") final String docId, final TaggedEntity taggedEntity) throws TopLevelBlossomException {
         LOGGER.log(Level.SEVERE, "adding tagged entity");
         try {
-            final BlossomDocumentService bds = new BlossomDocumentService();
+            final BlossomDocumentDao bds = new BlossomDocumentDao();
             final BlossomDocument taggedDocument = bds.addTag(taggedEntity);
             return taggedDocument;
         } catch (final Exception e) {

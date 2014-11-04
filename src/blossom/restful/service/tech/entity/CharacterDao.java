@@ -9,7 +9,7 @@ import javax.persistence.Query;
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
-import blossom.persistence.location.Location;
+import blossom.persistence.entity.Location;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.restful.service.tech.entity.dto.CharacterBean;
 import blossom.util.geo.GeoUtils;
@@ -17,11 +17,11 @@ import blossom.util.geo.GeoUtils;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-public class CharacterService {
+public class CharacterDao {
 
-    private static final Logger LOGGER = Logger.getLogger(CharacterService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CharacterDao.class.getName());
 
-    public CharacterService() {
+    public CharacterDao() {
 
     }
 

@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import blossom.restful.service.business.document.BlossomDocumentService;
+import blossom.restful.service.business.document.BlossomDocumentDao;
 import blossom.restful.service.business.document.dto.BlossomDocument;
 
 public class DocumentsSingleton {
@@ -19,7 +19,7 @@ public class DocumentsSingleton {
     private final CopyOnWriteArraySet<BlossomDocument> documents = new CopyOnWriteArraySet<BlossomDocument>();
 
     private DocumentsSingleton() {
-        final InputStream resourceAsStream = BlossomDocumentService.class.getResourceAsStream("sample.txt");
+        final InputStream resourceAsStream = BlossomDocumentDao.class.getResourceAsStream("sample.txt");
         final String slurp = slurp(resourceAsStream, 1024);
         final BlossomDocument bd = new BlossomDocument();
         bd.setContent(slurp);

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import blossom.restful.service.business.stat.Stat;
-import blossom.restful.service.business.stat.StatItem;
+import blossom.restful.service.business.stat.dto.Stat;
+import blossom.restful.service.business.stat.dto.StatItem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -20,8 +20,8 @@ import blossom.restful.service.tech.table.dto.TableRowCollection;
  * @author peploleum
  *
  */
-public class TableService {
-    private static final Logger LOGGER = Logger.getLogger(TableService.class.getName());
+public class TableDao {
+    private static final Logger LOGGER = Logger.getLogger(TableDao.class.getName());
 
     /**
      * Access persistence. Read all rows. return serialized model

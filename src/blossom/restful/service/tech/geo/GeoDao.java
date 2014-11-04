@@ -10,7 +10,7 @@ import javax.persistence.Query;
 
 import blossom.framework.BlossomProducer;
 import blossom.persistence.EntityManagerFactorySingleton;
-import blossom.persistence.location.Location;
+import blossom.persistence.entity.Location;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.restful.service.business.geo.dto.GeoEntity;
 import blossom.restful.service.business.geo.dto.Geometry;
@@ -18,8 +18,8 @@ import blossom.restful.service.business.geo.dto.PolygonGeometry;
 import blossom.restful.service.business.geo.dto.Property;
 import blossom.util.geo.GeoUtils;
 
-public class GeoService implements BlossomProducer<Feature> {
-    private static final Logger LOGGER = Logger.getLogger(GeoService.class.getName());
+public class GeoDao implements BlossomProducer<Feature> {
+    private static final Logger LOGGER = Logger.getLogger(GeoDao.class.getName());
 
     private final ConcurrentLinkedQueue<Feature> featureQueue = new ConcurrentLinkedQueue<Feature>();
 
@@ -29,7 +29,7 @@ public class GeoService implements BlossomProducer<Feature> {
 
     private String qlString;
 
-    public GeoService(final PolygonGeometry extent) {
+    public GeoDao(final PolygonGeometry extent) {
         this.extent = extent;
     }
 

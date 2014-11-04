@@ -8,7 +8,7 @@ import javax.persistence.Query;
 
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
-import blossom.persistence.location.Location;
+import blossom.persistence.entity.Location;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.util.geo.GeoUtils;
 

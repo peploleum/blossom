@@ -6,11 +6,11 @@ import blossom.restful.service.business.document.dto.BlossomDocument;
 import blossom.restful.service.business.document.dto.TaggedEntity;
 import blossom.restful.service.business.document.model.DocumentsSingleton;
 
-public class BlossomDocumentService {
+public class BlossomDocumentDao {
 
-    private final static Logger LOGGER = Logger.getLogger(BlossomDocumentService.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(BlossomDocumentDao.class.getName());
 
-    public BlossomDocumentService() {
+    public BlossomDocumentDao() {
 
     }
 

@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
 import blossom.restful.service.business.geo.dto.PolygonGeometry;
-import blossom.restful.service.tech.geo.GeoConsumerService;
-import blossom.restful.service.tech.geo.GeoService;
+import blossom.restful.service.tech.geo.GeoConsumerDao;
+import blossom.restful.service.tech.geo.GeoDao;
 
 /**
  * Entry point for extent based queries that pipe their results throug a WebSocket.
@@ -20,8 +20,8 @@ public class GeoQueryRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void submitExtentQuery(final PolygonGeometry extent) {
-        final GeoService geoService = new GeoService(extent);
-        final GeoConsumerService consumerService = new GeoConsumerService(geoService.getFeatureQueue());
+        final GeoDao geoService = new GeoDao(extent);
+        final GeoConsumerDao consumerService = new GeoConsumerDao(geoService.getFeatureQueue());
         geoService.produceGeoEntities();
         consumerService.startConsuming();
     }

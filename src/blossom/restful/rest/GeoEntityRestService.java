@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
-import blossom.restful.service.business.geo.GeoEntitiesService;
+import blossom.restful.service.business.geo.GeoEntitiesDao;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.restful.service.business.geo.dto.GeoEntity;
 
@@ -23,7 +23,7 @@ public class GeoEntityRestService {
     @Path("/getgeoentity")
     public GeoEntity getGeoEntity() throws TopLevelBlossomException {
         LOGGER.info("getting geoentities");
-        final GeoEntitiesService geoEntitiesTransfer = new GeoEntitiesService();
+        final GeoEntitiesDao geoEntitiesTransfer = new GeoEntitiesDao();
         return geoEntitiesTransfer.getGeoEntity();
     }
 
@@ -32,7 +32,7 @@ public class GeoEntityRestService {
     @Path("/addfeature")
     public void addFeature(final Feature feature) throws TopLevelBlossomException {
         LOGGER.info("adding Feature ");
-        final GeoEntitiesService geoEntitiesTransfer = new GeoEntitiesService();
+        final GeoEntitiesDao geoEntitiesTransfer = new GeoEntitiesDao();
         geoEntitiesTransfer.addFeature(feature);
 
     }
@@ -42,7 +42,7 @@ public class GeoEntityRestService {
     @Path("/savefeatures")
     public void saveFeatures() throws TopLevelBlossomException {
         LOGGER.info("saving Features ");
-        final GeoEntitiesService geoEntitiesTransfer = new GeoEntitiesService();
+        final GeoEntitiesDao geoEntitiesTransfer = new GeoEntitiesDao();
 //        if (features == null || features.length == 0)
             geoEntitiesTransfer.saveFeatures();
 

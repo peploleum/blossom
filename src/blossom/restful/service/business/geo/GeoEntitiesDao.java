@@ -10,7 +10,7 @@ import javax.persistence.EntityManager;
 
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
-import blossom.persistence.location.Location;
+import blossom.persistence.entity.Location;
 import blossom.restful.service.business.geo.dto.Feature;
 import blossom.restful.service.business.geo.dto.GeoEntity;
 import blossom.restful.service.business.geo.model.GeoEntitiesSingleton;
@@ -28,10 +28,10 @@ import com.vividsolutions.jts.geom.Point;
  * @author peploleum
  *
  */
-public class GeoEntitiesService {
-    private static final Logger LOGGER = Logger.getLogger(GeoEntitiesService.class.getName());
+public class GeoEntitiesDao {
+    private static final Logger LOGGER = Logger.getLogger(GeoEntitiesDao.class.getName());
 
-    public GeoEntitiesService() {
+    public GeoEntitiesDao() {
 
     }
 

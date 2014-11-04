@@ -1,4 +1,4 @@
-package blossom.restful.service.business.stat;
+package blossom.restful.service.business.stat.dto;
 
 import java.util.List;
 

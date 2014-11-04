@@ -13,15 +13,15 @@ import blossom.websocket.BusinessLayerEndpointConfiguration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GeoConsumerService {
+public class GeoConsumerDao {
 
     private final Queue<Feature> queue;
-    private final static Logger LOGGER = Logger.getLogger(GeoConsumerService.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(GeoConsumerDao.class.getName());
 
     private final AtomicBoolean stopped = new AtomicBoolean(Boolean.FALSE);
     private final Runnable consumeRunnable;
 
-    public GeoConsumerService(final Queue<Feature> queue) {
+    public GeoConsumerDao(final Queue<Feature> queue) {
         this.queue = queue;
 
         this.consumeRunnable = new Runnable() {
@@ -30,7 +30,7 @@ public class GeoConsumerService {
             public void run() {
 
                 while (!stopped()) {
-                    final Feature poll = GeoConsumerService.this.queue.poll();
+                    final Feature poll = GeoConsumerDao.this.queue.poll();
                     if (poll == null) {
                         askForStop();
                     } else { // we can consume the polled Feature provided it's not null

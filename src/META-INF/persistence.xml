@@ -6,7 +6,7 @@
 	<persistence-unit name="Blossom" transaction-type="JTA">
 		<jta-data-source>GraphRestService</jta-data-source>
 		<class>blossom.persistence.entity.CharacterEntity</class>
-		<class>blossom.persistence.link.CharacterLink</class>
+		<class>blossom.persistence.entity.CharacterLink</class>
 		<!-- <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> -->
 		<properties>
 			<property name="eclipselink.target-database" value="PostgreSQL" />

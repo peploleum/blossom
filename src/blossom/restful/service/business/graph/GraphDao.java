@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
-import blossom.persistence.link.CharacterLink;
+import blossom.persistence.entity.CharacterLink;
 import blossom.restful.service.business.graph.dto.Graph;
 import blossom.restful.service.business.graph.dto.GraphNodeIdCollection;
 import blossom.restful.service.business.graph.dto.LinkItem;
@@ -24,14 +24,14 @@ import blossom.restful.service.business.graph.model.GraphSingleton;
  * @author peploleum
  *
  */
-public class GraphService {
+public class GraphDao {
 
-    private static final Logger LOGGER = Logger.getLogger(GraphService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GraphDao.class.getName());
 
     /**
      * Handles Graph model interactions with persistence layer
      */
-    public GraphService() {
+    public GraphDao() {
 
     }
 
