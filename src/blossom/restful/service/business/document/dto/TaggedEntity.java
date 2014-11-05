@@ -8,43 +8,77 @@ public class TaggedEntity {
     private int endOffset;
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
     public String getText() {
-        return text;
+        return this.text;
     }
 
-    public void setText(String value) {
+    public void setText(final String value) {
         this.text = value;
     }
 
     public int getStartOffset() {
-        return startOffset;
+        return this.startOffset;
     }
 
-    public void setStartOffset(int startIndex) {
+    public void setStartOffset(final int startIndex) {
         this.startOffset = startIndex;
     }
 
     public int getEndOffset() {
-        return endOffset;
+        return this.endOffset;
     }
 
-    public void setEndOffset(int stopIndex) {
+    public void setEndOffset(final int stopIndex) {
         this.endOffset = stopIndex;
     }
 
     public String getCategory() {
-        return category;
+        return this.category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(final String category) {
         this.category = category;
+    }
+
+    private String getColor() {
+        switch (category) {
+        case "Character":
+            return "red";
+        case "Event":
+            return "blue";
+        case "Equipment":
+            return "green";
+        case "Organisation":
+            return "orange";
+        case "Place":
+            return "yellow";
+        default:
+            return "brown";
+        }
+    }
+
+    public String toHtmlString(final int offset) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<span ");
+        sb.append("id=\"");
+        sb.append(getId());
+        sb.append("\"");
+        sb.append(" offset=");
+        sb.append(offset);
+        sb.append(" style=\"color:");
+        sb.append(getColor());
+        sb.append("\"");
+        sb.append(">");
+        sb.append(getText());
+        sb.append("</span>");
+        return sb.toString();
     }
 
 }

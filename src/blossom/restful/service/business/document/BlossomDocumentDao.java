@@ -53,11 +53,11 @@ public class BlossomDocumentDao {
                     isOpen = false;
                     decoratedContentBuilder.append(closeSpan());
                 }
-                final String generateSpan = generateSpan(i, taggedEntityAtIndex);
+                final String generateSpan = taggedEntityAtIndex.toHtmlString(i);
                 decoratedContentBuilder.append(generateSpan);
                 // keeping track of where the last span is to perform selection easily on client
                 // side (without having to manipulate dom)
-                i += ((taggedEntityAtIndex.getEndOffset() - taggedEntityAtIndex.getStartOffset()) -1);
+                i += ((taggedEntityAtIndex.getEndOffset() - taggedEntityAtIndex.getStartOffset()) - 1);
                 decoratedContentBuilder.append(openSpan(i + 1));
                 isOpen = true;
             } else {
@@ -88,22 +88,5 @@ public class BlossomDocumentDao {
             }
         }
         return null;
-    }
-
-    private String generateSpan(final int offset, final TaggedEntity tag) {
-        LOGGER.info("generating span for " + tag.getText() + " id: " + tag.getId());
-        final StringBuilder sb = new StringBuilder();
-        sb.append("<span ");
-        sb.append("id=\"");
-        sb.append(tag.getId());
-        sb.append("\"");
-        sb.append(" offset=");
-        sb.append(offset);
-        sb.append(" style=\"color:blue\"");
-        sb.append(">");
-        sb.append(tag.getText());
-        sb.append("</span>");
-        LOGGER.info("span: " + sb.toString());
-        return sb.toString();
     }
 }
