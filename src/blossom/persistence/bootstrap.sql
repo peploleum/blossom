@@ -21,6 +21,66 @@ OIDS=FALSE
 ALTER TABLE blossom."character"
 OWNER TO postgres;
 
+  -- Table: blossom."organization"
+DROP TABLE blossom."organisation";
+
+CREATE TABLE blossom."organisation"
+(
+   id varchar(36) primary key not null,
+   name varchar(250)
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE blossom."organisation"
+OWNER TO postgres;
+
+  -- Table: blossom."place"
+DROP TABLE blossom."place";
+
+CREATE TABLE blossom."place"
+(
+   id varchar(36) primary key not null,
+   name varchar(250)
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE blossom."place"
+OWNER TO postgres;
+
+  -- Table: blossom."event"
+DROP TABLE blossom."event";
+
+CREATE TABLE blossom."event"
+(
+   id varchar(36) primary key not null,
+   name varchar(250)
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE blossom."event"
+OWNER TO postgres;
+
+  -- Table: blossom."equipment"
+DROP TABLE blossom."equipment";
+
+CREATE TABLE blossom."equipment"
+(
+   id varchar(36) primary key not null,
+   name varchar(250)
+)
+WITH (
+OIDS=FALSE
+);
+
+
+ALTER TABLE blossom."equipment"
+OWNER TO postgres;
+
+
+
 DROP TABLE blossom."link";
 CREATE TABLE blossom."link"
 (

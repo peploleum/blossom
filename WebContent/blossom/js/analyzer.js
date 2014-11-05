@@ -36,6 +36,10 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $sce, $http, Annotati
 	$scope.setClick = function(option) {
 		selection = option;
 	}
+	$scope.setCategory = function(option) {
+		$scope.analyzerselection.category = option;
+	}
+
 	$scope.submitAnalyzerAction = function() {
 		switch (selection) {
 		case "Edit":

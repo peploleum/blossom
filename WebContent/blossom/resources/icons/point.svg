@@ -9,14 +9,14 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="32px"
-   height="32px"
-   id="svg4311"
+   width="16px"
+   height="16px"
+   id="svg2988"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="point.svg">
+   sodipodi:docname="circle.svg">
   <defs
-     id="defs4313" />
+     id="defs2990" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.197802"
-     inkscape:cx="1.4435719"
-     inkscape:cy="16"
+     inkscape:zoom="22.197802"
+     inkscape:cx="8"
+     inkscape:cy="8"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -37,14 +37,14 @@
      inkscape:window-y="-4"
      inkscape:window-maximized="1" />
   <metadata
-     id="metadata4316">
+     id="metadata2993">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -61,6 +61,6 @@
        sodipodi:rx="0.89303237"
        sodipodi:ry="0.89303237"
        d="m 16.610402,16.193327 a 0.89303237,0.89303237 0 1 1 -1.786064,0 0.89303237,0.89303237 0 1 1 1.786064,0 z"
-       transform="matrix(3.7676083,0,0,3.7695228,-43.186962,-45.071047)" />
+       transform="matrix(2.2075467,0,0,2.2094591,-27.015888,-27.549533)" />
   </g>
 </svg>

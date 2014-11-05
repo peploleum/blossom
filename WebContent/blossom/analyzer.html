@@ -20,7 +20,6 @@ body {
 	user-select: none;
 	cursor: default;
 }
-
 </style>
 <div class="row">
 	<div class="col-md-6">
@@ -68,26 +67,45 @@ body {
 				<h3 class="panel-title">Manage entities</h3>
 			</div>
 			<div class="panel-body">
-				<div class="container">
+				<div class="container ">
 					<div class="row">
 						<form class="form-inline" role="form"
 							ng-submit="submitAnalyzerAction()">
 							<div class="form-group">
 								<div class="btn-group">
+									<button class="btn btn-default dropdown-toggle" type="button"
+										id="dropdownMenu1" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-th-list"></span> Select class
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-left" role="menu"
+										aria-labelledby="dropdownMenu1">
+										<li role="presentation"><a
+											ng-click="setCategory('Character')" role="menuitem"
+											tabindex="-1" href="">Character</a></li>
+										<li role="presentation"><a
+											ng-click="setCategory('Organisation')" role="menuitem"
+											tabindex="-1" href="">Organisation</a></li>
+										<li role="presentation"><a
+											ng-click="setCategory('Place')" role="menuitem" tabindex="-1"
+											href="">Place</a></li>
+										<li role="presentation"><a
+											ng-click="setCategory('Event')" role="menuitem" tabindex="-1"
+											href="">Event</a></li>
+										<li role="presentation"><a
+											ng-click="setCategory('Equipment')" role="menuitem"
+											tabindex="-1" href="">Equipment</a></li>
+									</ul>
 									<button type="submit" class="btn btn-default"
 										ng-click="setClick('Commit')">
 										<span class="glyphicon glyphicon-upload"></span> Commit tag
-									</button>
-									<button type="submit" class="btn btn-default"
-										ng-click="setClick('Select')">
-										<span class="glyphicon glyphicon-th-list"></span> Select class
 									</button>
 								</div>
 							</div>
 						</form>
 					</div>
 					<div class="row">
-						<div>
+						<div class="docdiv">
 							<form class="form" role="form">
 								<div class="form-group">
 									<label for="textLabel">Selection: </label>
@@ -107,6 +125,13 @@ body {
 									<label for="endLabel">End: </label>
 
 									<p id="endLabel" class="help-block">{{analyzerselection.endOffset}}</p>
+								</div>
+							</form>
+							<form class="form" role="form">
+								<div class="form-group">
+									<label for="endLabel">Category: </label>
+
+									<p id="categoryLabel" class="help-block">{{analyzerselection.category}}</p>
 								</div>
 							</form>
 						</div>

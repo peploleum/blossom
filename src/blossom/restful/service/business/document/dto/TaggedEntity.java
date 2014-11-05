@@ -3,7 +3,7 @@ package blossom.restful.service.business.document.dto;
 public class TaggedEntity {
     private String id;
     private String text;
-
+    private String category;
     private int startOffset;
     private int endOffset;
 
@@ -37,6 +37,14 @@ public class TaggedEntity {
 
     public void setEndOffset(int stopIndex) {
         this.endOffset = stopIndex;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
 }

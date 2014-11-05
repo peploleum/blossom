@@ -15,15 +15,17 @@ import blossom.util.geo.GeoUtils;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+/**
+ * Populate db with entities that have a location to perform perf tests
+ * 
+ * @author peploleum
+ *
+ */
 public class GeoServiceTest {
 
     private static final Logger LOGGER = Logger.getLogger(GeoServiceTest.class.getName());
 
     public static void main(final String[] args) throws TopLevelBlossomException {
-        // final GeoService gs = new GeoService();
-        // gs.produceGeoEntities();
-        
-        
         randomPopDb();
     }
 
