@@ -1,6 +1,13 @@
 package blossom.restful.service.business.document.dto;
 
+/**
+ * Describes a piece of text in a document : id, position and category.
+ * 
+ * @author peploleum
+ *
+ */
 public class TaggedEntity {
+
     private String id;
     private String text;
     private String category;
