@@ -28,8 +28,7 @@ analyzermodule.controller('AnalyzerCtrl', function($scope, $sce, $http, Annotati
 	AnnotationFactory.Document.get({
 		docid : 'test'
 	}, function(d) {
-
-		// $scope.doc.text = d.content;
+		$scope.doc.rawtext = d.content;
 		$scope.doc.text = $sce.trustAsHtml(d.decoratedContent);
 	});
 

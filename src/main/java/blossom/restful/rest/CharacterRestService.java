@@ -24,14 +24,16 @@ public class CharacterRestService {
 
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
-    public CharacterBean getCharcterById(final String id) {
+    @Path("{id}")
+    public CharacterBean getCharcterById(@javax.ws.rs.PathParam("id") final String id) throws TopLevelBlossomException {
         final CharacterDao characterTransfer = new CharacterDao();
         return characterTransfer.getCharcterById(id);
     }
 
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
-    public void removeCharacter(final String id) throws TopLevelBlossomException {
+    @Path("{id}")
+    public void removeCharacter(@javax.ws.rs.PathParam("id") final String id) throws TopLevelBlossomException {
         final CharacterDao characterTransfer = new CharacterDao();
         characterTransfer.deleteCharacter(id);
     }

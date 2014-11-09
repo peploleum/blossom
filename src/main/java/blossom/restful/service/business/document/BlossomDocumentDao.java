@@ -12,11 +12,10 @@ public class BlossomDocumentDao {
     private final static Logger LOGGER = Logger.getLogger(BlossomDocumentDao.class.getName());
 
     public BlossomDocumentDao() {
-
     }
 
     public BlossomDocument getBlossomDocumentById(final String id) {
-        LOGGER.info("getting document " + id);
+        LOGGER.info("getting document by id  " + id);
         final DocumentsSingleton documentModel = DocumentsSingleton.getINSTANCE();
         final BlossomDocument first = documentModel.getDocuments().iterator().next();
         return first;

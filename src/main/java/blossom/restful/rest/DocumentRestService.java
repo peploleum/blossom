@@ -16,11 +16,12 @@ import blossom.restful.service.business.document.BlossomDocumentDao;
 import blossom.restful.service.business.document.dto.BlossomDocument;
 import blossom.restful.service.business.document.dto.TaggedEntity;
 
-@Path("/annotation/{docId}")
+@Path("/annotation")
 public class DocumentRestService {
     private static final Logger LOGGER = Logger.getLogger(DocumentRestService.class.getName());
 
     @GET
+    @Path("{docId}")
     public BlossomDocument getDocumentById(@PathParam("docId") final String docId) throws TopLevelBlossomException {
         LOGGER.info("fetch doc by id: " + docId);
         try {
@@ -34,6 +35,7 @@ public class DocumentRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("{docId}")
     public BlossomDocument addTaggedEntity(@PathParam("docId") final String docId, final TaggedEntity taggedEntity) throws TopLevelBlossomException {
         LOGGER.log(Level.SEVERE, "adding tagged entity");
         try {

@@ -491,8 +491,6 @@ module.controller('MapCtrl', function($scope, geoFactory, refresherFactory, boMa
 
 		characterEntity.geom = feature;
 		boManagerFactory.createCharacter(characterEntity);
-		// geoFactory.addFeature(feature);
-
 	}
 
 	console.log("creating controls");

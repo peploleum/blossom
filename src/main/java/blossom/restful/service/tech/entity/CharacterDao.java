@@ -88,9 +88,41 @@ public class CharacterDao {
         }
     }
 
-    public CharacterBean getCharcterById(final String id) {
-        final CharacterBean characterBean = new CharacterBean();
-        return characterBean;
+    /**
+     * Get Character item from database
+     * 
+     * @param id
+     *            Unique id of the item
+     * @return {@link CharacterBean} can be serialized in json
+     * @throws TopLevelBlossomException
+     *             if persistence layer fails
+     */
+    public CharacterBean getCharcterById(final String id) throws TopLevelBlossomException {
+        final EntityManager entityManager = EntityManagerFactorySingleton.getInstance().getEntityManagerFactory().createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            try {
+                final Query namedQuery = entityManager.createNamedQuery("CharacterEntity.findById");
+                namedQuery.setParameter("id", id.trim());
+                final CharacterEntity result = (CharacterEntity) namedQuery.getSingleResult();
+                LOGGER.log(Level.INFO, "Found " + result.toString());
+                final CharacterBean characterBean = new CharacterBean();
+                characterBean.setId(result.getId());
+                characterBean.setName(result.getName());
+                characterBean.setCatchphrase(result.getCatchphrase());
+                characterBean.setSize(result.getSize());
+                characterBean.setId(result.getId());
+                return characterBean;
+            } catch (final Exception e) {
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                throw new TopLevelBlossomException(e, "Failed to fetch item from database.");
+            }
+        } finally {
+            entityManager.close();
+        }
     }
 
     public CharacterBean updateCharacter(final CharacterBean characterBean) {

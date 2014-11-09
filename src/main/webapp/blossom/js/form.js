@@ -1,21 +1,46 @@
 /**
  * display business data as a popover
  */
-var module = angular.module('blossom.form', [ 'ngRoute' ]);
-module.factory('PopFormFactory', function() {
-	var popform = {};
-	popform.on = false;
+var formModule = angular.module('blossom.form', [ 'ngRoute', 'ui.bootstrap' ]);
 
-	popform.toggle = function(onoroff) {
-		popform.on = onoroff;
-	}
-	popform.isOn = function() {
-		return popform.on;
-	}
+formModule.factory('PopFormFactory', [ '$modal', function($modal) {
 
-	return popform;
-});
-module.controller('PopFormCtrl', function($scope) {
-	$scope.test = 'test';
-	$scope.isformdisplayed = false;
+	var popForm = {};
+	popForm.call = function(id) {
+		console.log("generating pop up for: " + id);
+		$modal.open({
+			templateUrl : 'popform.html',
+			controller : 'PopFormCtrl',
+			resolve : {
+				items : function() {
+					return id;
+				}
+			}
+		});
+	}
+	return popForm;
+} ]);
+
+formModule.factory('BusinessFormFactory', [ '$resource', function($resource) {
+
+	var urlBase = './rest/character';
+	var businessFormManager = new Object();
+	businessFormManager.Character = $resource(urlBase + '/:id', {
+		id : '@id'
+	});
+
+	return businessFormManager;
+} ]);
+
+formModule.controller('PopFormCtrl', function($scope, $modal, $modalInstance, BusinessFormFactory, items) {
+	console.log("controller has been loaded " + items);
+	$scope.modalmodel = {};
+	BusinessFormFactory.Character.get({
+		id : items
+	}, function(d) {
+		console.log(d);
+		console.log("id: " + d.id);
+		$scope.modalmodel = d;
+		$scope.$apply;
+	});
 });

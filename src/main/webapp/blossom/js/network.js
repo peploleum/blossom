@@ -20,7 +20,7 @@ module.factory('GraphFactory', function($resource) {
 	})
 });
 
-module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFactory, TableGetFactory, PopFormFactory, uuidFactory) {
+module.controller('NetworkCtrl', function($scope, $http, $modal, StatFactory, GraphFactory, TableGetFactory, PopFormFactory, uuidFactory) {
 	var symbo = true;
 
 	var navbarul = d3.selectAll('ul#navbarul>li');
@@ -32,17 +32,11 @@ module.controller('NetworkCtrl', function($scope, $http, StatFactory, GraphFacto
 	$scope.serviceSuccess = true;
 	$scope.serviceErrorDetails = false;
 
-	$scope.isOn = function() {
-		return PopFormFactory.isOn();
-	}
-
 	$scope.onRefClicked = function($event) {
 		console.log("ref clicked " + $event);
-		PopFormFactory.toggle(true);
+		PopFormFactory.call($event.currentTarget.childNodes[0].data);
 	}
-	$scope.discardForm = function() {
-		PopFormFactory.toggle(false);
-	}
+
 	var selectionClicked = null; // id the clicked button in a group
 	selection = []; // selection model : stores ids of selected nodes
 	pinnedNodes = []; // pin model : stores ids of pinned nodes
