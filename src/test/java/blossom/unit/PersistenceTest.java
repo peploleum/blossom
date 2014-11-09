@@ -1,4 +1,4 @@
-package blossom.test;
+package blossom.unit;
 
 import java.util.UUID;
 import java.util.logging.Level;

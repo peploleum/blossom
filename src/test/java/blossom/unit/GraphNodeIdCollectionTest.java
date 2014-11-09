@@ -1,4 +1,4 @@
-package blossom.test;
+package blossom.unit;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

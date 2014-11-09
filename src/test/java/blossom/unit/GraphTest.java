@@ -1,31 +1,32 @@
-package blossom.test;
+package blossom.unit;
+
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.junit.Test;
+
 import blossom.restful.service.business.graph.dto.Graph;
 import blossom.restful.service.business.graph.dto.LinkItem;
 import blossom.restful.service.business.graph.dto.NodeItem;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GraphTest {
 
     private static final Logger LOGGER = Logger.getLogger(GraphTest.class.getName());
 
-    private GraphTest() {
+    public GraphTest() {
 
     }
 
-    public static void main(final String[] args) {
-        writeGraph();
-        readGraph();
-        // JSONConfiguration.mapped().
-    }
-
-    private static void writeGraph() {
+    @Test
+    public void writeGraph() throws JsonGenerationException, JsonMappingException, IOException {
         final NodeItem gi1 = new NodeItem();
         gi1.setId("15766ad3-db4a-469f-95ca-7f61b49c7443");
         gi1.setName("zoidberg");
@@ -60,21 +61,19 @@ public class GraphTest {
         g.setLinks(Arrays.asList(new LinkItem[] { li1, li2, li3 }));
 
         final ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writeValue(System.out, g);
-        } catch (final Exception e) {
-            LOGGER.log(Level.SEVERE, "failed to write json", e);
-        }
+        mapper.writeValue(System.out, g);
     }
 
-    private static void readGraph() {
+    @Test
+    public void readGraph() {
         final ObjectMapper om = new ObjectMapper();
         Graph readValue;
         try {
-            readValue = om.readValue(GraphTest.class.getResourceAsStream("data.json"), Graph.class);
+            readValue = om.readValue(GraphTest.class.getResource("/data.json"), Graph.class);
+            assertNotNull(readValue);
             System.out.println(readValue.getNodes());
         } catch (final IOException e) {
-            LOGGER.log(Level.SEVERE, "failed to read geometry", e);
+            LOGGER.log(Level.SEVERE, "failed to read graph", e);
         }
     }
 }

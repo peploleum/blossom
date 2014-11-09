@@ -1,4 +1,4 @@
-package blossom.test;
+package blossom.unit;
 
 import static org.junit.Assert.assertTrue;
 
