@@ -19,7 +19,7 @@ public class DocumentsSingleton {
     private final CopyOnWriteArraySet<BlossomDocument> documents = new CopyOnWriteArraySet<BlossomDocument>();
 
     private DocumentsSingleton() {
-        final InputStream resourceAsStream = BlossomDocumentDao.class.getResourceAsStream("sample.txt");
+        final InputStream resourceAsStream = BlossomDocumentDao.class.getResourceAsStream("/sample.txt");
         String slurp = slurp(resourceAsStream, 1024);
         slurp = slurp.replaceAll("\n", "").replaceAll("\r", "");
         final BlossomDocument bd = new BlossomDocument();
