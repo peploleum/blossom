@@ -35,12 +35,22 @@ formModule.factory('BusinessFormFactory', [ '$resource', function($resource) {
 formModule.controller('PopFormCtrl', function($scope, $modal, $modalInstance, BusinessFormFactory, items) {
 	console.log("controller has been loaded " + items);
 	$scope.modalmodel = {};
+	$scope.modalmodel.presentation = {};
+	$scope.modalmodel.presentation.modaltitle = "Object properties";
+	$scope.modalmodel.presentation.paneltitle = "Details";
+	$scope.modalmodel.businesscontent = {};
+	$scope.$apply;
+	$scope.close = function()
+	{
+		console.log("closing");
+		$modalInstance.close();
+	}
 	BusinessFormFactory.Character.get({
 		id : items
 	}, function(d) {
 		console.log(d);
 		console.log("id: " + d.id);
-		$scope.modalmodel = d;
+		$scope.modalmodel.businesscontent = d;
 		$scope.$apply;
 	});
 });
