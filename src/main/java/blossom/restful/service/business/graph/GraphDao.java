@@ -59,7 +59,7 @@ public class GraphDao {
                     nodeItem.setId(result.getId());
                     nodeItem.setCatchphrase(result.getCatchphrase());
                     nodeItem.setName(result.getName());
-                    nodeItem.setSize(result.getSize());
+//                    nodeItem.setSize(result.getSize());
                     nodeList.add(nodeItem);
                 }
                 graph.setNodes(nodeList);
@@ -109,7 +109,7 @@ public class GraphDao {
                 characterEntity.setName(node.getName());
                 characterEntity.setId(node.getId());
                 characterEntity.setCatchphrase(node.getCatchphrase());
-                characterEntity.setSize(node.getSize());
+//                characterEntity.setSize(node.getSize());
                 entityManager.persist(characterEntity);
                 entityManager.getTransaction().commit();
                 gs.addNode(node);

@@ -5,15 +5,31 @@ DROP SCHEMA blossom CASCADE;
 CREATE SCHEMA blossom
   AUTHORIZATION postgres;
   
+  -- Table: blossom."entity"
+DROP TABLE blossom."entity";
+
+CREATE TABLE blossom."entity"
+(
+   id varchar(36) primary key not null,
+   name varchar(250),
+   id_symbol varchar(36)
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE blossom."entity"
+OWNER TO postgres;  
+  
   -- Table: blossom."character"
 DROP TABLE blossom."character";
 
 CREATE TABLE blossom."character"
 (
    id varchar(36) primary key not null,
-   name varchar(250),
+  -- name varchar(250),
    catchphrase varchar(250),
-   size integer
+   firstname varchar(250),
+   lastname varchar(250)
 )
 WITH (
 OIDS=FALSE
@@ -26,8 +42,7 @@ DROP TABLE blossom."organisation";
 
 CREATE TABLE blossom."organisation"
 (
-   id varchar(36) primary key not null,
-   name varchar(250)
+   id varchar(36) primary key not null
 )
 WITH (
 OIDS=FALSE
@@ -40,8 +55,7 @@ DROP TABLE blossom."place";
 
 CREATE TABLE blossom."place"
 (
-   id varchar(36) primary key not null,
-   name varchar(250)
+   id varchar(36) primary key not null
 )
 WITH (
 OIDS=FALSE
@@ -54,8 +68,7 @@ DROP TABLE blossom."event";
 
 CREATE TABLE blossom."event"
 (
-   id varchar(36) primary key not null,
-   name varchar(250)
+   id varchar(36) primary key not null
 )
 WITH (
 OIDS=FALSE
@@ -68,8 +81,7 @@ DROP TABLE blossom."equipment";
 
 CREATE TABLE blossom."equipment"
 (
-   id varchar(36) primary key not null,
-   name varchar(250)
+   id varchar(36) primary key not null
 )
 WITH (
 OIDS=FALSE
@@ -77,6 +89,22 @@ OIDS=FALSE
 
 
 ALTER TABLE blossom."equipment"
+OWNER TO postgres;
+
+  -- Table: blossom."symbol"
+DROP TABLE blossom."tech_symbol";
+
+CREATE TABLE blossom."tech_symbol"
+(
+   id varchar(36) primary key not null,
+   size int,
+   content bytea
+)
+WITH (
+OIDS=FALSE
+);
+
+ALTER TABLE blossom."tech_symbol"
 OWNER TO postgres;
 
 

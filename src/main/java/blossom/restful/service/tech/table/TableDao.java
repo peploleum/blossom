@@ -44,7 +44,7 @@ public class TableDao {
                     tableRow.setId(result.getId());
                     tableRow.setCatchphrase(result.getCatchphrase());
                     tableRow.setName(result.getName());
-                    tableRow.setSize(result.getSize());
+//                    tableRow.setSize(result.getSize());
                     tableRows.add(tableRow);
                 }
                 tableRowCollection.setRows(tableRows);

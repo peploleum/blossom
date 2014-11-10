@@ -34,7 +34,7 @@ public class CharacterDao {
                 characterEntity.setName(characterBean.getName());
                 characterEntity.setId(characterBean.getId());
                 characterEntity.setCatchphrase(characterBean.getCatchphrase());
-                characterEntity.setSize(characterBean.getSize() == 0 ? 70 : characterBean.getSize());
+//                characterEntity.setSize(characterBean.getSize() == 0 ? 70 : characterBean.getSize());
                 entityManager.persist(characterEntity);
 
                 final Feature geom = characterBean.getGeom();
@@ -110,7 +110,7 @@ public class CharacterDao {
                 characterBean.setId(result.getId());
                 characterBean.setName(result.getName());
                 characterBean.setCatchphrase(result.getCatchphrase());
-                characterBean.setSize(result.getSize());
+//                characterBean.setSize(result.getSize());
                 characterBean.setId(result.getId());
                 return characterBean;
             } catch (final Exception e) {

@@ -25,7 +25,6 @@ public class PersistenceTest {
                 character.setId(UUID.randomUUID().toString());
                 character.setName("Farnsworth");
                 character.setCatchphrase("Ooooh my yes!");
-                character.setSize(70);
                 entityManager.persist(character);
                 entityManager.getTransaction().commit();
             } catch (Exception e) {
