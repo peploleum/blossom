@@ -3,12 +3,15 @@ package blossom.persistence.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "tech_symbol", schema = "blossom")
+@NamedQueries({ @NamedQuery(name = "Symbol.findAll", query = "SELECT s FROM Symbol s") })
 public class Symbol {
 
     @Id

@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.CharacterEntity;
-import blossom.persistence.entity.CharacterLink;
+import blossom.persistence.entity.EntityLink;
 import blossom.restful.service.business.graph.dto.Graph;
 import blossom.restful.service.business.graph.dto.GraphNodeIdCollection;
 import blossom.restful.service.business.graph.dto.LinkItem;
@@ -66,14 +66,14 @@ public class GraphDao {
                 graph.setNodes(nodeList);
 
                 // then we fetch links
-                final Query linksQuery = entityManager.createNamedQuery("CharacterLink.findAll");
+                final Query linksQuery = entityManager.createNamedQuery("EntityLink.findAll");
                 @SuppressWarnings("unchecked")
-                final List<CharacterLink> links = linksQuery.getResultList();
+                final List<EntityLink> links = linksQuery.getResultList();
                 final List<LinkItem> linkItems = new ArrayList<LinkItem>();
-                for (final CharacterLink characterLink : links) {
+                for (final EntityLink entityLink : links) {
                     final LinkItem li = new LinkItem();
-                    li.setSource(gs.getNodeIndexByNodeId(characterLink.getSource()));
-                    li.setTarget(gs.getNodeIndexByNodeId(characterLink.getDest()));
+                    li.setSource(gs.getNodeIndexByNodeId(entityLink.getSource()));
+                    li.setTarget(gs.getNodeIndexByNodeId(entityLink.getDest()));
                     linkItems.add(li);
                 }
                 graph.setLinks(linkItems);
@@ -141,7 +141,7 @@ public class GraphDao {
             entityManager.getTransaction().begin();
             try {
                 for (final LinkItem linkItem : links) {
-                    final CharacterLink cl = new CharacterLink();
+                    final EntityLink cl = new EntityLink();
                     cl.setDest(gs.getGraph().getNodes().get(linkItem.getTarget()).getId());
                     cl.setSource(gs.getGraph().getNodes().get(linkItem.getSource()).getId());
                     entityManager.persist(cl);
@@ -257,14 +257,14 @@ public class GraphDao {
                     entityManager.remove(result);
                     final GraphSingleton gs = GraphSingleton.getInstance();
 
-                    final Query findLinkQuery = entityManager.createNamedQuery("CharacterLink.findById");
+                    final Query findLinkQuery = entityManager.createNamedQuery("EntityLink.findById");
                     findLinkQuery.setParameter("idsource", nodeId);
                     findLinkQuery.setParameter("iddest", nodeId);
                     @SuppressWarnings("unchecked")
-                    final List<CharacterLink> resultList = findLinkQuery.getResultList();
-                    for (final CharacterLink characterLink : resultList) {
-                        LOGGER.info("removing link " + characterLink.toString());
-                        entityManager.remove(characterLink);
+                    final List<EntityLink> resultList = findLinkQuery.getResultList();
+                    for (final EntityLink entityLink : resultList) {
+                        LOGGER.info("removing link " + entityLink.toString());
+                        entityManager.remove(entityLink);
                     }
                     gs.removeLinkById(nodeId);
                     gs.removeNodeById(nodeId);

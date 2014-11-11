@@ -24,7 +24,16 @@ public abstract class AbstractBlossomEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_symbol")
     private Symbol symbol;
-
+    
+//    @ManyToMany
+//    @JoinTable(
+//            name="link",
+//            joinColumns=@JoinColumn(name="dest"),
+//            inverseJoinColumns=@JoinColumn(name="source")
+//    )
+//    @MapKeyJoinColumn(name="ID_BUSINESS_DOMAIN")
+//    private Set<AbstractBlossomEntity> linkedEntities;
+    
     public String getId() {
         return id;
     }

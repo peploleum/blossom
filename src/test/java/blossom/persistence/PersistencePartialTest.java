@@ -1,4 +1,4 @@
-package blossom.unit;
+package blossom.persistence;
 
 import java.util.UUID;
 import java.util.logging.Level;
@@ -10,11 +10,10 @@ import javax.persistence.Persistence;
 
 import blossom.persistence.entity.CharacterEntity;
 
-public class PersistenceTest {
-    private static final Logger LOGGER = Logger.getLogger(PersistenceTest.class.getName());
+public class PersistencePartialTest {
+    private static final Logger LOGGER = Logger.getLogger(PersistencePartialTest.class.getName());
 
     public static void main(final String[] args) {
-        // EntityManagerFactory createEntityManager
         final EntityManagerFactory createEntityManagerFactory = Persistence.createEntityManagerFactory("BlossomLocal");
         final EntityManager entityManager = createEntityManagerFactory.createEntityManager();
         try {
