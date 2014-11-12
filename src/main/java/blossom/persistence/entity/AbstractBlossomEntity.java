@@ -8,11 +8,15 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "entity", schema = "blossom")
 @Inheritance(strategy = InheritanceType.JOINED)
+@NamedQueries({ @NamedQuery(name = "AbstractBlossomEntity.findAll", query = "SELECT abstractblossomentity FROM AbstractBlossomEntity abstractblossomentity"),
+	@NamedQuery(name = "AbstractBlossomEntity.findById", query = "SELECT c FROM AbstractBlossomEntity c WHERE c.id = :id")})
 public abstract class AbstractBlossomEntity {
     @Id
     @Column(name = "id")
