@@ -88,7 +88,22 @@ OIDS=FALSE
 );
 
 
-ALTER TABLE blossom."equipment"
+ALTER TABLE blossom."mission"
+OWNER TO postgres;
+
+  -- Table: blossom."equipment"
+DROP TABLE blossom."mission";
+
+CREATE TABLE blossom."mission"
+(
+   id varchar(36) primary key not null
+)
+WITH (
+OIDS=FALSE
+);
+
+
+ALTER TABLE blossom."mission"
 OWNER TO postgres;
 
   -- Table: blossom."symbol"

@@ -20,15 +20,10 @@ public class PersistenceFullTest {
 
     @Test
     public void purgeTestDatabase() {
-        // final InputStream bootstrapStream =
-        // PersistenceFullTest.class.getResourceAsStream("/bootstrap.sql");
-        // final String slurp = BlossomUtils.slurp(bootstrapStream, 1024);
         final EntityManagerFactory createEntityManagerFactory = Persistence.createEntityManagerFactory("BlossomTestLocal");
         final EntityManager entityManager = createEntityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            // final Query q = entityManager.createNativeQuery(slurp);
-            // q.executeUpdate();
             final Query nameQuery = entityManager.createNamedQuery("CharacterEntity.findAll");
             @SuppressWarnings("unchecked")
             final List<CharacterEntity> resultList = nameQuery.getResultList();
