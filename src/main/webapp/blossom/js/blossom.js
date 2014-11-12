@@ -1,4 +1,4 @@
-var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.map', 'blossom.stats', 'blossom.analyzer', 'blossom.misc' ]);
+var blossomModule = angular.module('blossom', [ 'ngRoute', 'blossom.home', 'blossom.search', 'blossom.network', 'blossom.map', 'blossom.stats', 'blossom.analyzer', 'blossom.misc', 'blossom.mission' ]);
 
 blossomModule.config(function($routeProvider, $locationProvider) {
 	$routeProvider.when('/about', {
@@ -16,6 +16,9 @@ blossomModule.config(function($routeProvider, $locationProvider) {
 	}).when('/map', {
 		controller : 'MapCtrl',
 		templateUrl : 'map.html'
+	}).when('/mission', {
+		controller : 'MissionCtrl',
+		templateUrl : 'mission.html'
 	}).when('/search', {
 		controller : 'SearchCtrl',
 		templateUrl : 'search.html'

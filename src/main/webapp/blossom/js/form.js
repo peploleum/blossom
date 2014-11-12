@@ -23,9 +23,9 @@ formModule.factory('PopFormFactory', [ '$modal', function($modal) {
 
 formModule.factory('BusinessFormFactory', [ '$resource', function($resource) {
 
-	var urlBase = './rest/character';
+	var urlBase = './rest/table';
 	var businessFormManager = new Object();
-	businessFormManager.Character = $resource(urlBase + '/:id', {
+	businessFormManager.AbstractBlossomEntity = $resource(urlBase + '/:id', {
 		id : '@id'
 	});
 
@@ -45,7 +45,7 @@ formModule.controller('PopFormCtrl', function($scope, $modal, $modalInstance, Bu
 		console.log("closing");
 		$modalInstance.close();
 	}
-	BusinessFormFactory.Character.get({
+	BusinessFormFactory.AbstractBlossomEntity.get({
 		id : items
 	}, function(d) {
 		console.log(d);
