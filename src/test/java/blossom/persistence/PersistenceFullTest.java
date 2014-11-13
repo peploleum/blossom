@@ -3,6 +3,7 @@ package blossom.persistence;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import javax.persistence.Query;
 
 import org.junit.Test;
 
+import blossom.persistence.entity.AbstractBlossomEntity;
 import blossom.persistence.entity.CharacterEntity;
 import blossom.persistence.entity.Symbol;
 
@@ -75,6 +77,8 @@ public class PersistenceFullTest {
             character2.setCatchphrase("I'm walking on sunshine ! ");
 
             entityManager.persist(character2);
+
+            character.setLinkedEntities(Collections.singleton((AbstractBlossomEntity) character2));
 
             entityManager.persist(character);
             entityManager.getTransaction().commit();
