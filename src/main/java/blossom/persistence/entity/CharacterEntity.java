@@ -19,6 +19,12 @@ public class CharacterEntity extends AbstractBlossomEntity {
     @Column(name = "catchphrase")
     private String catchphrase;
 
+    @Column
+    private String firstname;
+
+    @Column
+    private String lastname;
+
     public CharacterEntity() {
     }
 
@@ -28,6 +34,22 @@ public class CharacterEntity extends AbstractBlossomEntity {
 
     public void setCatchphrase(final String catchphrase) {
         this.catchphrase = catchphrase;
+    }
+
+    public String getFirstname() {
+        return this.firstname;
+    }
+
+    public void setFirstname(final String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return this.lastname;
+    }
+
+    public void setLastname(final String lastname) {
+        this.lastname = lastname;
     }
 
     @Override

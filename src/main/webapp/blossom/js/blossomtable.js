@@ -9,7 +9,7 @@ blossomtable.module.factory('TableFactory', [ '$http', function($http) {
 	var tableFactory = {};
 
 	tableFactory.getData = function() {
-		return $http.get(urlBase + '/' + 'getdata');
+		return $http.get(urlBase );
 	};
 
 	return tableFactory;

@@ -9,7 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import blossom.exception.TopLevelBlossomException;
-import blossom.restful.service.tech.entity.CharacterDao;
 import blossom.restful.service.tech.entity.dto.CharacterBean;
 import blossom.restful.service.tech.table.TableDao;
 import blossom.restful.service.tech.table.dto.TableRowCollection;
@@ -21,7 +20,6 @@ public class TableRestService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getdata")
     public TableRowCollection getRows() throws TopLevelBlossomException {
         LOGGER.info("Getting all rows");
         TableDao tableTransfer = new TableDao();

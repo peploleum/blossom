@@ -11,7 +11,6 @@ import javax.persistence.Query;
 import blossom.exception.TopLevelBlossomException;
 import blossom.persistence.EntityManagerFactorySingleton;
 import blossom.persistence.entity.AbstractBlossomEntity;
-import blossom.persistence.entity.CharacterEntity;
 import blossom.restful.service.tech.entity.dto.CharacterBean;
 import blossom.restful.service.tech.table.dto.TableRow;
 import blossom.restful.service.tech.table.dto.TableRowCollection;

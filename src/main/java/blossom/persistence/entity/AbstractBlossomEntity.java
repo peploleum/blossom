@@ -33,7 +33,7 @@ public abstract class AbstractBlossomEntity {
     @JoinColumn(name = "id_symbol")
     private Symbol symbol;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(schema = "blossom", name = "link", joinColumns = @JoinColumn(name = "dest"), inverseJoinColumns = @JoinColumn(name = "source"))
     private Set<AbstractBlossomEntity> linkedEntities;
 

@@ -1,5 +1,7 @@
 package blossom.persistence;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,26 +13,32 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import blossom.persistence.entity.AbstractBlossomEntity;
 import blossom.persistence.entity.CharacterEntity;
 import blossom.persistence.entity.Symbol;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PersistenceFullTest {
 
     @Test
-    public void purgeTestDatabase() {
+    public void a_purgeTestDatabase() {
         final EntityManagerFactory createEntityManagerFactory = Persistence.createEntityManagerFactory("BlossomTestLocal");
         final EntityManager entityManager = createEntityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            final Query nameQuery = entityManager.createNamedQuery("CharacterEntity.findAll");
+            final Query nameQuery = entityManager.createNamedQuery("AbstractBlossomEntity.findAll");
             @SuppressWarnings("unchecked")
-            final List<CharacterEntity> resultList = nameQuery.getResultList();
-            for (final CharacterEntity characterEntity : resultList) {
-                entityManager.remove(characterEntity);
+            final List<AbstractBlossomEntity> resultList = nameQuery.getResultList();
+            for (final AbstractBlossomEntity abstractEntity : resultList) {
+                entityManager.remove(abstractEntity);
             }
             final Query symbolQuery = entityManager.createNamedQuery("Symbol.findAll");
             @SuppressWarnings("unchecked")
@@ -46,13 +54,14 @@ public class PersistenceFullTest {
     }
 
     @Test
-    public void shouldLinkEntities() throws IOException {
+    public void b_shouldLinkEntities() throws IOException {
         final EntityManagerFactory createEntityManagerFactory = Persistence.createEntityManagerFactory("BlossomTestLocal");
         final EntityManager entityManager = createEntityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
+
             final CharacterEntity character = new CharacterEntity();
-            final String characterId = UUID.randomUUID().toString();
+            final String characterId = "d6228b28-12c2-4bae-8c89-41b6642c379c";
             character.setId(characterId);
             character.setName("farnsworth");
             character.setCatchphrase("Ooooh my yes!");
@@ -74,6 +83,8 @@ public class PersistenceFullTest {
             final CharacterEntity character2 = new CharacterEntity();
             character2.setId(UUID.randomUUID().toString());
             character2.setName("fry");
+            character2.setFirstname("Phillip");
+            character2.setLastname("Fry");
             character2.setCatchphrase("I'm walking on sunshine ! ");
 
             entityManager.persist(character2);
@@ -87,8 +98,36 @@ public class PersistenceFullTest {
         }
     }
 
+    @Test
+    public void c_shouldRemoveEntityAndImpactedLink() throws IOException {
+        final EntityManagerFactory createEntityManagerFactory = Persistence.createEntityManagerFactory("BlossomTestLocal");
+        final EntityManager entityManager = createEntityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+            // Query for the exact character instance
+            final CriteriaQuery<Object> cq = cb.createQuery();
+            final Root<AbstractBlossomEntity> c = cq.from(AbstractBlossomEntity.class);
+            cq.select(c);
+            cq.where(cb.equal(c.get("id"), "d6228b28-12c2-4bae-8c89-41b6642c379c"));
+            // cq.where(cb.equal(c.get("lastname"), "Fry"));
+
+            final Query query = entityManager.createQuery(cq);
+
+            final Object singleResult = query.getSingleResult();
+            assertTrue(singleResult instanceof CharacterEntity);
+
+            entityManager.remove(singleResult);
+
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+    }
+
     @Test(expected = javax.persistence.EntityExistsException.class)
-    public void should_fail_id_unicity() throws IOException {
+    public void d_should_fail_id_unicity() throws IOException {
         final EntityManagerFactory createEntityManagerFactory = Persistence.createEntityManagerFactory("BlossomTestLocal");
         final EntityManager entityManager = createEntityManagerFactory.createEntityManager();
         try {
