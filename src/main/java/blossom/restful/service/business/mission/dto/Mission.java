@@ -26,5 +26,4 @@ public class Mission
 	{
 		this.id = id;
 	}
-	
 }
