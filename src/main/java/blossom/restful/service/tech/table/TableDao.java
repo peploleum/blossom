@@ -75,8 +75,6 @@ public class TableDao {
                 final CharacterBean characterBean = new CharacterBean();
                 characterBean.setId(result.getId());
                 characterBean.setName(result.getName());
-//                characterBean.setCatchphrase(result.getCatchphrase());
-//                characterBean.setSize(result.getSize());
                 characterBean.setId(result.getId());
                 return characterBean;
             } catch (final Exception e) {
